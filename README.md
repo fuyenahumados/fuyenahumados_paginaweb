@@ -3,6 +3,12 @@
 Notas de proyecto (para Joaquín y para Claude). Este archivo se mantiene actualizado
 a medida que avanza el desarrollo — no es documentación estática.
 
+## Reglas de trabajo con Claude
+
+- **Nunca hacer `git commit` ni `git push` sin preguntar primero**, aunque el pedido
+  del cambio haya sido explícito y claro. Mostrar los cambios hechos y esperar
+  confirmación antes de comitear.
+
 ## Qué es esto
 
 Tienda online **privada** (no indexada, sin acceso público) para vender salmón
