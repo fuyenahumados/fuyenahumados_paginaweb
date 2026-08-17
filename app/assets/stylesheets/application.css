@@ -1,13 +1,12 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --navy:   #081f2e; /* mar profundo — fondos oscuros (nav, hero, footer) */
-  --ocean:  #145577; /* azul océano — acentos, badges, enlaces */
-  --foam:   #f3f8f8; /* espuma de mar — fondos claros */
-  --gold:   #b8934f; /* detalle cálido — calidad/artesanal, decorativo (no cumple 4.5:1 sobre blanco/foam) */
-  --gold-texto: #8a6d3b; /* mismo dorado, oscurecido para usarlo como texto/ícono sobre fondos claros y cumplir WCAG AA */
-  --ink:    #1c2b35; /* texto principal */
-  --border: #dde6e8; /* bordes sutiles, tono frío */
+  --navy:    #081f2e; /* mar profundo — fondos oscuros (nav, hero, footer) */
+  --ocean:   #145577; /* azul océano — acentos/texto sobre fondos claros, enlaces (cumple 4.5:1 sobre blanco) */
+  --celeste: #5fbad9; /* celeste fresco — acento decorativo sobre fondos oscuros (nav, hero, footer), reemplaza al dorado */
+  --foam:    #f3f8f8; /* espuma de mar — fondos claros */
+  --ink:     #1c2b35; /* texto principal */
+  --border:  #d5e3ea; /* bordes sutiles, tono frío azulado */
 }
 
 /* Oculta visualmente pero deja disponible para lectores de pantalla. */
@@ -25,7 +24,8 @@
 
 html { min-height: 100%; }
 body {
-  font-family: Georgia, serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-variant-numeric: lining-nums;
   background: var(--foam);
   color: var(--ink);
   line-height: 1.6;
@@ -42,49 +42,66 @@ nav {
   background: var(--navy);
   color: #fff;
   padding: 0 2rem;
-  height: 56px;
+  height: 76px;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
+  transition: background-color 0.3s ease;
 }
+/* En la home el nav arranca transparente sobre el hero y se hace semi-opaco
+   apenas se hace scroll (ver nav_scroll_controller.js). En el resto de las
+   páginas el nav es siempre sólido — no hay imagen de fondo detrás. */
+body:not(.nav-transparente) { padding-top: 76px; }
+body.nav-transparente nav { background: transparent; }
+body.nav-transparente nav.scrolled { background: rgba(8, 31, 46, 0.8); }
+
 nav a { color: #fff; text-decoration: none; }
 .nav-left { justify-self: start; }
 nav .logo {
-  font-size: 1.2rem;
-  letter-spacing: 4px;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.5rem;
+  letter-spacing: 1.5px;
   font-weight: bold;
+  white-space: nowrap;
   flex-shrink: 0;
 }
 .nav-center {
   justify-self: center;
   display: flex;
-  gap: 1.5rem;
+  gap: 2.5rem;
   align-items: center;
-  font-size: 0.88rem;
-  padding: 0 2rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.18);
-  border-right: 1px solid rgba(255, 255, 255, 0.18);
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.3px;
+  text-transform: capitalize;
 }
 .nav-center a { padding-bottom: 3px; border-bottom: 2px solid transparent; }
-.nav-center a:hover { color: var(--gold); }
+.nav-center a:hover { color: var(--celeste); }
 .nav-center a.active {
-  color: var(--gold);
-  border-bottom-color: var(--gold);
+  color: var(--celeste);
+  border-bottom-color: var(--celeste);
 }
 .nav-right {
   justify-self: end;
   display: flex;
   gap: 1.25rem;
   align-items: center;
-  font-size: 0.88rem;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.15rem;
+  text-transform: capitalize;
   flex-shrink: 0;
 }
 .nav-carrito { display: flex; align-items: center; gap: 0.35rem; }
-.nav-carrito:hover { color: var(--gold); }
+.nav-carrito:hover { color: var(--celeste); }
 .icon-carrito { width: 19px; height: 19px; flex-shrink: 0; }
+.nav-instagram { display: flex; align-items: center; line-height: 0; margin-left: 0.5rem; }
+.icon-instagram { width: 19px; height: 19px; flex-shrink: 0; color: #fff; }
+.nav-instagram:hover .icon-instagram { color: var(--celeste); }
 .carrito-badge {
   background: var(--ocean);
   color: #fff;
@@ -92,28 +109,35 @@ nav .logo {
   padding: 0.1rem 0.5rem;
   font-size: 0.72rem;
 }
-.nav-nombre { color: #666; font-size: 0.82rem; }
+.nav-nombre {
+  color: #fff;
+  font-size: 1.15rem;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .nav-perfil {
   display: flex;
   align-items: center;
   gap: 0.4rem;
   color: #fff;
 }
-.nav-perfil:hover .nav-nombre { color: var(--gold); }
+.nav-perfil:hover .nav-nombre { color: var(--celeste); }
 .icon-perfil { width: 22px; height: 22px; color: #fff; flex-shrink: 0; }
 .nav-salir {
   background: none;
   border: none;
   padding: 0;
-  color: #7a93a3;
-  font-size: 0.82rem;
+  color: #fff;
+  font-size: 1.15rem;
   font-family: inherit;
   cursor: pointer;
 }
-.nav-salir:hover { color: #fff; text-decoration: underline; }
+.nav-salir:hover { color: var(--celeste); text-decoration: underline; }
 
 /* ─── ADMIN NAV ───────────────────────────────────────── */
-.admin-body { background: var(--foam); }
+.admin-body { background: var(--foam); padding-top: 0; } /* .admin-nav no es fixed, no necesita compensación */
 .admin-nav {
   background: var(--navy);
   color: #fff;
@@ -124,20 +148,22 @@ nav .logo {
   align-items: center;
 }
 .admin-nav-logo {
-  font-size: 1rem;
-  letter-spacing: 3px;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.5rem;
+  letter-spacing: 1.5px;
   font-weight: bold;
   color: #fff;
+  white-space: nowrap;
 }
 .admin-tag {
-  font-size: 1rem;
-  letter-spacing: 3px;
+  font-size: 1.5rem;
+  letter-spacing: 1.5px;
   font-weight: bold;
   color: #fff;
   margin-left: 0.5rem;
 }
-.admin-nav-site { color: #7a93a3 !important; font-size: 0.82rem; }
-.admin-nav-site:hover { color: #fff !important; }
+.admin-nav-site { color: #fff !important; font-size: 1.15rem; }
+.admin-nav-site:hover { color: var(--celeste) !important; }
 
 /* ─── FLASH ───────────────────────────────────────────── */
 .flash {
@@ -151,7 +177,8 @@ nav .logo {
 .container { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem; }
 
 /* ─── TIPOGRAFÍA ──────────────────────────────────────── */
-h1 { font-size: 1.8rem; margin-bottom: 1.5rem; font-weight: normal; letter-spacing: 1px; }
+h1, h2 { font-family: "Fraunces", Georgia, serif; }
+h1 { font-size: 1.8rem; margin-bottom: 1.5rem; font-weight: 600; letter-spacing: 0.5px; color: var(--navy); }
 h2 { font-size: 1.3rem; margin-bottom: 1rem; }
 
 /* ─── PAGE HEADER (catálogo, etc.) ───────────────────── */
@@ -161,15 +188,15 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   border-bottom: 1px solid var(--border);
   margin-bottom: 2.5rem;
 }
-.page-header h1 { margin-bottom: 0.4rem; font-size: 2rem; letter-spacing: 2px; }
-.page-header-desc { color: #666; font-style: italic; font-size: 1rem; }
+.page-header h1 { margin-bottom: 0.4rem; }
+.page-header-desc { color: #555; font-size: 1.2rem; line-height: 1.8; }
 
 /* ─── AUTH ────────────────────────────────────────────── */
 .auth-card {
   max-width: 460px;
   margin: 3rem auto;
 }
-.auth-card h1 { font-size: 1.6rem; margin-bottom: 1.75rem; }
+.auth-card h1 { margin-bottom: 1.75rem; }
 .auth-submit { width: 100%; margin-top: 0.5rem; padding: 0.75rem; font-size: 1rem; }
 .auth-alt {
   text-align: center;
@@ -183,37 +210,38 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
 
 /* ─── HERO ────────────────────────────────────────────── */
 .hero {
-  background: var(--navy);
+  position: relative;
+  background:
+    linear-gradient(rgba(8, 31, 46, 0.45), rgba(8, 31, 46, 0.7)),
+    url("/docs/banners/home-hero.jpg") center / cover no-repeat;
   color: #fff;
-  padding: 7rem 2rem;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
   text-align: center;
 }
-.hero-inner { max-width: 580px; margin: 0 auto; }
-.hero-eyebrow {
-  font-size: 0.75rem;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 1.5rem;
-  font-style: normal;
-}
+.hero-inner { max-width: 960px; margin: 0 auto; }
 .hero-titulo {
-  font-size: 4rem;
-  letter-spacing: 10px;
-  font-weight: normal;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  font-weight: 600;
+  letter-spacing: 1px;
   color: #fff;
+  line-height: 1.1;
   margin-bottom: 1.2rem;
 }
 .hero-subtitulo {
-  font-size: 1.25rem;
-  color: #bbb;
-  font-style: italic;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.5rem;
+  color: #eaf3f6;
   margin-bottom: 2.5rem;
-  line-height: 1.9;
+  line-height: 1.6;
 }
 
 /* ─── SECCIONES (inicio) ──────────────────────────────── */
-.seccion { padding: 5rem 2rem; }
+.seccion { padding: 5rem 2rem; border-top: 1px solid #000; }
 .seccion-clara  { background: var(--foam); }
 .seccion-oscura { background: var(--navy); }
 
@@ -224,19 +252,20 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
 .seccion-inner--centrada { text-align: center; max-width: 680px; }
 
 .seccion-titulo {
-  font-size: 1.6rem;
-  font-weight: normal;
-  letter-spacing: 2px;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
   margin-bottom: 0.5rem;
   color: var(--navy);
 }
 .seccion-titulo--claro { color: #fff; }
 
 .seccion-subtitulo {
-  color: #666;
-  font-style: italic;
+  color: #555;
   margin-bottom: 2.5rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
+  line-height: 1.8;
 }
 
 .seccion-texto {
@@ -247,7 +276,52 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
 }
 .seccion-texto--claro { color: #bbb; }
 
-.seccion-cta { text-align: center; margin-top: 2rem; }
+.seccion-cta { margin-top: 2rem; }
+.seccion-cta .btn { display: block; width: 100%; }
+
+/* ─── QUIÉNES SOMOS (home) ────────────────────────────── */
+.quienes-somos { padding: 5rem 2rem; background: #eaedf0; }
+.quienes-somos-grid {
+  max-width: 960px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  align-items: start;
+  gap: 3.5rem;
+}
+.quienes-somos-foto {
+  max-width: 380px;
+  aspect-ratio: 4 / 5;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.quienes-somos-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.quienes-somos-texto {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 0;
+}
+.quienes-somos-titulo {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--navy);
+  margin-bottom: 1.25rem;
+}
+.quienes-somos-texto .seccion-texto {
+  font-size: 1.2rem;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 1.75rem;
+}
+
+@media (max-width: 800px) {
+  .quienes-somos { padding: 3rem 1.5rem; }
+  .quienes-somos-grid { grid-template-columns: 1fr; }
+  .quienes-somos-foto { max-width: 280px; margin: 0 auto; }
+}
 
 /* ─── NOSOTROS ────────────────────────────────────────── */
 .nosotros-hero {
@@ -256,14 +330,12 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   border-bottom: 1px solid var(--border);
   margin-bottom: 3rem;
 }
-.nosotros-hero h1 { font-size: 2rem; letter-spacing: 2px; }
 .nosotros-intro {
   max-width: 600px;
   margin: 1rem auto 0;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: #555;
-  font-style: italic;
-  line-height: 1.9;
+  line-height: 1.8;
 }
 
 .nosotros-valores {
@@ -282,11 +354,11 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: var(--gold-texto);
+  color: var(--ocean);
   margin-bottom: 0.75rem;
   font-weight: normal;
 }
-.valor-card p { font-size: 0.95rem; color: #555; line-height: 1.8; }
+.valor-card p { font-size: 1.2rem; color: #555; line-height: 1.8; }
 
 .nosotros-historia {
   max-width: 680px;
@@ -294,15 +366,11 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   padding-top: 2rem;
   border-top: 1px solid var(--border);
 }
-.nosotros-historia h2 {
-  font-size: 1.4rem;
-  font-weight: normal;
-  letter-spacing: 1px;
-  margin-bottom: 1.25rem;
-}
+.nosotros-historia h2 { margin-bottom: 1.25rem; }
 .nosotros-historia p {
+  font-size: 1.2rem;
   color: #555;
-  line-height: 1.9;
+  line-height: 1.8;
   margin-bottom: 1.25rem;
 }
 
@@ -325,19 +393,16 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
 }
 .catalogo-hero-breadcrumb a { color: #cfdbe1; text-decoration: none; }
 .catalogo-hero-breadcrumb a:hover { color: #fff; text-decoration: underline; }
-.catalogo-hero-breadcrumb .separador { margin: 0 0.6rem; color: var(--gold); }
+.catalogo-hero-breadcrumb .separador { margin: 0 0.6rem; color: var(--celeste); }
 .catalogo-hero-titulo {
-  font-size: 2.4rem;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  font-weight: normal;
   color: #fff;
   margin-bottom: 0.6rem;
 }
 .catalogo-hero-subtitulo {
-  font-size: 1.05rem;
-  color: #d7e4ea;
-  font-style: italic;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.5rem;
+  color: #eaf3f6;
+  line-height: 1.6;
 }
 
 /* ─── CATÁLOGO (layout de 2 columnas) ─────────────────── */
@@ -380,6 +445,38 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   font-family: inherit;
   font-size: 0.85rem;
   background: #fff;
+}
+
+/* ─── COLLAGE DE PRODUCTOS (home) ─────────────────────── */
+.productos-collage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  aspect-ratio: 2 / 1;
+  margin-bottom: 2rem;
+}
+.collage-grande,
+.collage-chica {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: var(--foam);
+  background-size: cover;
+  background-position: center;
+  text-decoration: none;
+}
+.collage-chicas {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 1rem;
+}
+@media (max-width: 720px) {
+  .productos-collage { grid-template-columns: 1fr; aspect-ratio: auto; }
+  .collage-grande { aspect-ratio: 1 / 1; }
+  .collage-chicas { aspect-ratio: 1 / 1; }
 }
 
 /* ─── PRODUCTOS ───────────────────────────────────────── */
@@ -507,9 +604,9 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   font-size: 0.88rem;
   margin-bottom: 1rem;
 }
-.producto-detalle-nombre { font-size: 1.6rem; margin-bottom: 0.5rem; text-transform: uppercase; }
+.producto-detalle-nombre { margin-bottom: 0.5rem; }
 .producto-detalle-precio { font-size: 1.5rem; color: var(--ocean); font-weight: bold; margin-bottom: 1rem; }
-.producto-detalle-desc { color: #555; line-height: 1.8; margin-bottom: 1.5rem; }
+.producto-detalle-desc { font-size: 1.2rem; color: #555; line-height: 1.8; margin-bottom: 1.5rem; }
 .cantidad-selector {
   display: flex;
   align-items: center;
@@ -539,7 +636,7 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
 
 .estrellas { display: inline-flex; gap: 2px; vertical-align: middle; }
 .icon-estrella { width: 18px; height: 18px; color: #666; }
-.icon-estrella-llena { color: var(--gold-texto); }
+.icon-estrella-llena { color: var(--ocean); }
 
 .resenas-resumen { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.5rem; }
 .resenas-promedio { font-weight: bold; }
@@ -554,7 +651,7 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
 .calificacion-input input:checked ~ label svg,
 .calificacion-input label:hover svg,
 .calificacion-input label:hover ~ label svg {
-  color: var(--gold);
+  color: var(--ocean);
 }
 
 .resenas-lista { display: flex; flex-direction: column; gap: 1.25rem; max-width: 640px; }
@@ -589,8 +686,10 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   border-radius: 4px;
   border: none;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   font-family: inherit;
+  font-weight: bold;
+  text-transform: capitalize;
   text-decoration: none;
   text-align: center;
   letter-spacing: 0.5px;
@@ -600,8 +699,25 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
 .btn-secondary { background: #fff; color: var(--navy); border: 1px solid var(--navy); }
 .btn-ocean     { background: var(--ocean); color: #fff; }
 .btn-danger    { background: #c0392b; color: #fff; }
-.btn-gold      { background: var(--gold); color: #fff; letter-spacing: 2px; text-transform: uppercase; font-size: 0.82rem; padding: 0.8rem 2rem; }
-.btn-gold-outline { background: transparent; color: var(--gold); border: 1px solid var(--gold); letter-spacing: 1px; font-size: 0.85rem; }
+.btn-hero {
+  background: var(--navy);
+  color: #fff;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  font-size: 1.05rem;
+  padding: 1.1rem 5rem;
+}
+.btn-hero:hover { background: var(--ocean); }
+.btn-navy-grande {
+  background: var(--navy);
+  color: #fff;
+  font-weight: bold;
+  text-transform: capitalize;
+  font-size: 1.05rem;
+  padding: 1.1rem 3rem;
+}
+.btn-navy-grande:hover { background: var(--ocean); }
 .btn-whatsapp  { background: #25d366; color: #fff; font-size: 1rem; padding: 0.8rem 1.5rem; }
 .acciones-fila { display: flex; gap: 1rem; align-items: center; }
 .acciones-fila form, .direccion-card-acciones form { display: contents; }
@@ -657,12 +773,12 @@ td a:hover { color: var(--ocean); }
 /* ─── DATOS BANCARIOS ─────────────────────────────────── */
 .datos-banco {
   background: #fff;
-  border: 2px solid var(--gold);
+  border: 2px solid var(--ocean);
   border-radius: 6px;
   padding: 1.5rem 2rem;
   margin: 1.5rem 0;
 }
-.datos-banco h2 { color: #8a6d3b; }
+.datos-banco h2 { color: var(--ocean); }
 .datos-banco table { margin-bottom: 0; }
 .datos-banco td:first-child { color: #666; width: 160px; }
 .datos-banco td:last-child { width: 40px; text-align: right; }
@@ -670,7 +786,7 @@ td a:hover { color: var(--ocean); }
   font-size: 1.6rem;
   font-weight: bold;
   letter-spacing: 3px;
-  color: var(--gold-texto);
+  color: var(--ocean);
 }
 .datos-banco-header {
   display: flex;
@@ -686,8 +802,8 @@ td a:hover { color: var(--ocean); }
   align-items: center;
   gap: 0.5rem;
   background: #fff;
-  border: 1px solid var(--gold);
-  color: #8a6d3b;
+  border: 1px solid var(--ocean);
+  color: var(--ocean);
   border-radius: 4px;
   padding: 0.5rem 0.9rem;
   font-size: 0.85rem;
@@ -695,7 +811,7 @@ td a:hover { color: var(--ocean); }
   cursor: pointer;
 }
 .btn-copiar-todo svg { width: 16px; height: 16px; }
-.btn-copiar-todo.copiado { background: var(--gold); color: #fff; }
+.btn-copiar-todo.copiado { background: var(--celeste); color: var(--navy); }
 .btn-copiar-campo {
   background: none;
   border: none;
@@ -704,7 +820,7 @@ td a:hover { color: var(--ocean); }
   padding: 0.2rem;
   line-height: 0;
 }
-.btn-copiar-campo:hover { color: var(--gold-texto); }
+.btn-copiar-campo:hover { color: var(--ocean); }
 .btn-copiar-campo svg { width: 16px; height: 16px; }
 .btn-copiar-campo.copiado { color: #2e7d32; font-size: 0.85rem; font-weight: bold; }
 
@@ -808,7 +924,7 @@ select {
   color: var(--ocean);
   padding: 0.2rem 0.5rem;
 }
-.viernes-calendario-nav button:hover { color: var(--gold-texto); }
+.viernes-calendario-nav button:hover { color: var(--ocean); }
 
 .viernes-calendario-grid {
   display: grid;
@@ -945,35 +1061,38 @@ footer {
   color: #aaa;
   font-size: 0.88rem;
   margin-top: auto;
+  border-top: 1px solid #000;
 }
 .footer-inner {
   max-width: 960px;
   margin: 0 auto;
-  padding: 3rem 2rem 2rem;
+  padding: 3.5rem 2rem 2.5rem;
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr;
-  gap: 2rem;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 2.5rem;
 }
 .footer-logo {
   display: block;
-  font-size: 1.2rem;
-  letter-spacing: 4px;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.3rem;
+  letter-spacing: 1.5px;
+  font-weight: bold;
   color: #fff;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 .footer-col h4 {
+  font-family: "Fraunces", Georgia, serif;
   color: #fff;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 0.75rem;
-  font-weight: normal;
+  font-size: 1.3rem;
+  letter-spacing: 0.3px;
+  margin-bottom: 1rem;
+  font-weight: 600;
 }
 .footer-col p { line-height: 2; }
 .footer-col ul { list-style: none; }
 .footer-col ul li { line-height: 2.2; }
 .footer-col a { color: #aaa; text-decoration: none; }
-.footer-col a:hover { color: var(--gold); }
+.footer-col a:hover { color: var(--celeste); }
 .footer-copy {
   border-top: 1px solid #333;
   text-align: center;

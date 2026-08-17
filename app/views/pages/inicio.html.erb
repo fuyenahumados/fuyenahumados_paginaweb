@@ -3,24 +3,35 @@
 
 <section class="hero">
   <div class="hero-inner">
-    <p class="hero-eyebrow">Artesanal · Patagonia</p>
-    <h1 class="hero-titulo">FUYÉN</h1>
-    <p class="hero-subtitulo">Ahumado lento,<br>entregado fresco.</p>
-    <%= link_to "Explorar productos", productos_path, class: "btn btn-gold" %>
+    <h1 class="hero-titulo">Fuyén Ahumados</h1>
+    <p class="hero-subtitulo">Salmón ahumado artesanal</p>
+    <%= link_to "Explorar productos", productos_path, class: "btn btn-hero" %>
   </div>
 </section>
 
 <section class="seccion seccion-clara">
   <div class="seccion-inner">
     <h2 class="seccion-titulo">Nuestros productos</h2>
-    <p class="seccion-subtitulo">Piezas elaboradas artesanalmente, una a una.</p>
+    <p class="seccion-subtitulo">
+      Nuestros productos son elaborados artesanalmente por nosotros mismos, con una receta
+      propia que fuimos afinando con harta prueba y error entre amigos. Cuidamos cada detalle
+      del proceso, desde la selección del salmón hasta el ahumado final, para que cada pieza
+      salga exactamente como nos gusta comerla a nosotros.
+    </p>
 
     <% if @productos.any? %>
-      <div class="productos-grid">
-        <%= render partial: "productos/card", collection: @productos, as: :product %>
+      <% grande, *resto = @productos %>
+      <div class="productos-collage">
+        <div class="collage-grande" style="<%= "background-image:url(#{grande.foto_url})" if grande.foto_url.present? %>"></div>
+
+        <div class="collage-chicas">
+          <% resto.first(3).each do |product| %>
+            <div class="collage-chica" style="<%= "background-image:url(#{product.foto_url})" if product.foto_url.present? %>"></div>
+          <% end %>
+        </div>
       </div>
       <div class="seccion-cta">
-        <%= link_to "Ver todos los productos →", productos_path, class: "btn btn-secondary" %>
+        <%= link_to "Ver todos los productos", productos_path, class: "btn btn-navy-grande" %>
       </div>
     <% else %>
       <p class="empty-state">Productos próximamente.</p>
@@ -28,14 +39,26 @@
   </div>
 </section>
 
-<section class="seccion seccion-oscura">
-  <div class="seccion-inner seccion-inner--centrada">
-    <h2 class="seccion-titulo seccion-titulo--claro">Quiénes somos</h2>
-    <p class="seccion-texto seccion-texto--claro">
-      Fuyén nació de la pasión por los sabores del sur. Somos una pequeña empresa familiar
-      dedicada a elaborar salmón ahumado artesanalmente, respetando los tiempos y las tradiciones
-      de la Patagonia chilena. Cada pieza es cuidada desde el origen hasta tu mesa.
-    </p>
-    <%= link_to "Conocer nuestra historia →", nosotros_path, class: "btn btn-gold-outline" %>
+<section class="seccion seccion-clara quienes-somos">
+  <div class="quienes-somos-grid">
+    <div class="quienes-somos-foto">
+      <%= image_tag "/docs/banners/quienes-somos.jpg", alt: "El equipo de Fuyén" %>
+    </div>
+    <div class="quienes-somos-texto">
+      <h2 class="quienes-somos-titulo">Quiénes somos</h2>
+      <p class="seccion-texto">
+        Somos un emprendimiento de tres amigos que nació del amor por la buena comida,
+        la pesca y las juntas de siempre. Empezó como algo casero, ahumando salmón para
+        compartir entre nosotros, hasta que nos dimos cuenta de que valía la pena que
+        más gente lo probara.
+      </p>
+      <p class="seccion-texto">
+        Hoy seguimos haciéndolo igual, con calma, maderas nativas y una receta propia
+        que fuimos afinando a puro ensayo y error. Cada pieza sale con la misma dedicación
+        de siempre: buena onda, cuidado en cada detalle, y las ganas de compartir algo
+        tan bueno como lo que nos gusta comer a nosotros.
+      </p>
+      <%= link_to "Conoce nuestra historia", nosotros_path, class: "btn btn-navy-grande" %>
+    </div>
   </div>
 </section>
