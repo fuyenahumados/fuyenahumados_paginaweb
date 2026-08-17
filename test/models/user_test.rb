@@ -1,7 +1,61 @@
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test "requiere nombre, apellido y teléfono" do
+    usuario = User.new(email: "a@test.cl", password: "password123", nombre: nil, apellido: nil, telefono: nil)
+    assert_not usuario.valid?
+    assert_includes usuario.errors[:nombre], "no puede estar en blanco"
+    assert_includes usuario.errors[:apellido], "no puede estar en blanco"
+    assert_includes usuario.errors[:telefono], "no puede estar en blanco"
+  end
+
+  test "el teléfono debe cumplir el formato esperado" do
+    usuario = crear_cliente
+    usuario.telefono = "no es un telefono"
+    assert_not usuario.valid?
+
+    usuario.telefono = "+56 9 1234 5678"
+    assert usuario.valid?
+  end
+
+  test "role por defecto es cliente y admite admin" do
+    cliente = crear_cliente
+    admin = crear_admin
+
+    assert cliente.cliente?
+    assert admin.admin?
+  end
+
+  test "nombre_completo concatena nombre y apellido" do
+    usuario = crear_cliente(nombre: "Ana", apellido: "Pérez")
+    assert_equal "Ana Pérez", usuario.nombre_completo
+  end
+
+  test "direccion_principal devuelve la marcada como principal" do
+    usuario = crear_cliente
+    crear_direccion(usuario, etiqueta: "Casa")
+    oficina = crear_direccion(usuario, etiqueta: "Oficina")
+    oficina.update!(principal: true)
+
+    assert_equal oficina, usuario.reload.direccion_principal
+  end
+
+  test "direccion_principal cae a la primera si ninguna está marcada" do
+    usuario = crear_cliente
+    assert_nil usuario.direccion_principal
+
+    primera = crear_direccion(usuario)
+    assert_equal primera, usuario.reload.direccion_principal
+  end
+
+  test "borrar el usuario borra sus pedidos y direcciones" do
+    usuario = crear_cliente
+    crear_direccion(usuario)
+    pedido = crear_pedido(usuario: usuario)
+
+    assert_difference [ "Order.count", "Direccion.count" ], -1 do
+      usuario.destroy
+    end
+    assert_not Order.exists?(pedido.id)
+  end
 end

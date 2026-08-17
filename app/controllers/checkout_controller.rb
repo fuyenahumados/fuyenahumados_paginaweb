@@ -4,12 +4,14 @@ class CheckoutController < ApplicationController
 
   def show
     @order = nuevo_pedido_prellenado
+    @direcciones = user_signed_in? ? current_user.direcciones.order(created_at: :asc) : Direccion.none
   end
 
   def create
     @order = pedido_del_titular.new(checkout_params.merge(envio: carrito_envio, total: carrito_gran_total))
 
     if @order.invalid?
+      @direcciones = user_signed_in? ? current_user.direcciones.order(created_at: :asc) : Direccion.none
       render :show, status: :unprocessable_entity and return
     end
 

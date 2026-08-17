@@ -33,3 +33,6 @@
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
+# Ignore SimpleCov's coverage report (se regenera en cada corrida de tests).
+/coverage
+

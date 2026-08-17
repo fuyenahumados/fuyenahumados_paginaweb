@@ -37,7 +37,9 @@ Rails.application.routes.draw do
     resources :users,    only: [ :index, :show, :destroy ]
   end
 
-  resources :productos, only: [ :index, :show ]
+  resources :productos, only: [ :index, :show ] do
+    resources :resenas, only: [ :create ]
+  end
   get "nosotros",  to: "pages#nosotros",  as: :nosotros
 
   get "up" => "rails/health#show", as: :rails_health_check

@@ -357,7 +357,8 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   margin-bottom: 0.4rem;
   cursor: pointer;
 }
-.filtro-grupo select {
+.filtro-grupo select,
+.filtro-buscar {
   width: 100%;
   padding: 0.4rem 0.6rem;
   border: 1px solid var(--border);
@@ -513,6 +514,36 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   padding: 1.1rem 2rem;
   font-size: 1.05rem;
 }
+
+/* ─── RESEÑAS ─────────────────────────────────────────── */
+.producto-resenas { max-width: 1000px; margin: 2.5rem auto 0; border-top: 1px solid var(--border); padding: 2rem 1rem 0; }
+.producto-resenas h2 { margin-bottom: 1rem; }
+
+.estrellas { display: inline-flex; gap: 2px; vertical-align: middle; }
+.icon-estrella { width: 18px; height: 18px; color: #ddd; }
+.icon-estrella-llena { color: var(--gold); }
+
+.resenas-resumen { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.5rem; }
+.resenas-promedio { font-weight: bold; }
+.resenas-cantidad { color: #888; font-size: 0.9rem; }
+
+.resena-form { background: var(--foam); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; max-width: 480px; }
+
+.calificacion-input { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 0.15rem; }
+.calificacion-input input { position: absolute; opacity: 0; pointer-events: none; }
+.calificacion-estrella { cursor: pointer; }
+.calificacion-estrella svg { width: 30px; height: 30px; color: #ccc; }
+.calificacion-input input:checked ~ label svg,
+.calificacion-input label:hover svg,
+.calificacion-input label:hover ~ label svg {
+  color: var(--gold);
+}
+
+.resenas-lista { display: flex; flex-direction: column; gap: 1.25rem; max-width: 640px; }
+.resena-item { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; }
+.resena-item-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
+.resena-fecha { color: #888; font-size: 0.82rem; margin-left: auto; }
+.resena-comentario { color: #444; font-size: 0.92rem; }
 
 /* ─── FOTO ADMIN ──────────────────────────────────────── */
 .foto-miniatura {
@@ -695,6 +726,21 @@ select {
 }
 .acciones { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-top: 1.5rem; }
 
+.direcciones-guardadas { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 0.5rem; }
+.direccion-guardada-opcion {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: normal;
+}
+.direccion-guardada-opcion:has(input:checked) { border-color: var(--ocean); background: var(--foam); }
+.direccion-guardada-opcion input[type="radio"] { margin-top: 0.2rem; }
+
 /* ─── CALENDARIO DE VIERNES (fecha de entrega / despacho) ────── */
 .viernes-calendario { position: relative; display: inline-block; }
 .viernes-calendario-toggle {
@@ -799,7 +845,7 @@ button.viernes-calendario-dia.viernes-disponible:hover { background: #a3cfbb; }
   gap: 1rem;
 }
 .direccion-card-etiqueta { font-weight: bold; }
-.direccion-card-etiqueta .badge-principal {
+.badge-principal {
   color: #888;
   font-size: 0.8rem;
   font-weight: normal;

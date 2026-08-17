@@ -1,0 +1,19 @@
+<%#
+  Muestra `calificacion` (0-5, puede venir con decimales) como estrellas SVG,
+  redondeando al entero más cercano para decidir cuáles van llenas.
+  locals: calificacion
+%>
+<span class="estrellas" aria-label="<%= calificacion %> de 5 estrellas">
+  <% relleno = calificacion.round %>
+  <% 5.times do |i| %>
+    <% if i < relleno %>
+      <svg class="icon-estrella icon-estrella-llena" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01L12 2z"/>
+      </svg>
+    <% else %>
+      <svg class="icon-estrella" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01L12 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+      </svg>
+    <% end %>
+  <% end %>
+</span>

@@ -19,6 +19,11 @@
     <h2 class="filtros-titulo">Filtros</h2>
 
     <div class="filtro-grupo">
+      <h3>Buscar</h3>
+      <%= f.text_field :buscar, value: params[:buscar], placeholder: "Nombre o descripción...", class: "filtro-buscar" %>
+    </div>
+
+    <div class="filtro-grupo">
       <h3>Ordenar por</h3>
       <%= f.select :orden,
             [["Posición", ""], ["Precio: menor a mayor", "precio_asc"], ["Precio: mayor a menor", "precio_desc"], ["Nombre", "nombre"]],

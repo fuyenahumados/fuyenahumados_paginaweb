@@ -1,5 +1,6 @@
 class Product < ApplicationRecord
   has_many :order_items
+  has_many :resenas, dependent: :destroy
 
   enum :categoria, { ahumado: 0 }
 
@@ -20,6 +21,10 @@ class Product < ApplicationRecord
     return nil unless foto_filename.present?
 
     "/docs/productos/#{foto_filename}"
+  end
+
+  def calificacion_promedio
+    resenas.average(:calificacion)&.round(1)
   end
 
   private

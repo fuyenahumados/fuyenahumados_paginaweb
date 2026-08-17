@@ -29,3 +29,57 @@
     <% end %>
   </div>
 </div>
+
+<div class="producto-resenas">
+  <h2>Reseñas</h2>
+
+  <% if @product.calificacion_promedio.present? %>
+    <div class="resenas-resumen">
+      <%= render "shared/estrellas", calificacion: @product.calificacion_promedio %>
+      <span class="resenas-promedio"><%= @product.calificacion_promedio %> de 5</span>
+      <span class="resenas-cantidad">(<%= pluralize(@resenas.size, "reseña", plural: "reseñas") %>)</span>
+    </div>
+  <% else %>
+    <p class="empty-state">Este producto todavía no tiene reseñas.</p>
+  <% end %>
+
+  <% if @puede_resenar %>
+    <%= form_with url: producto_resenas_path(@product), method: :post, scope: :resena, class: "resena-form" do |f| %>
+      <div class="form-group">
+        <label>Tu calificación</label>
+        <div class="calificacion-input">
+          <% (1..5).to_a.reverse_each do |n| %>
+            <%= f.radio_button :calificacion, n, id: "calificacion_#{n}" %>
+            <label for="calificacion_<%= n %>" class="calificacion-estrella" title="<%= n %> estrella<%= "s" if n != 1 %>">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01L12 2z"/>
+              </svg>
+            </label>
+          <% end %>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :comentario, "Comentario (opcional)" %>
+        <%= f.text_area :comentario, rows: 3, placeholder: "¿Qué te pareció el producto?" %>
+      </div>
+      <%= f.submit "Publicar reseña", class: "btn btn-secondary" %>
+    <% end %>
+  <% end %>
+
+  <% if @resenas.any? %>
+    <div class="resenas-lista">
+      <% @resenas.each do |resena| %>
+        <div class="resena-item">
+          <div class="resena-item-header">
+            <%= render "shared/estrellas", calificacion: resena.calificacion %>
+            <strong><%= resena.user.nombre %></strong>
+            <span class="resena-fecha"><%= resena.created_at.strftime("%d/%m/%Y") %></span>
+          </div>
+          <% if resena.comentario.present? %>
+            <p class="resena-comentario"><%= resena.comentario %></p>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

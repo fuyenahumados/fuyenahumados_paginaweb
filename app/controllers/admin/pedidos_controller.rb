@@ -32,7 +32,7 @@ class Admin::PedidosController < Admin::BaseController
     siguiente = FLUJO_ESTADOS[@pedido.estado]
     if siguiente
       @pedido.update!(estado: siguiente)
-      redirect_to admin_pedido_path(@pedido), notice: "Estado actualizado: #{estado_label(siguiente)}."
+      redirect_to admin_pedido_path(@pedido), notice: "Estado actualizado: #{helpers.estado_label(siguiente)}."
     else
       redirect_to admin_pedido_path(@pedido), alert: "No se puede avanzar el estado."
     end

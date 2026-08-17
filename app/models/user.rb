@@ -4,6 +4,7 @@ class User < ApplicationRecord
 
   has_many :orders, dependent: :destroy
   has_many :direcciones, dependent: :destroy
+  has_many :resenas, dependent: :destroy
   accepts_nested_attributes_for :direcciones
 
   enum :role, { cliente: 0, admin: 1 }
@@ -20,5 +21,12 @@ class User < ApplicationRecord
 
   def direccion_principal
     direcciones.find_by(principal: true) || direcciones.first
+  end
+
+  def compro?(product)
+    OrderItem.joins(:order)
+             .where(product_id: product.id, orders: { user_id: id })
+             .where.not(orders: { estado: :cancelado })
+             .exists?
   end
 end

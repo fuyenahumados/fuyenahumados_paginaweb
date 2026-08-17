@@ -16,6 +16,11 @@ class ProductosController < ApplicationController
   def index
     @products = Product.disponibles
 
+    if params[:buscar].present?
+      termino = "%#{params[:buscar].strip}%"
+      @products = @products.where("nombre ILIKE :t OR descripcion ILIKE :t", t: termino)
+    end
+
     if params[:categoria].present? && Product.categorias.key?(params[:categoria])
       @products = @products.where(categoria: params[:categoria])
     end
@@ -31,5 +36,9 @@ class ProductosController < ApplicationController
 
   def show
     @product = Product.disponibles.find(params[:id])
+    @resenas = @product.resenas.includes(:user).order(created_at: :desc)
+    @puede_resenar = user_signed_in? && current_user.cliente? &&
+                      current_user.compro?(@product) &&
+                      @resenas.none? { |r| r.user_id == current_user.id }
   end
 end

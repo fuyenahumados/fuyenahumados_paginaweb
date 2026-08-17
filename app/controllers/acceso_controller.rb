@@ -15,7 +15,4 @@ class AccesoController < ApplicationController
 
   def invalido
   end
-
-  def bienvenida
-  end
 end
