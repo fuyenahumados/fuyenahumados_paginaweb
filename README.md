@@ -13,6 +13,26 @@ ahumado artesanal, mientras la formalización legal del negocio está pendiente.
 - Venta por kilo completo (no fracciones). ~25 kg disponibles por semana.
 - Ciclo de producción semanal, entregas los viernes.
 
+## Descripción y funciones principales
+
+Sitio a medida para que Joaquín venda salmón ahumado artesanal por internet sin
+depender de un marketplace ni exponer la tienda al público general — solo entra
+quien tiene el link con token de acceso. No hay pasarela de pago: el flujo completo
+está pensado para transferencia bancaria coordinada por WhatsApp, con el negocio
+confirmando el pago a mano.
+
+**Para el cliente:**
+- Ve el catálogo (filtros de precio/categoría, orden, búsqueda visual por tarjetas), agrega productos al carrito y ajusta cantidades sin recargar la página.
+- Se registra o inicia sesión (Devise, roles cliente/admin) y guarda una o varias direcciones de entrega, con mapa asistido para ubicar la calle.
+- En el checkout revisa el resumen de la compra (con el envío ya calculado), elige la fecha de entrega en un calendario que solo permite viernes futuros, y confirma.
+- El pedido queda registrado en estado "pendiente de pago"; la pantalla de confirmación tiene un botón para avisarle al negocio por WhatsApp con el detalle completo ya escrito (productos, total, envío, fecha y dirección de entrega).
+- Puede ver su perfil e historial de pedidos, o consultar el estado de un pedido puntual por código sin necesidad de cuenta (`/mi-pedido`).
+
+**Para el negocio (panel admin):**
+- Ve y avanza el estado de cada pedido (pendiente de pago → pagado → en preparación → despachado → entregado) o lo cancela, confirmando el pago a mano después de revisar la conversación de WhatsApp.
+- Descarga un Excel filtrado por una fecha de despacho puntual (un viernes), con todo lo que hay que preparar esa semana y a quién.
+- CRUD completo de productos (bloqueado el borrado si el producto ya tiene pedidos asociados, para no perder historial de ventas) y listado/borrado de clientes.
+
 ## Stack
 
 - Ruby on Rails 8.1.3 + PostgreSQL
@@ -28,12 +48,21 @@ ahumado artesanal, mientras la formalización legal del negocio está pendiente.
 - `OrderItem` (cantidad, precio_unitario)
 - `AccessToken` (tokens de acceso al sitio)
 
-## Credenciales de prueba (seed, entorno local)
+## Controladores principales
 
-- Admin: `admin@fuyen.cl` / `cambiar123`
-- Cliente: `cliente@fuyen.cl` / `12345678`
-- Token admin: `/acceso/fuyen-admin-2024`
-- Token clientes: `/acceso/fuyen-acceso-clientes`
+- `AccesoController` (`entrar`, `invalido`, `bienvenida`) — valida el token de la URL y abre la sesión de "sitio visible" (no confundir con el login de usuario).
+- `PagesController` (`inicio`, `nosotros`) — páginas estáticas de la home.
+- `ProductosController` (`index`, `show`) — catálogo con filtros/orden y ficha de producto.
+- `CarritoController` (`show`, `agregar`, `actualizar`, `quitar`) — carrito en sesión, no se persiste en base hasta el checkout.
+- `CheckoutController` (`show`, `create`) — datos de envío, fecha de entrega y creación del pedido.
+- `PedidosPublicosController` (`nuevo`, `buscar`, `show`) — pantalla de "pedido recibido" y consulta de un pedido por código sin necesidad de cuenta.
+- `PerfilController` (`show`, `edit`, `update`) — datos propios e historial de pedidos del cliente logueado.
+- `DireccionesController` (`new`, `create`, `edit`, `update`, `destroy`) — CRUD de direcciones del cliente.
+- `Admin::PedidosController` (`index`, `show`, `avanzar_estado`, `cancelar`, `exportar`) — panel de pedidos y export a Excel.
+- `Admin::ProductsController` (`index`, `new`, `create`, `edit`, `update`, `destroy`) — CRUD de productos.
+- `Admin::UsersController` (`index`, `show`, `destroy`) — listado/borrado de clientes.
+- `Admin::BaseController` — controller base del panel admin (exige sesión + rol admin, sin acciones propias, todo el admin hereda de él).
+- `ApplicationController` — controller base de todo el sitio (valida el token de acceso en cada request, desactiva flashes automáticos de Devise, agrega `X-Robots-Tag: noindex`, sin acciones propias).
 
 ## Estado actual (ya implementado)
 
@@ -98,7 +127,7 @@ ahumado artesanal, mientras la formalización legal del negocio está pendiente.
 
 - [x] **Calendario de viernes: cuadrados rojo/verde** (2026-08-17). El calendario del punto anterior distinguía "no es viernes" (texto rojo) de "viernes muy pronto" (texto gris) con solo color de texto. Ahora ambos casos no disponibles se ven como **cuadrado rojo sólido** (mismo rojo que el badge "Cancelado" del sitio, `#f8d7da`/`#842029`) y los viernes disponibles como **cuadrado verde sólido** (mismo verde que los badges "Entregado"/"En preparación", `#d1e7dd`/`#0a3622`) — cada día es un cuadrado (`aspect-ratio: 1/1`) en vez de solo un número con color de texto. Se simplificó a un esquema binario (disponible/no disponible) a pedido explícito, en vez de la distinción de tres colores anterior.
 
-- [x] **Email de la empresa actualizado a `ventasfuyen@gmail.com`** (2026-08-17). Antes era `contacto@fuyen.cl` (fallback de desarrollo en `config/contacto.yml`, clave `BUSINESS_EMAIL`). Se usa en un solo lugar del sitio: el footer ("Reclamos:", `app/views/layouts/application.html.erb`). Verificado que el footer ya muestra el nuevo email. **No se tocaron** los emails de prueba `admin@fuyen.cl` / `cliente@fuyen.cl` (son credenciales de login de seed, no el email de contacto del negocio).
+- [x] **Email de la empresa actualizado a `ventasfuyen@gmail.com`** (2026-08-17). Antes era `contacto@fuyen.cl` (fallback de desarrollo en `config/contacto.yml`, clave `BUSINESS_EMAIL`). Se usa en un solo lugar del sitio: el footer ("Reclamos:", `app/views/layouts/application.html.erb`). Verificado que el footer ya muestra el nuevo email.
 
 ## Pendiente
 
@@ -114,18 +143,3 @@ ahumado artesanal, mientras la formalización legal del negocio está pendiente.
 - [ ] Link a Instagram en el footer (hoy el footer tiene "Instagram: @fuyen" como texto plano, no como link)
 - [ ] Checkout: el formulario de datos de envío deja editar la dirección como texto libre prellenado desde la dirección principal, pero todavía no deja **elegir entre varias direcciones guardadas** con un selector (si el cliente tiene más de una)
 - [ ] Variantes/miniaturas de fotos de producto (hoy se sirve la imagen original sin redimensionar; no bloqueante, solo rendimiento)
-
-## Decisiones técnicas pendientes de confirmar con Joaquín
-
-- Proveedor de envío de email transaccional (SMTP a definir). **Importante:** no usar
-  una cuenta de Gmail/webmail personal — riesgo de límite diario, marcado como spam,
-  o suspensión de la cuenta por patrón de envío automatizado. Usar un proveedor
-  transaccional con free tier sin tarjeta de crédito (ej. Resend), mismo criterio que
-  se usó para descartar Mapbox y Cloudinary.
-- Sumar **pago online directo (ej. Mercado Pago Checkout Pro)** como alternativa a la
-  transferencia bancaria manual actual. Permitiría al cliente pagar con tarjeta/otros
-  medios desde el checkout y confirmaría el pago automáticamente (webhook), sin que
-  Joaquín tenga que revisar la transferencia a mano. Falta definir: crear cuenta de
-  Mercado Pago del negocio, obtener credenciales de producción, y decidir si convive
-  con la transferencia bancaria (como opción adicional) o la reemplaza. Costo: cobra
-  comisión por transacción (a diferencia de la transferencia, que no tiene costo).
