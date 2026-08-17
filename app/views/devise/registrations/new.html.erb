@@ -1,0 +1,52 @@
+<div class="auth-card">
+  <h1>Bienvenido a la familia Fuyén</h1>
+
+  <% resource.direcciones.build(etiqueta: "Principal") if resource.direcciones.empty? %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div class="form-row">
+      <div class="form-group">
+        <%= f.label :nombre, "Nombre" %>
+        <%= f.text_field :nombre, autofocus: true, required: true %>
+      </div>
+      <div class="form-group">
+        <%= f.label :apellido, "Apellido" %>
+        <%= f.text_field :apellido, required: true %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :email, "Email" %>
+      <%= f.email_field :email, autocomplete: "email" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :telefono, "Teléfono" %>
+      <%= f.telephone_field :telefono, placeholder: "+56 9 XXXX XXXX" %>
+    </div>
+
+    <%= f.fields_for :direcciones do |af| %>
+      <%= render "direcciones/fields", f: af %>
+    <% end %>
+
+    <div class="form-row">
+      <div class="form-group">
+        <%= f.label :password, "Contraseña" %>
+        <small class="field-hint">Mínimo <%= @minimum_password_length %> caracteres</small>
+        <%= f.password_field :password, autocomplete: "new-password" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :password_confirmation, "Confirmar contraseña" %>
+        <small class="field-hint">&nbsp;</small>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+      </div>
+    </div>
+
+    <%= f.submit "Crear cuenta", class: "btn btn-primary auth-submit" %>
+  <% end %>
+
+  <p class="auth-alt">
+    ¿Ya tienes cuenta? <%= link_to "Inicia sesión aquí", new_session_path(resource_name) %>
+  </p>
+</div>

@@ -1,0 +1,9 @@
+default: &default
+  whatsapp: <%= ENV.fetch("WHATSAPP_BUSINESS_NUMBER", "56981668075") %>
+  email: <%= ENV.fetch("BUSINESS_EMAIL", "ventasfuyen@gmail.com") %>
+
+development:
+  <<: *default
+
+production:
+  <<: *default

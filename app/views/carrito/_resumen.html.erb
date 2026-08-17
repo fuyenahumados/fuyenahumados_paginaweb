@@ -1,0 +1,34 @@
+<div class="carrito-resumen-card" id="carrito-resumen">
+  <h2>Resumen de compra</h2>
+
+  <div class="carrito-resumen-fila">
+    <span>Costo de productos</span>
+    <span><%= formato_pesos(carrito_total) %></span>
+  </div>
+  <div class="carrito-resumen-fila">
+    <span>Despacho</span>
+    <span>Viernes</span>
+  </div>
+  <div class="carrito-resumen-fila">
+    <span>Envío</span>
+    <span>
+      <% if carrito_envio.zero? %>
+        <span class="envio-gratis">Gratis</span>
+      <% else %>
+        <%= formato_pesos(carrito_envio) %>
+      <% end %>
+    </span>
+  </div>
+  <% if carrito_envio.positive? %>
+    <p class="carrito-resumen-envio-nota">
+      Envío gratis en compras desde <%= formato_pesos(CostoEnvio::GRATIS_DESDE) %>.
+    </p>
+  <% end %>
+  <div class="carrito-resumen-fila carrito-resumen-total">
+    <span>Total</span>
+    <span><%= formato_pesos(carrito_gran_total) %></span>
+  </div>
+
+  <%= link_to "Completar datos de envío →", checkout_path, class: "btn btn-ocean carrito-resumen-boton", data: { turbo_frame: "_top" } %>
+  <%= link_to "← Seguir comprando", productos_path, class: "carrito-resumen-seguir", data: { turbo_frame: "_top" } %>
+</div>

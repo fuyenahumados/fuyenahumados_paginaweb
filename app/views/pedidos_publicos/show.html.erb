@@ -1,0 +1,17 @@
+<div class="admin-header">
+  <h1><%= @pedido.codigo_pedido %></h1>
+  <%= estado_badge(@pedido.estado) %>
+</div>
+
+<p>Gracias <strong><%= @pedido.nombre_completo_contacto %></strong>. Este es el estado de tu pedido.</p>
+
+<%= render "pedidos/whatsapp_cta", pedido: @pedido %>
+<%= render "pedidos/items", pedido: @pedido %>
+
+<p style="margin-bottom: 1.5rem;">
+  <strong>Día de entrega:</strong> viernes <%= @pedido.fecha_entrega.strftime("%d/%m/%Y") %> (los despachos son solo los viernes)<br>
+  <strong>Dirección de entrega:</strong> <%= @pedido.direccion_calle %>, <%= @pedido.direccion_comuna %>
+  <% if @pedido.notas.present? %><br><strong>Instrucciones de entrega:</strong> <%= @pedido.notas %><% end %>
+</p>
+
+<%= link_to "← Volver al catálogo", productos_path, class: "btn btn-secondary" %>

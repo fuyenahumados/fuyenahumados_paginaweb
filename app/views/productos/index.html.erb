@@ -1,0 +1,72 @@
+<% content_for :fluid, true %>
+<% content_for :show_footer, true %>
+
+<div class="catalogo-hero">
+  <div class="catalogo-hero-inner">
+    <div class="catalogo-hero-breadcrumb" role="navigation" aria-label="breadcrumb">
+      <%= link_to "Inicio", root_path %>
+      <span class="separador">›</span>
+      <span aria-current="page">Nuestros productos</span>
+    </div>
+    <h1 class="catalogo-hero-titulo">Nuestros productos</h1>
+    <p class="catalogo-hero-subtitulo">Salmón ahumado artesanal del sur de Chile</p>
+  </div>
+</div>
+
+<div class="catalogo-page">
+<div class="catalogo-layout">
+  <%= form_with url: productos_path, method: :get, data: { turbo_frame: "productos-grid", controller: "filtros" }, class: "catalogo-filtros" do |f| %>
+    <h2 class="filtros-titulo">Filtros</h2>
+
+    <div class="filtro-grupo">
+      <h3>Ordenar por</h3>
+      <%= f.select :orden,
+            [["Posición", ""], ["Precio: menor a mayor", "precio_asc"], ["Precio: mayor a menor", "precio_desc"], ["Nombre", "nombre"]],
+            { selected: params[:orden] },
+            { id: "orden", data: { action: "change->filtros#aplicar" } } %>
+    </div>
+
+    <div class="filtro-grupo">
+      <h3>Precio</h3>
+      <label class="filtro-check">
+        <%= radio_button_tag :precio_rango, "", params[:precio_rango].blank?, data: { action: "change->filtros#aplicar" } %>
+        Todos
+      </label>
+      <% ProductosController::RANGOS_PRECIO.each do |valor, label| %>
+        <label class="filtro-check">
+          <%= radio_button_tag :precio_rango, valor, params[:precio_rango] == valor, data: { action: "change->filtros#aplicar" } %>
+          <%= label %>
+        </label>
+      <% end %>
+    </div>
+
+    <div class="filtro-grupo">
+      <h3>Categoría</h3>
+      <label class="filtro-check">
+        <%= radio_button_tag :categoria, "", params[:categoria].blank?, data: { action: "change->filtros#aplicar" } %>
+        Todas
+      </label>
+      <% Product.categorias.keys.each do |cat| %>
+        <label class="filtro-check">
+          <%= radio_button_tag :categoria, cat, params[:categoria] == cat, data: { action: "change->filtros#aplicar" } %>
+          <%= categoria_label(cat) %>
+        </label>
+      <% end %>
+    </div>
+
+    <button type="submit" class="btn btn-ocean btn-sm">Aplicar filtros</button>
+  <% end %>
+
+  <div class="catalogo-contenido">
+    <%= turbo_frame_tag "productos-grid" do %>
+      <% if @products.empty? %>
+        <p class="empty-state">No hay productos que coincidan con los filtros.</p>
+      <% else %>
+        <div class="productos-grid">
+          <%= render partial: "productos/card", collection: @products, as: :product %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+</div>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin — Fuyén</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="admin-body">
+    <nav class="admin-nav">
+      <div class="nav-left">
+        <span class="admin-nav-logo">FUYÉN <span class="admin-tag">Administrador</span></span>
+      </div>
+      <div class="nav-center">
+        <%= link_to "Pedidos", admin_pedidos_path, class: ("active" if controller_path == "admin/pedidos") %>
+        <%= link_to "Productos", admin_products_path, class: ("active" if controller_path == "admin/products") %>
+        <%= link_to "Usuarios", admin_users_path, class: ("active" if controller_path == "admin/users") %>
+      </div>
+      <div class="nav-right">
+        <%= link_to "Página Web", root_path, target: "_blank", class: "admin-nav-site" %>
+        <%= button_to "Salir", destroy_user_session_path, method: :delete, class: "nav-salir" %>
+      </div>
+    </nav>
+
+    <% if notice.present? %>
+      <div class="flash notice"><%= notice %></div>
+    <% end %>
+    <% if alert.present? %>
+      <div class="flash alert"><%= alert %></div>
+    <% end %>
+
+    <div class="container">
+      <%= yield %>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,55 @@
+<div class="admin-header">
+  <h1>Pedidos</h1>
+</div>
+
+<%= form_with url: exportar_admin_pedidos_path, method: :get, data: { turbo: false }, class: "exportar-excel-form" do %>
+  <label for="fecha_despacho">Fecha de despacho</label>
+  <%= render "shared/selector_viernes",
+        name: "fecha_despacho",
+        id: "fecha_despacho",
+        value: @proximo_despacho.iso8601,
+        min: nil %>
+  <%= submit_tag "Descargar Excel de despacho", class: "btn btn-ocean btn-sm" %>
+  <p style="color:#888; font-size:0.85rem; margin:0.25rem 0 0;">
+    Descarga solo los pedidos cuya fecha de entrega es la elegida.
+  </p>
+<% end %>
+
+<% if @pedidos.empty? %>
+  <p class="empty-state">No hay pedidos aún.</p>
+<% else %>
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Cliente</th>
+        <th>Fecha</th>
+        <th>Entrega</th>
+        <th>Items</th>
+        <th>Total</th>
+        <th>Estado</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @pedidos.each do |pedido| %>
+        <tr>
+          <td><%= pedido.codigo_pedido %></td>
+          <td>
+            <% if pedido.user.present? %>
+              <%= link_to pedido.user.nombre_completo, admin_user_path(pedido.user) %>
+            <% else %>
+              <%= pedido.nombre_completo_contacto %> <span style="color:#888;">(invitado)</span>
+            <% end %>
+          </td>
+          <td><%= pedido.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+          <td><%= pedido.fecha_entrega.strftime("%d/%m/%Y") %></td>
+          <td class="text-center"><%= pedido.order_items.size %></td>
+          <td><%= formato_pesos(pedido.total) %></td>
+          <td><%= estado_badge(pedido.estado) %></td>
+          <td><%= link_to "Ver Pedido", admin_pedido_path(pedido) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

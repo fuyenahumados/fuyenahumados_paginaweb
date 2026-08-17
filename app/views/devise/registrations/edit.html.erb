@@ -1,0 +1,51 @@
+<div class="auth-card">
+  <h1>Cambiar email o contraseña</h1>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div class="form-group">
+      <%= f.label :email, "Email" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+    </div>
+
+    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+      <p class="field-hint">Esperando confirmación para: <%= resource.unconfirmed_email %></p>
+    <% end %>
+
+    <div class="form-row">
+      <div class="form-group">
+        <%= f.label :password, "Nueva contraseña" %>
+        <small class="field-hint">Déjalo en blanco para no cambiarla</small>
+        <%= f.password_field :password, autocomplete: "new-password" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :password_confirmation, "Confirmar nueva contraseña" %>
+        <small class="field-hint">&nbsp;</small>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+      </div>
+    </div>
+    <% if @minimum_password_length %>
+      <p class="field-hint" style="margin-top: -0.75rem; margin-bottom: 1rem;">Mínimo <%= @minimum_password_length %> caracteres.</p>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.label :current_password, "Contraseña actual" %>
+      <small class="field-hint">La necesitamos para confirmar estos cambios</small>
+      <%= f.password_field :current_password, autocomplete: "current-password" %>
+    </div>
+
+    <%= f.submit "Guardar cambios", class: "btn btn-primary auth-submit" %>
+  <% end %>
+
+  <p class="auth-alt">
+    <%= link_to "← Volver a mi perfil", perfil_path %>
+  </p>
+
+  <p class="auth-alt">
+    <%= button_to "Eliminar mi cuenta", registration_path(resource_name),
+          method: :delete,
+          class: "btn-link-danger",
+          data: { turbo_confirm: "¿Seguro que quieres eliminar tu cuenta? Esta acción no se puede deshacer." } %>
+  </p>
+</div>

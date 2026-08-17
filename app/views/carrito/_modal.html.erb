@@ -1,0 +1,64 @@
+<div class="modal-carrito-overlay"
+     data-controller="modal-carrito"
+     data-action="click->modal-carrito#cerrarSiOverlay keydown@window->modal-carrito#cerrarConEscape">
+  <div class="modal-carrito">
+    <div class="modal-carrito-header">
+      <h2>Producto añadido al carrito</h2>
+      <button type="button" class="modal-carrito-cerrar" data-action="modal-carrito#cerrar" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-carrito-body">
+      <div class="modal-carrito-producto">
+        <% if product.foto_url.present? %>
+          <%= image_tag product.foto_url, alt: product.nombre, class: "modal-carrito-foto" %>
+        <% else %>
+          <div class="modal-carrito-foto modal-carrito-foto-vacia"></div>
+        <% end %>
+        <div>
+          <p class="modal-carrito-producto-nombre"><%= product.nombre %></p>
+          <p class="modal-carrito-producto-precio"><%= formato_pesos(product.precio) %> c/u</p>
+          <p class="modal-carrito-producto-cantidad">Cantidad agregada: <%= cantidad_agregada %></p>
+        </div>
+      </div>
+
+      <div class="modal-carrito-resumen">
+        <h3>Resumen del carrito</h3>
+        <div class="modal-carrito-resumen-fila">
+          <span>Artículos</span>
+          <span><%= carrito_count %></span>
+        </div>
+        <div class="modal-carrito-resumen-fila">
+          <span>Subtotal</span>
+          <span><%= formato_pesos(carrito_total) %></span>
+        </div>
+        <div class="modal-carrito-resumen-fila">
+          <span>Despacho</span>
+          <span>Viernes</span>
+        </div>
+        <div class="modal-carrito-resumen-fila">
+          <span>Envío</span>
+          <span>
+            <% if carrito_envio.zero? %>
+              <span class="envio-gratis">Gratis</span>
+            <% else %>
+              <%= formato_pesos(carrito_envio) %>
+            <% end %>
+          </span>
+        </div>
+        <div class="modal-carrito-resumen-fila modal-carrito-resumen-total">
+          <span>Total</span>
+          <span><%= formato_pesos(carrito_gran_total) %></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-carrito-acciones">
+      <button type="button" class="btn btn-secondary" data-action="modal-carrito#cerrar">Seguir comprando</button>
+      <%= link_to "Ver carrito", carrito_path, class: "btn btn-ocean" %>
+    </div>
+  </div>
+</div>

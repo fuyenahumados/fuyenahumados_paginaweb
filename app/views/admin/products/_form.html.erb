@@ -1,0 +1,65 @@
+<%= form_with model: [:admin, product], class: "form-admin" do |f| %>
+  <% if product.errors.any? %>
+    <div class="flash alert">
+      <% product.errors.full_messages.each do |msg| %>
+        <div><%= msg %></div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :nombre, "Nombre" %>
+    <%= f.text_field :nombre %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :peso_descripcion, "Peso / descripción corta (ej: ~400g)" %>
+    <%= f.text_field :peso_descripcion %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :categoria, "Categoría" %>
+    <%= f.select :categoria, Product.categorias.keys.map { |c| [categoria_label(c), c] } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :descripcion, "Descripción" %>
+    <%= f.text_area :descripcion, rows: 3 %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :foto_filename, "Archivo de foto" %>
+    <% if product.foto_url.present? %>
+      <div class="foto-actual">
+        <%= image_tag product.foto_url, class: "foto-preview" %>
+      </div>
+    <% end %>
+    <%= f.text_field :foto_filename, placeholder: "ej: salmon-pieza-pequena.jpg" %>
+    <small class="field-hint">
+      La foto no se sube desde acá: copiá el archivo a <code>public/docs/productos/</code>
+      en el repo, deployá, y escribí acá el nombre exacto del archivo (.jpg, .jpeg, .png o .webp).
+    </small>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :precio, "Precio ($)" %>
+      <%= f.number_field :precio, min: 0, step: 100 %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :stock, "Stock (unidades)" %>
+      <%= f.number_field :stock, min: 0 %>
+    </div>
+  </div>
+
+  <div class="form-group form-check">
+    <%= f.check_box :activo %>
+    <%= f.label :activo, "Producto activo (visible en catálogo)" %>
+  </div>
+
+  <div class="acciones">
+    <%= f.submit product.new_record? ? "Crear producto" : "Guardar cambios", class: "btn btn-primary" %>
+    <%= link_to "Cancelar", admin_products_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

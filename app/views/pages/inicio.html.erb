@@ -1,0 +1,41 @@
+<% content_for :fluid, true %>
+<% content_for :show_footer, true %>
+
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Artesanal · Patagonia</p>
+    <h1 class="hero-titulo">FUYÉN</h1>
+    <p class="hero-subtitulo">Ahumado lento,<br>entregado fresco.</p>
+    <%= link_to "Explorar productos", productos_path, class: "btn btn-gold" %>
+  </div>
+</section>
+
+<section class="seccion seccion-clara">
+  <div class="seccion-inner">
+    <h2 class="seccion-titulo">Nuestros productos</h2>
+    <p class="seccion-subtitulo">Piezas elaboradas artesanalmente, una a una.</p>
+
+    <% if @productos.any? %>
+      <div class="productos-grid">
+        <%= render partial: "productos/card", collection: @productos, as: :product %>
+      </div>
+      <div class="seccion-cta">
+        <%= link_to "Ver todos los productos →", productos_path, class: "btn btn-secondary" %>
+      </div>
+    <% else %>
+      <p class="empty-state">Productos próximamente.</p>
+    <% end %>
+  </div>
+</section>
+
+<section class="seccion seccion-oscura">
+  <div class="seccion-inner seccion-inner--centrada">
+    <h2 class="seccion-titulo seccion-titulo--claro">Quiénes somos</h2>
+    <p class="seccion-texto seccion-texto--claro">
+      Fuyén nació de la pasión por los sabores del sur. Somos una pequeña empresa familiar
+      dedicada a elaborar salmón ahumado artesanalmente, respetando los tiempos y las tradiciones
+      de la Patagonia chilena. Cada pieza es cuidada desde el origen hasta tu mesa.
+    </p>
+    <%= link_to "Conocer nuestra historia →", nosotros_path, class: "btn btn-gold-outline" %>
+  </div>
+</section>

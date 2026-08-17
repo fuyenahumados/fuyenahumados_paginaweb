@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Fuyén — Salmón Ahumado Artesanal</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "leaflet", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <nav>
+      <div class="nav-left">
+        <a href="<%= root_path %>" class="logo">FUYÉN</a>
+      </div>
+      <div class="nav-center">
+        <%= link_to "Nuestros productos", productos_path, class: ("active" if current_page?(productos_path)) %>
+        <%= link_to "Nosotros", nosotros_path, class: ("active" if current_page?(nosotros_path)) %>
+      </div>
+      <div class="nav-right">
+        <% unless user_signed_in? && current_user.admin? %>
+          <%= render "shared/nav_carrito" %>
+        <% end %>
+        <% if user_signed_in? %>
+          <% if current_user.admin? %>
+            <a href="<%= admin_root_path %>">Admin</a>
+          <% else %>
+            <%= link_to perfil_path, class: "nav-perfil", title: "Mi perfil" do %>
+              <svg class="icon-perfil" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+              <span class="nav-nombre"><%= current_user.nombre %></span>
+            <% end %>
+          <% end %>
+          <%= button_to "Salir", destroy_user_session_path, method: :delete, class: "nav-salir" %>
+        <% else %>
+          <a href="<%= new_user_session_path %>">Iniciar sesión</a>
+        <% end %>
+      </div>
+    </nav>
+
+    <% if notice.present? %>
+      <div class="flash notice"><%= notice %></div>
+    <% end %>
+    <% if alert.present? %>
+      <div class="flash alert"><%= alert %></div>
+    <% end %>
+
+    <main class="site-main">
+      <% if content_for?(:fluid) %>
+        <%= yield %>
+      <% else %>
+        <div class="container">
+          <%= yield %>
+        </div>
+      <% end %>
+    </main>
+
+    <% if content_for?(:show_footer) %>
+      <footer>
+        <div class="footer-inner">
+          <div class="footer-col">
+            <span class="footer-logo">FUYÉN</span>
+            <p>Salmón ahumado artesanal<br>del sur de Chile</p>
+          </div>
+          <div class="footer-col">
+            <h4>Navegación</h4>
+            <ul>
+              <li><%= link_to "Inicio", root_path %></li>
+              <li><%= link_to "Nuestros productos", productos_path %></li>
+              <li><%= link_to "Nosotros", nosotros_path %></li>
+              <li><%= link_to "Consultar mi pedido", nuevo_pedido_publico_path %></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Contacto</h4>
+            <p>WhatsApp: <%= link_to "+#{CONTACTO[:whatsapp]}", "https://wa.me/#{CONTACTO[:whatsapp]}", target: "_blank" %></p>
+            <p>Instagram: @fuyen</p>
+            <p>Reclamos: <%= mail_to CONTACTO[:email] %></p>
+          </div>
+        </div>
+        <div class="footer-copy">
+          <p>© <%= Date.current.year %> Fuyén. Todos los derechos reservados.</p>
+        </div>
+      </footer>
+    <% end %>
+
+    <div id="modal-carrito"></div>
+  </body>
+</html>

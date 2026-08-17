@@ -1,0 +1,109 @@
+<h1>Datos de envío</h1>
+
+<h2>Resumen</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Producto</th>
+      <th>Cantidad</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% carrito_items.each do |item| %>
+      <tr>
+        <td>
+          <%= item[:product].nombre %>
+          <% if item[:product].peso_descripcion.present? %>
+            <br><small style="color:#888"><%= item[:product].peso_descripcion %></small>
+          <% end %>
+        </td>
+        <td><%= item[:cantidad] %></td>
+        <td><%= number_to_currency(item[:subtotal], unit: "$", separator: ",", delimiter: ".", precision: 0) %></td>
+      </tr>
+    <% end %>
+    <tr>
+      <td colspan="2">Envío</td>
+      <td>
+        <% if carrito_envio.zero? %>
+          <span class="envio-gratis">Gratis</span>
+        <% else %>
+          <%= number_to_currency(carrito_envio, unit: "$", separator: ",", delimiter: ".", precision: 0) %>
+        <% end %>
+      </td>
+    </tr>
+    <tr class="total-row">
+      <td colspan="2">Total a transferir</td>
+      <td><%= number_to_currency(carrito_gran_total, unit: "$", separator: ",", delimiter: ".", precision: 0) %></td>
+    </tr>
+  </tbody>
+</table>
+<% if carrito_envio.positive? %>
+  <p style="color:#888; font-size:0.85rem; margin: -1rem 0 1.5rem;">
+    Envío gratis en compras desde <%= number_to_currency(CostoEnvio::GRATIS_DESDE, unit: "$", separator: ",", delimiter: ".", precision: 0) %>.
+  </p>
+<% end %>
+
+<%= form_with model: @order, url: checkout_path, method: :post do |f| %>
+  <% if @order.errors.any? %>
+    <div class="form-errores">
+      <ul>
+        <% @order.errors.full_messages.each do |mensaje| %>
+          <li><%= mensaje %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-grid-2">
+    <div class="form-group">
+      <%= f.label :nombre_contacto, "Nombre" %>
+      <%= f.text_field :nombre_contacto %>
+    </div>
+    <div class="form-group">
+      <%= f.label :apellido_contacto, "Apellido" %>
+      <%= f.text_field :apellido_contacto %>
+    </div>
+  </div>
+
+  <div class="form-grid-2">
+    <div class="form-group">
+      <%= f.label :telefono_contacto, "Teléfono" %>
+      <%= f.text_field :telefono_contacto %>
+    </div>
+    <div class="form-group">
+      <%= f.label :email_contacto, "Email" %>
+      <%= f.email_field :email_contacto %>
+    </div>
+  </div>
+
+  <div class="form-grid-2">
+    <div class="form-group">
+      <%= f.label :direccion_calle, "Calle y número" %>
+      <%= f.text_field :direccion_calle %>
+    </div>
+    <div class="form-group">
+      <%= f.label :direccion_comuna, "Comuna" %>
+      <%= f.select :direccion_comuna, Direccion::COMUNAS, prompt: "Selecciona una comuna" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :fecha_entrega, "Fecha de entrega" %>
+    <%= render "shared/selector_viernes",
+          name: "order[fecha_entrega]",
+          id: "order_fecha_entrega",
+          value: @order.fecha_entrega&.iso8601,
+          min: Order.proximo_viernes_habil.iso8601 %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :notas, "Instrucciones de entrega (opcional)" %>
+    <%= f.text_area :notas, rows: 3, placeholder: "Ej: dejar en conserjería, timbre 2, etc." %>
+  </div>
+
+  <div class="acciones">
+    <%= link_to "← Volver al carrito", carrito_path, class: "btn btn-secondary" %>
+    <%= f.submit "Confirmar pedido →", class: "btn btn-primary" %>
+  </div>
+<% end %>

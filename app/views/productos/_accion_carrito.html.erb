@@ -1,0 +1,16 @@
+<div id="producto-accion-<%= product.id %>" class="producto-accion">
+  <% cantidad = carrito_cantidad(product) %>
+  <% if cantidad > 0 %>
+    <%= form_with url: actualizar_carrito_path, method: :patch, class: "producto-stepper" do |f| %>
+      <%= f.hidden_field :product_id, value: product.id %>
+      <button type="submit" name="cantidad" value="<%= cantidad - 1 %>" class="stepper-btn" aria-label="Restar">−</button>
+      <span class="stepper-cantidad"><%= cantidad %></span>
+      <button type="submit" name="cantidad" value="<%= cantidad + 1 %>" class="stepper-btn" aria-label="Sumar" <%= "disabled" if cantidad >= product.stock %>>+</button>
+    <% end %>
+  <% else %>
+    <%= form_with url: agregar_carrito_path, method: :post do |f| %>
+      <%= f.hidden_field :product_id, value: product.id %>
+      <%= f.submit "Agregar al carrito", class: "btn btn-primary producto-agregar-btn" %>
+    <% end %>
+  <% end %>
+</div>

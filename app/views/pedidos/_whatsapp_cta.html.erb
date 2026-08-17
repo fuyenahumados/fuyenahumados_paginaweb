@@ -1,0 +1,11 @@
+<% if pedido.pendiente_pago? %>
+  <div class="whatsapp-cta">
+    <h2>Último paso: confirma por WhatsApp</h2>
+    <p>Envíanos tu pedido por WhatsApp y te pasamos los datos para transferir.</p>
+    <a href="<%= WhatsappOrderMessageService.new(pedido).url %>"
+       target="_blank"
+       class="btn btn-whatsapp btn-whatsapp-grande">
+      Confirmar pedido por WhatsApp
+    </a>
+  </div>
+<% end %>

@@ -1,0 +1,44 @@
+<div class="admin-header">
+  <h1>Productos</h1>
+  <%= link_to "+ Nuevo producto", new_admin_product_path, class: "btn btn-primary" %>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>Nombre</th>
+      <th>Peso / descripción</th>
+      <th class="text-right">Precio</th>
+      <th class="text-center">Stock</th>
+      <th class="text-center">Activo</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @products.each do |product| %>
+      <tr class="<%= 'row-inactivo' unless product.activo? %>">
+        <td>
+          <% if product.foto_url.present? %>
+            <%= image_tag product.foto_url, class: "foto-miniatura", alt: product.nombre %>
+          <% else %>
+            <div class="foto-miniatura foto-miniatura-vacia"></div>
+          <% end %>
+        </td>
+        <td><strong><%= product.nombre %></strong></td>
+        <td><%= product.peso_descripcion %></td>
+        <td class="text-right"><%= formato_pesos(product.precio) %></td>
+        <td class="text-center <%= 'stock-bajo' if product.stock <= 5 %>"><%= product.stock %></td>
+        <td class="text-center"><%= product.activo? ? "✓" : "—" %></td>
+        <td class="acciones-fila">
+          <%= link_to "Editar", edit_admin_product_path(product) %>
+          <%= button_to "Eliminar",
+                admin_product_path(product),
+                method: :delete,
+                class: "btn-link-danger",
+                data: { turbo_confirm: "¿Eliminar #{product.nombre}? Esta acción no se puede deshacer." } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

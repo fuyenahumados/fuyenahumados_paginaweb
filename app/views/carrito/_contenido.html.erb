@@ -1,0 +1,16 @@
+<% if carrito_items.empty? %>
+  <p>Tu carrito está vacío.</p>
+  <%= link_to "Ver productos", productos_path, class: "btn btn-primary", data: { turbo_frame: "_top" } %>
+<% else %>
+  <div class="carrito-layout">
+    <div class="carrito-items">
+      <%= render partial: "carrito/item", collection: carrito_items, as: :item %>
+    </div>
+
+    <%= render "carrito/resumen" %>
+  </div>
+
+  <p class="carrito-nota-peso">
+    Los pesos son aproximados y pueden variar según el corte. El precio es fijo por pieza.
+  </p>
+<% end %>

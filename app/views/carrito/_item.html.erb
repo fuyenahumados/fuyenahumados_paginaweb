@@ -1,0 +1,35 @@
+<div class="carrito-item" id="carrito-item-<%= item[:product].id %>">
+  <div class="carrito-item-foto">
+    <% if item[:product].foto_url.present? %>
+      <%= image_tag item[:product].foto_url, alt: item[:product].nombre %>
+    <% else %>
+      <div class="producto-foto-placeholder"></div>
+    <% end %>
+  </div>
+
+  <div class="carrito-item-info">
+    <p class="carrito-item-nombre"><%= item[:product].nombre %></p>
+    <p class="carrito-item-peso"><%= item[:product].peso_descripcion %></p>
+    <p class="carrito-item-precio-unit"><%= formato_pesos(item[:product].precio) %> c/u</p>
+  </div>
+
+  <%= form_with url: actualizar_carrito_path, method: :patch, class: "producto-stepper carrito-item-stepper" do |f| %>
+    <%= f.hidden_field :product_id, value: item[:product].id %>
+    <%= f.hidden_field :origen, value: "carrito" %>
+    <button type="submit" name="cantidad" value="<%= item[:cantidad] - 1 %>" class="stepper-btn" aria-label="Restar">−</button>
+    <span class="stepper-cantidad"><%= item[:cantidad] %></span>
+    <button type="submit" name="cantidad" value="<%= item[:cantidad] + 1 %>" class="stepper-btn" aria-label="Sumar" <%= "disabled" if item[:cantidad] >= item[:product].stock %>>+</button>
+  <% end %>
+
+  <p class="carrito-item-subtotal"><%= formato_pesos(item[:subtotal]) %></p>
+
+  <%= button_to quitar_carrito_path,
+        params: { product_id: item[:product].id },
+        method: :delete,
+        class: "carrito-item-quitar",
+        aria: { label: "Quitar #{item[:product].nombre}" } do %>
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 7h16M9 7V4.8c0-.44.36-.8.8-.8h4.4c.44 0 .8.36.8.8V7m-8 0 .7 12.2a1.6 1.6 0 0 0 1.6 1.5h5.4a1.6 1.6 0 0 0 1.6-1.5L17 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  <% end %>
+</div>

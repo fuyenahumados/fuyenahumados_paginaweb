@@ -1,0 +1,27 @@
+<%= link_to "← Volver a mi perfil", perfil_path %>
+
+<h1 style="margin-top: 1.5rem;">Nueva dirección</h1>
+
+<%= form_with model: @direccion, class: "form-admin" do |f| %>
+  <% if @direccion.errors.any? %>
+    <div class="flash alert">
+      <% @direccion.errors.full_messages.each do |msg| %>
+        <div><%= msg %></div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= render "fields", f: f %>
+
+  <% if current_user.direcciones.any? %>
+    <div class="form-group form-check">
+      <%= f.check_box :principal %>
+      <%= f.label :principal, "Usar como dirección principal" %>
+    </div>
+  <% end %>
+
+  <div class="acciones">
+    <%= f.submit "Agregar dirección", class: "btn btn-primary" %>
+    <%= link_to "Cancelar", perfil_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

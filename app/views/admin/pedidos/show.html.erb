@@ -1,0 +1,93 @@
+<%= link_to "← Todos los pedidos", admin_pedidos_path %>
+
+<div class="admin-header" style="margin-top: 1.5rem;">
+  <h1><%= @pedido.codigo_pedido %></h1>
+  <%= estado_badge(@pedido.estado) %>
+</div>
+
+<div class="admin-grid">
+  <div class="admin-card">
+    <h2>Cliente</h2>
+    <% if @pedido.user.present? %>
+      <dl>
+        <dt>Nombre</dt>   <dd><%= link_to @pedido.user.nombre_completo, admin_user_path(@pedido.user) %></dd>
+        <dt>Email</dt>    <dd><%= @pedido.user.email %></dd>
+      </dl>
+    <% else %>
+      <p style="color:#888; font-size:0.85rem; margin-bottom:0.75rem;">Pedido de invitado — sin cuenta.</p>
+      <dl>
+        <dt>Nombre</dt> <dd><%= @pedido.nombre_completo_contacto %></dd>
+        <dt>Email</dt>  <dd><%= @pedido.email_contacto %></dd>
+      </dl>
+    <% end %>
+  </div>
+
+  <div class="admin-card">
+    <h2>Datos de entrega</h2>
+    <% if @pedido.nombre_contacto.present? %>
+      <dl>
+        <dt>Nombre</dt>    <dd><%= @pedido.nombre_completo_contacto %></dd>
+        <dt>Teléfono</dt>  <dd><%= @pedido.telefono_contacto %></dd>
+        <dt>Comuna</dt>    <dd><%= @pedido.direccion_comuna %></dd>
+        <dt>Dirección</dt> <dd><%= @pedido.direccion_calle %></dd>
+      </dl>
+    <% elsif (direccion = @pedido.user.direccion_principal) %>
+      <p style="color:#888; font-size:0.85rem; margin-bottom:0.75rem;">Pedido anterior a los datos de envío por pedido — se muestra la dirección actual del perfil.</p>
+      <dl>
+        <dt>Teléfono</dt>  <dd><%= @pedido.user.telefono %></dd>
+        <dt>Comuna</dt>    <dd><%= direccion.comuna %></dd>
+        <dt>Dirección</dt> <dd><%= direccion.calle %> <span style="color:#888;">(<%= direccion.etiqueta %>)</span></dd>
+      </dl>
+    <% end %>
+  </div>
+
+  <div class="admin-card">
+    <h2>Pedido</h2>
+    <dl>
+      <dt>Fecha</dt>          <dd><%= @pedido.created_at.strftime("%d/%m/%Y a las %H:%M") %></dd>
+      <dt>Día de entrega</dt> <dd>Viernes <%= @pedido.fecha_entrega.strftime("%d/%m/%Y") %></dd>
+      <dt>Envío</dt>          <dd><%= @pedido.envio.zero? ? "Gratis" : formato_pesos(@pedido.envio) %></dd>
+      <dt>Total</dt>          <dd><strong><%= formato_pesos(@pedido.total) %></strong></dd>
+      <% if @pedido.notas.present? %>
+        <dt>Notas</dt> <dd><%= @pedido.notas %></dd>
+      <% end %>
+    </dl>
+  </div>
+</div>
+
+<%= render "pedidos/items", pedido: @pedido %>
+
+<h2 style="margin-top: 2rem;">Historial de estados</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Estado</th>
+      <th>Fecha</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @pedido.order_status_changes.each do |cambio| %>
+      <tr>
+        <td><%= estado_badge(cambio.estado) %></td>
+        <td><%= cambio.created_at.strftime("%d/%m/%Y a las %H:%M") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="acciones">
+  <% if (label = siguiente_accion_label(@pedido.estado)) %>
+    <%= button_to label,
+          avanzar_estado_admin_pedido_path(@pedido),
+          method: :patch,
+          class: "btn btn-primary" %>
+  <% end %>
+
+  <% unless @pedido.entregado? || @pedido.cancelado? %>
+    <%= button_to "Cancelar pedido",
+          cancelar_admin_pedido_path(@pedido),
+          method: :patch,
+          class: "btn btn-danger",
+          data: { turbo_confirm: "¿Seguro que quieres cancelar el pedido #{@pedido.codigo_pedido}?" } %>
+  <% end %>
+</div>

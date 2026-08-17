@@ -1,0 +1,11 @@
+<a href="<%= carrito_path %>" class="nav-carrito" id="nav-carrito">
+  <svg class="icon-carrito" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <circle cx="9" cy="21" r="1.4" stroke="currentColor" stroke-width="1.6"/>
+    <circle cx="18" cy="21" r="1.4" stroke="currentColor" stroke-width="1.6"/>
+    <path d="M1.5 2h2.4l2.2 12.6a1.8 1.8 0 0 0 1.78 1.4h9.3a1.8 1.8 0 0 0 1.77-1.47L21 6.5H5.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  Carrito
+  <% if carrito_count > 0 %>
+    <span class="carrito-badge"><%= carrito_count %></span>
+  <% end %>
+</a>

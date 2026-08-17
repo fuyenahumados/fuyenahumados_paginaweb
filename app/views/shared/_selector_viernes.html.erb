@@ -1,0 +1,26 @@
+<%#
+  Calendario que solo permite seleccionar viernes. El resto de los días se
+  muestran en rojo y no se pueden seleccionar (data-controller="viernes-calendario").
+
+  locals:
+    name  — name del input que se envía en el form (ej: "order[fecha_entrega]")
+    id    — id del input
+    value — fecha ISO (yyyy-mm-dd) ya seleccionada, o nil
+    min   — fecha ISO mínima seleccionable (opcional; los viernes anteriores quedan deshabilitados)
+%>
+<div class="viernes-calendario" data-controller="viernes-calendario" data-viernes-calendario-min-value="<%= min %>">
+  <%= hidden_field_tag name, value, id: id, data: { viernes_calendario_target: "input" } %>
+  <button type="button" class="viernes-calendario-toggle" data-action="viernes-calendario#toggle" data-viernes-calendario-target="display">
+    <%= value.present? ? "Viernes #{Date.parse(value).strftime('%d/%m/%Y')}" : "Selecciona un viernes" %>
+  </button>
+
+  <div class="viernes-calendario-popup" data-viernes-calendario-target="popup">
+    <div class="viernes-calendario-nav">
+      <button type="button" data-action="viernes-calendario#mesAnterior">‹</button>
+      <span data-viernes-calendario-target="label"></span>
+      <button type="button" data-action="viernes-calendario#mesSiguiente">›</button>
+    </div>
+    <div class="viernes-calendario-grid" data-viernes-calendario-target="grid"></div>
+    <p class="viernes-calendario-nota">Los despachos son solo los viernes.</p>
+  </div>
+</div>

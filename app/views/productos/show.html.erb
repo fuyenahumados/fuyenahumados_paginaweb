@@ -1,0 +1,31 @@
+<% content_for :show_footer, true %>
+
+<div class="producto-detalle">
+  <div class="producto-detalle-foto">
+    <% if @product.foto_url.present? %>
+      <%= image_tag @product.foto_url, alt: @product.nombre %>
+    <% else %>
+      <div class="producto-foto-placeholder"></div>
+    <% end %>
+  </div>
+
+  <div class="producto-detalle-info">
+    <%= link_to "← Volver al catálogo", productos_path, class: "producto-detalle-volver" %>
+    <h1 class="producto-detalle-nombre"><%= @product.nombre %></h1>
+    <p class="producto-detalle-precio"><%= formato_pesos(@product.precio) %></p>
+    <p class="producto-detalle-desc"><%= @product.descripcion %></p>
+
+    <%= form_with url: agregar_carrito_path, method: :post do |f| %>
+      <%= f.hidden_field :product_id, value: @product.id %>
+      <%= f.hidden_field :contexto, value: "detalle" %>
+
+      <div class="cantidad-selector" data-controller="cantidad-selector" data-cantidad-selector-max-value="<%= @product.stock %>">
+        <button type="button" class="stepper-btn" data-action="cantidad-selector#restar" aria-label="Restar">−</button>
+        <%= f.number_field :cantidad, value: 1, min: 1, max: @product.stock, data: { "cantidad-selector-target": "input", action: "input->cantidad-selector#corregir" }, class: "cantidad-input" %>
+        <button type="button" class="stepper-btn" data-action="cantidad-selector#sumar" aria-label="Sumar">+</button>
+      </div>
+
+      <%= f.submit "Agregar al carrito", class: "btn btn-ocean producto-detalle-agregar" %>
+    <% end %>
+  </div>
+</div>

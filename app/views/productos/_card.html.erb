@@ -1,0 +1,14 @@
+<div class="producto-card">
+  <div class="producto-foto-wrap">
+    <%= link_to producto_path(product), class: "producto-foto-link", data: { turbo_frame: "_top" } do %>
+      <% if product.foto_url.present? %>
+        <%= image_tag product.foto_url, alt: product.nombre, class: "producto-foto" %>
+      <% else %>
+        <div class="producto-foto producto-foto-placeholder"></div>
+      <% end %>
+    <% end %>
+    <%= render "productos/accion_carrito", product: product %>
+  </div>
+  <%= link_to product.nombre, producto_path(product), class: "producto-nombre", data: { turbo_frame: "_top" } %>
+  <p class="producto-precio"><%= formato_pesos(product.precio) %></p>
+</div>

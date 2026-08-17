@@ -1,0 +1,9 @@
+es:
+  activerecord:
+    attributes:
+      order:
+        nombre_contacto: "Nombre"
+        apellido_contacto: "Apellido"
+        telefono_contacto: "Teléfono"
+        direccion_calle: "Calle y número"
+        direccion_comuna: "Comuna"

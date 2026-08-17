@@ -1,0 +1,10 @@
+<div class="page-header">
+  <h1>Consultar mi pedido</h1>
+  <p class="page-header-desc">Ingresa el código de tu pedido (por ejemplo FUY-A1B2C3) para ver su estado.</p>
+</div>
+
+<%= form_with url: buscar_pedido_publico_path, method: :post, class: "consulta-pedido-form" do %>
+  <%= label_tag :codigo_pedido, "Código de pedido" %>
+  <%= text_field_tag :codigo_pedido, params[:codigo_pedido], placeholder: "FUY-XXXXXX", required: true %>
+  <%= submit_tag "Buscar", class: "btn btn-primary" %>
+<% end %>
