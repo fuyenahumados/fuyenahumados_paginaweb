@@ -249,7 +249,15 @@ Cuando llegue el momento (y no antes), esto implica:
 
 ### Todo lo que falta antes de eso
 
-- [ ] Mejorar vistas (UX y pulido visual) — pulido puntual sobre la paleta ya definida
+- [ ] **Revisión de vistas view-por-view, en este orden** (2026-08-17) — misma auditoría de tipografía/colores/paleta que se hizo en Home (título Fraunces 1.8rem/600/navy, cuerpo Inter 1.2rem/#555, botones 1.05rem/bold/capitalize, ancho de contenedor consistente), aplicada al resto del sitio:
+  1. [x] Quiénes somos — corregido: `.hero-eyebrow` (el texto "Nuestra historia" arriba del título) usaba una clase que no existía en el CSS, salía sin estilo. Se agregó siguiendo el mismo patrón "eyebrow" de las tarjetas de valores de esa página.
+  2. [ ] Carrito
+  3. [ ] Datos de envío (checkout)
+  4. [ ] Pedido confirmado
+  5. [ ] Mi perfil
+  6. [ ] Nuestros productos (catálogo + ficha de cada producto)
+  7. [ ] Consultar pedido
+  8. [ ] Admin: agregar filtro para seleccionar pedidos por fecha en la vista de Pedidos (funcionalidad nueva, no es un tema de estilo)
 - [ ] Fotos reales de producto (contenido real del negocio) — las 2 fotos actuales son de prueba, no las definitivas. Joaquín tiene que sacar fotos más profesionales primero. Subir los archivos a `public/docs/productos/`, commitear, deployar, y cargar el nombre de archivo en cada producto desde el admin. (Las descripciones de texto de los 2 productos existentes ya están escritas — ver `db/seeds.rb`.)
 - [ ] Foto real para el banner del catálogo (hoy `public/docs/banners/catalogo-hero.jpg` es un placeholder, copia de una foto de producto) — reemplazar por una foto ancha (ideal ~1920×600px) del salmón/ahumador/proceso artesanal cuando esté disponible (mismo motivo: fotos profesionales pendientes)
 - [ ] Variantes/miniaturas de fotos de producto (hoy se sirve la imagen original sin redimensionar; no bloqueante, solo rendimiento)

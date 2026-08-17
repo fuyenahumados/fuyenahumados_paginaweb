@@ -330,6 +330,13 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   border-bottom: 1px solid var(--border);
   margin-bottom: 3rem;
 }
+.hero-eyebrow {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ocean);
+  margin-bottom: 0.5rem;
+}
 .nosotros-intro {
   max-width: 600px;
   margin: 1rem auto 0;
