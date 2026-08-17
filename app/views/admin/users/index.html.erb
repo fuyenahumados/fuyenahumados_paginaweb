@@ -24,13 +24,15 @@
           <td><%= usuario.telefono %></td>
           <td><%= usuario.direccion_principal&.comuna || "—" %></td>
           <td class="text-center"><%= usuario.orders.size %></td>
-          <td class="acciones-fila">
-            <%= link_to "Ver Usuario", admin_user_path(usuario) %>
-            <%= button_to "Eliminar",
-                  admin_user_path(usuario),
-                  method: :delete,
-                  class: "btn-link-danger",
-                  data: { turbo_confirm: "¿Eliminar a #{usuario.nombre_completo}? Esta acción no se puede deshacer." } %>
+          <td>
+            <div class="acciones-fila">
+              <%= link_to "Ver Usuario", admin_user_path(usuario) %>
+              <%= button_to "Eliminar",
+                    admin_user_path(usuario),
+                    method: :delete,
+                    class: "btn-link-danger",
+                    data: { turbo_confirm: "¿Eliminar a #{usuario.nombre_completo}? Esta acción no se puede deshacer." } %>
+            </div>
           </td>
         </tr>
       <% end %>

@@ -10,7 +10,7 @@
         value: @proximo_despacho.iso8601,
         min: nil %>
   <%= submit_tag "Descargar Excel de despacho", class: "btn btn-ocean btn-sm" %>
-  <p style="color:#888; font-size:0.85rem; margin:0.25rem 0 0;">
+  <p style="color:#666; font-size:0.85rem; margin:0.25rem 0 0;">
     Descarga solo los pedidos cuya fecha de entrega es la elegida.
   </p>
 <% end %>
@@ -39,7 +39,7 @@
             <% if pedido.user.present? %>
               <%= link_to pedido.user.nombre_completo, admin_user_path(pedido.user) %>
             <% else %>
-              <%= pedido.nombre_completo_contacto %> <span style="color:#888;">(invitado)</span>
+              <%= pedido.nombre_completo_contacto %> <span style="color:#666;">(invitado)</span>
             <% end %>
           </td>
           <td><%= pedido.created_at.strftime("%d/%m/%Y %H:%M") %></td>

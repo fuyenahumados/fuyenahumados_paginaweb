@@ -41,6 +41,13 @@ export default class extends Controller {
     document.removeEventListener("click", this.cerrarAlClickAfuera)
   }
 
+  cerrarConEscape(evento) {
+    if (evento.key === "Escape" && this.popupTarget.classList.contains("abierto")) {
+      this.cerrar()
+      this.displayTarget.focus()
+    }
+  }
+
   mesAnterior(evento) {
     evento.preventDefault()
     this.mesActual = new Date(this.mesActual.getFullYear(), this.mesActual.getMonth() - 1, 1)

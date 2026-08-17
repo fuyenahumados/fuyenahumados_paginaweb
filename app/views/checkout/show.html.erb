@@ -15,7 +15,7 @@
         <td>
           <%= item[:product].nombre %>
           <% if item[:product].peso_descripcion.present? %>
-            <br><small style="color:#888"><%= item[:product].peso_descripcion %></small>
+            <br><small style="color:#666"><%= item[:product].peso_descripcion %></small>
           <% end %>
         </td>
         <td><%= item[:cantidad] %></td>
@@ -39,7 +39,7 @@
   </tbody>
 </table>
 <% if carrito_envio.positive? %>
-  <p style="color:#888; font-size:0.85rem; margin: -1rem 0 1.5rem;">
+  <p style="color:#666; font-size:0.85rem; margin: -1rem 0 1.5rem;">
     Envío gratis en compras desde <%= number_to_currency(CostoEnvio::GRATIS_DESDE, unit: "$", separator: ",", delimiter: ".", precision: 0) %>.
   </p>
 <% end %>
@@ -92,7 +92,7 @@
               <span>
                 <strong><%= direccion.etiqueta %></strong>
                 <% if direccion.principal? %><span class="badge-principal">(Principal)</span><% end %>
-                <br><small style="color:#888;"><%= direccion.calle %>, <%= direccion.comuna %></small>
+                <br><small style="color:#666;"><%= direccion.calle %>, <%= direccion.comuna %></small>
               </span>
             </label>
           <% end %>

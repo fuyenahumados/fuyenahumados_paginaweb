@@ -30,13 +30,15 @@
         <td class="text-right"><%= formato_pesos(product.precio) %></td>
         <td class="text-center <%= 'stock-bajo' if product.stock <= 5 %>"><%= product.stock %></td>
         <td class="text-center"><%= product.activo? ? "✓" : "—" %></td>
-        <td class="acciones-fila">
-          <%= link_to "Editar", edit_admin_product_path(product) %>
-          <%= button_to "Eliminar",
-                admin_product_path(product),
-                method: :delete,
-                class: "btn-link-danger",
-                data: { turbo_confirm: "¿Eliminar #{product.nombre}? Esta acción no se puede deshacer." } %>
+        <td>
+          <div class="acciones-fila">
+            <%= link_to "Editar", edit_admin_product_path(product) %>
+            <%= button_to "Eliminar",
+                  admin_product_path(product),
+                  method: :delete,
+                  class: "btn-link-danger",
+                  data: { turbo_confirm: "¿Eliminar #{product.nombre}? Esta acción no se puede deshacer." } %>
+          </div>
         </td>
       </tr>
     <% end %>

@@ -31,7 +31,7 @@
     <%= f.label :foto_filename, "Archivo de foto" %>
     <% if product.foto_url.present? %>
       <div class="foto-actual">
-        <%= image_tag product.foto_url, class: "foto-preview" %>
+        <%= image_tag product.foto_url, class: "foto-preview", alt: "Foto actual de #{product.nombre}" %>
       </div>
     <% end %>
     <%= f.text_field :foto_filename, placeholder: "ej: salmon-pieza-pequena.jpg" %>

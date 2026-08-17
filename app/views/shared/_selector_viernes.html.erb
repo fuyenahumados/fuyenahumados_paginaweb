@@ -8,7 +8,7 @@
     value — fecha ISO (yyyy-mm-dd) ya seleccionada, o nil
     min   — fecha ISO mínima seleccionable (opcional; los viernes anteriores quedan deshabilitados)
 %>
-<div class="viernes-calendario" data-controller="viernes-calendario" data-viernes-calendario-min-value="<%= min %>">
+<div class="viernes-calendario" data-controller="viernes-calendario" data-viernes-calendario-min-value="<%= min %>" data-action="keydown.esc->viernes-calendario#cerrarConEscape">
   <%= hidden_field_tag name, value, id: id, data: { viernes_calendario_target: "input" } %>
   <button type="button" class="viernes-calendario-toggle" data-action="viernes-calendario#toggle" data-viernes-calendario-target="display">
     <%= value.present? ? "Viernes #{Date.parse(value).strftime('%d/%m/%Y')}" : "Selecciona un viernes" %>

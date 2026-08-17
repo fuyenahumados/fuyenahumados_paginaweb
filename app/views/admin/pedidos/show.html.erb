@@ -14,7 +14,7 @@
         <dt>Email</dt>    <dd><%= @pedido.user.email %></dd>
       </dl>
     <% else %>
-      <p style="color:#888; font-size:0.85rem; margin-bottom:0.75rem;">Pedido de invitado — sin cuenta.</p>
+      <p style="color:#666; font-size:0.85rem; margin-bottom:0.75rem;">Pedido de invitado — sin cuenta.</p>
       <dl>
         <dt>Nombre</dt> <dd><%= @pedido.nombre_completo_contacto %></dd>
         <dt>Email</dt>  <dd><%= @pedido.email_contacto %></dd>
@@ -32,11 +32,11 @@
         <dt>Dirección</dt> <dd><%= @pedido.direccion_calle %></dd>
       </dl>
     <% elsif (direccion = @pedido.user.direccion_principal) %>
-      <p style="color:#888; font-size:0.85rem; margin-bottom:0.75rem;">Pedido anterior a los datos de envío por pedido — se muestra la dirección actual del perfil.</p>
+      <p style="color:#666; font-size:0.85rem; margin-bottom:0.75rem;">Pedido anterior a los datos de envío por pedido — se muestra la dirección actual del perfil.</p>
       <dl>
         <dt>Teléfono</dt>  <dd><%= @pedido.user.telefono %></dd>
         <dt>Comuna</dt>    <dd><%= direccion.comuna %></dd>
-        <dt>Dirección</dt> <dd><%= direccion.calle %> <span style="color:#888;">(<%= direccion.etiqueta %>)</span></dd>
+        <dt>Dirección</dt> <dd><%= direccion.calle %> <span style="color:#666;">(<%= direccion.etiqueta %>)</span></dd>
       </dl>
     <% end %>
   </div>
