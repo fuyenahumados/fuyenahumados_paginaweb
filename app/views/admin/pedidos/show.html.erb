@@ -30,6 +30,9 @@
         <dt>Teléfono</dt>  <dd><%= @pedido.telefono_contacto %></dd>
         <dt>Comuna</dt>    <dd><%= @pedido.direccion_comuna %></dd>
         <dt>Dirección</dt> <dd><%= @pedido.direccion_calle %></dd>
+        <% if @pedido.direccion_numero_depto.present? %>
+          <dt>Depto/Casa</dt> <dd><%= @pedido.direccion_numero_depto %></dd>
+        <% end %>
       </dl>
     <% elsif (direccion = @pedido.user.direccion_principal) %>
       <p style="color:#666; font-size:0.85rem; margin-bottom:0.75rem;">Pedido anterior a los datos de envío por pedido — se muestra la dirección actual del perfil.</p>
@@ -37,6 +40,9 @@
         <dt>Teléfono</dt>  <dd><%= @pedido.user.telefono %></dd>
         <dt>Comuna</dt>    <dd><%= direccion.comuna %></dd>
         <dt>Dirección</dt> <dd><%= direccion.calle %> <span style="color:#666;">(<%= direccion.etiqueta %>)</span></dd>
+        <% if direccion.numero_depto.present? %>
+          <dt>Depto/Casa</dt> <dd><%= direccion.numero_depto %></dd>
+        <% end %>
       </dl>
     <% end %>
   </div>

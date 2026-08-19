@@ -46,8 +46,8 @@ module TestFactories
     )
   end
 
-  def crear_direccion(usuario, etiqueta: "Casa", comuna: "Providencia", calle: "Calle 123", **attrs)
-    usuario.direcciones.create!(etiqueta: etiqueta, comuna: comuna, calle: calle, **attrs)
+  def crear_direccion(usuario, etiqueta: "Casa", comuna: "Providencia", calle: "Calle 123", numero_depto: "Depto 1", **attrs)
+    usuario.direcciones.create!(etiqueta: etiqueta, comuna: comuna, calle: calle, numero_depto: numero_depto, **attrs)
   end
 
   def crear_producto(nombre: "Producto Test #{SecureRandom.hex(4)}", precio: 5000, stock: 10, activo: true, **attrs)
@@ -66,6 +66,7 @@ module TestFactories
       telefono_contacto: usuario&.telefono || "+56911111111",
       email_contacto:    usuario&.email || "invitado#{SecureRandom.hex(4)}@test.cl",
       direccion_calle:   "Calle 123",
+      direccion_numero_depto: "Depto 1",
       direccion_comuna:  "Providencia",
       fecha_entrega:     fecha_entrega,
       total:             0,
@@ -80,6 +81,17 @@ module TestFactories
     pedido.update!(estado: estado) unless estado.to_s == "pendiente_pago"
 
     pedido
+  end
+
+  # Reemplaza GeocodificadorService.buscar durante el bloque, sin llamar a la
+  # red de verdad. `resultado` es lo que debe devolver: un GeocodificadorService::Resultado,
+  # o nil para simular que el servicio no respondió (caso que no debe bloquear el pedido).
+  def stub_geocodificador(resultado)
+    original = GeocodificadorService.method(:buscar)
+    GeocodificadorService.define_singleton_method(:buscar) { |*_args| resultado }
+    yield
+  ensure
+    GeocodificadorService.define_singleton_method(:buscar, original)
   end
 end
 

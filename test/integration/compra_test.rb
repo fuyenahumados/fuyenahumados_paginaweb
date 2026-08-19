@@ -136,16 +136,19 @@ class CompraTest < ActionDispatch::IntegrationTest
     assert_match "Av. Siempre Viva 123", response.body
 
     viernes = Order.proximo_viernes_habil
+    resultado_ok = GeocodificadorService::Resultado.new(encontrada: true, lat: -33.4, lng: -70.6)
 
     assert_difference "Order.count", 1 do
-      post checkout_path, params: {
-        order: {
-          nombre_contacto: cliente.nombre, apellido_contacto: cliente.apellido,
-          telefono_contacto: cliente.telefono, email_contacto: cliente.email,
-          direccion_calle: "Av. Siempre Viva 123", direccion_comuna: "Providencia",
-          fecha_entrega: viernes.iso8601
+      stub_geocodificador(resultado_ok) do
+        post checkout_path, params: {
+          order: {
+            nombre_contacto: cliente.nombre, apellido_contacto: cliente.apellido,
+            telefono_contacto: cliente.telefono, email_contacto: cliente.email,
+            direccion_calle: "Av. Siempre Viva 123", direccion_numero_depto: "Depto 1", direccion_comuna: "Providencia",
+            fecha_entrega: viernes.iso8601
+          }
         }
-      }
+      end
     end
 
     pedido = cliente.orders.last
@@ -166,15 +169,19 @@ class CompraTest < ActionDispatch::IntegrationTest
     post agregar_carrito_path, params: { product_id: @producto.id, cantidad: 1 }
 
     viernes = Order.proximo_viernes_habil
+    resultado_ok = GeocodificadorService::Resultado.new(encontrada: true, lat: -33.4, lng: -70.6)
+
     assert_difference "Order.count", 1 do
-      post checkout_path, params: {
-        order: {
-          nombre_contacto: "Invitado", apellido_contacto: "DePrueba",
-          telefono_contacto: "+56933334444", email_contacto: "invitado@test.cl",
-          direccion_calle: "Calle Invitado 1", direccion_comuna: "Las Condes",
-          fecha_entrega: viernes.iso8601
+      stub_geocodificador(resultado_ok) do
+        post checkout_path, params: {
+          order: {
+            nombre_contacto: "Invitado", apellido_contacto: "DePrueba",
+            telefono_contacto: "+56933334444", email_contacto: "invitado@test.cl",
+            direccion_calle: "Calle Invitado 1", direccion_numero_depto: "Depto 1", direccion_comuna: "Las Condes",
+            fecha_entrega: viernes.iso8601
+          }
         }
-      }
+      end
     end
 
     pedido = Order.last
@@ -190,12 +197,66 @@ class CompraTest < ActionDispatch::IntegrationTest
         order: {
           nombre_contacto: "Test", apellido_contacto: "Cliente",
           telefono_contacto: "+56911111111", email_contacto: "a@test.cl",
-          direccion_calle: "Calle 1", direccion_comuna: "Providencia",
+          direccion_calle: "Calle 1", direccion_numero_depto: "Depto 1", direccion_comuna: "Providencia",
           fecha_entrega: (Order.proximo_viernes_habil + 1.day).iso8601 # sábado
         }
       }
     end
     assert_response :unprocessable_entity
+  end
+
+  test "una dirección que Nominatim no encuentra no bloquea el pedido, solo no le guarda lat/lng" do
+    post agregar_carrito_path, params: { product_id: @producto.id, cantidad: 1 }
+    resultado_no_encontrada = GeocodificadorService::Resultado.new(encontrada: false)
+
+    assert_difference "Order.count", 1 do
+      stub_geocodificador(resultado_no_encontrada) do
+        post checkout_path, params: {
+          order: {
+            nombre_contacto: "Test", apellido_contacto: "Cliente",
+            telefono_contacto: "+56911111111", email_contacto: "a@test.cl",
+            direccion_calle: "Calle que no existe 99999", direccion_numero_depto: "Depto 1", direccion_comuna: "Providencia",
+            fecha_entrega: Order.proximo_viernes_habil.iso8601
+          }
+        }
+      end
+    end
+    assert_nil Order.last.lat
+  end
+
+  test "si el servicio de geocodificación no responde, el pedido igual se confirma" do
+    post agregar_carrito_path, params: { product_id: @producto.id, cantidad: 1 }
+
+    assert_difference "Order.count", 1 do
+      stub_geocodificador(nil) do
+        post checkout_path, params: {
+          order: {
+            nombre_contacto: "Test", apellido_contacto: "Cliente",
+            telefono_contacto: "+56911111111", email_contacto: "a@test.cl",
+            direccion_calle: "Calle 1", direccion_numero_depto: "Depto 1", direccion_comuna: "Providencia",
+            fecha_entrega: Order.proximo_viernes_habil.iso8601
+          }
+        }
+      end
+    end
+    assert_nil Order.last.lat
+  end
+
+  test "una dirección que Nominatim sí encuentra guarda lat/lng en el pedido" do
+    post agregar_carrito_path, params: { product_id: @producto.id, cantidad: 1 }
+    resultado_ok = GeocodificadorService::Resultado.new(encontrada: true, lat: -33.4, lng: -70.6)
+
+    stub_geocodificador(resultado_ok) do
+      post checkout_path, params: {
+        order: {
+          nombre_contacto: "Test", apellido_contacto: "Cliente",
+          telefono_contacto: "+56911111111", email_contacto: "a@test.cl",
+          direccion_calle: "Calle 1", direccion_numero_depto: "Depto 1", direccion_comuna: "Providencia",
+          fecha_entrega: Order.proximo_viernes_habil.iso8601
+        }
+      }
+    end
+    assert_equal(-33.4, Order.last.lat)
   end
 
   test "consultar un pedido por código sin sesión de usuario" do
@@ -216,6 +277,20 @@ class CompraTest < ActionDispatch::IntegrationTest
 
   test "ver un pedido con un código inexistente en la URL redirige con error" do
     get pedido_publico_path("FUY-000000")
+    assert_redirected_to nuevo_pedido_publico_path
+  end
+
+  test "descargar el pedido devuelve un PDF" do
+    pedido = crear_pedido
+
+    get descargar_pedido_publico_path(pedido.codigo_pedido)
+    assert_response :success
+    assert_equal "application/pdf", response.media_type
+    assert_equal "%PDF".b, response.body.b[0, 4]
+  end
+
+  test "descargar un pedido con un código inexistente redirige con error" do
+    get descargar_pedido_publico_path("FUY-000000")
     assert_redirected_to nuevo_pedido_publico_path
   end
 

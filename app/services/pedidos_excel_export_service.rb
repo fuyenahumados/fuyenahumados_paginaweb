@@ -35,7 +35,7 @@ class PedidosExcelExportService
           pedido.codigo_pedido,
           pedido.nombre_completo_contacto,
           pedido.telefono_contacto,
-          "#{pedido.direccion_calle}, #{pedido.direccion_comuna}",
+          pedido.direccion_completa,
           pedido.notas,
           productos_y_cantidades(pedido),
           pedido.subtotal_productos.to_f,

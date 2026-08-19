@@ -5,4 +5,7 @@ class PagesController < ApplicationController
 
   def nosotros
   end
+
+  def preguntas_frecuentes
+  end
 end

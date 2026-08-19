@@ -15,6 +15,8 @@ class CheckoutController < ApplicationController
       render :show, status: :unprocessable_entity and return
     end
 
+    ubicar_direccion(@order)
+
     ActiveRecord::Base.transaction do
       @order.save!
 
@@ -36,9 +38,23 @@ class CheckoutController < ApplicationController
 
   private
 
+  # Best-effort: intenta ubicar la dirección para guardar lat/lng de referencia,
+  # pero nunca bloquea el pedido — si Nominatim no la encuentra o no responde,
+  # el pedido se confirma igual. Cualquier error de dirección se corrige a mano
+  # por el negocio (WhatsApp), no exigiéndoselo al cliente en el formulario.
+  def ubicar_direccion(order)
+    resultado = GeocodificadorService.buscar(order.direccion_calle, order.direccion_comuna)
+    return unless resultado&.encontrada
+
+    order.lat = resultado.lat
+    order.lng = resultado.lng
+  end
+
+  # La fecha de entrega no se prellena a propósito — el cliente tiene que
+  # elegirla a mano siempre, para no arriesgarse a que quede la más próxima
+  # sin querer (a pedido de Joaquín).
   def nuevo_pedido_prellenado
-    fecha_entrega = Order.proximo_viernes_habil
-    return Order.new(fecha_entrega: fecha_entrega) unless user_signed_in?
+    return Order.new unless user_signed_in?
 
     current_user.orders.new(
       nombre_contacto:   current_user.nombre,
@@ -46,8 +62,8 @@ class CheckoutController < ApplicationController
       telefono_contacto: current_user.telefono,
       email_contacto:    current_user.email,
       direccion_calle:   current_user.direccion_principal&.calle,
-      direccion_comuna:  current_user.direccion_principal&.comuna,
-      fecha_entrega:     fecha_entrega
+      direccion_numero_depto: current_user.direccion_principal&.numero_depto,
+      direccion_comuna:  current_user.direccion_principal&.comuna
     )
   end
 
@@ -58,7 +74,7 @@ class CheckoutController < ApplicationController
   def checkout_params
     params.require(:order).permit(
       :nombre_contacto, :apellido_contacto, :telefono_contacto, :email_contacto,
-      :direccion_calle, :direccion_comuna, :notas, :fecha_entrega
+      :direccion_calle, :direccion_numero_depto, :direccion_comuna, :notas, :fecha_entrega
     )
   end
 

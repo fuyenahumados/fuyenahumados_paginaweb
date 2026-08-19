@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_17_184755) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_19_030425) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -27,8 +27,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_184755) do
     t.string "comuna", null: false
     t.datetime "created_at", null: false
     t.string "etiqueta", null: false
-    t.decimal "lat", precision: 10, scale: 6
-    t.decimal "lng", precision: 10, scale: 6
+    t.string "numero_depto"
     t.boolean "principal", default: false, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -60,10 +59,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_184755) do
     t.datetime "created_at", null: false
     t.string "direccion_calle"
     t.string "direccion_comuna"
+    t.string "direccion_numero_depto"
     t.string "email_contacto"
     t.decimal "envio", precision: 10, scale: 2, default: "0.0", null: false
     t.integer "estado", default: 0, null: false
     t.date "fecha_entrega", null: false
+    t.decimal "lat", precision: 10, scale: 6
+    t.decimal "lng", precision: 10, scale: 6
     t.string "nombre_contacto"
     t.text "notas"
     t.string "telefono_contacto"

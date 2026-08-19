@@ -1,0 +1,60 @@
+<% content_for :show_footer, true %>
+
+<div class="container">
+  <div class="faq-inner">
+    <h1>Preguntas frecuentes</h1>
+
+    <div class="faq-item">
+      <h2 class="faq-pregunta">¿Cuánto dura el producto?</h2>
+      <p class="faq-respuesta">
+        Viene sellado al vacío. Según la guía oficial de conservación de alimentos del
+        gobierno de Estados Unidos
+        (<%= link_to "FoodSafety.gov", "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts", target: "_blank", rel: "noopener" %>),
+        el pescado ahumado envasado al vacío se conserva hasta 14 días refrigerado sin abrir,
+        y hasta 2 meses congelado. Una vez abierto, te recomendamos consumirlo dentro de 3 a
+        4 días y mantenerlo siempre refrigerado. Si lo descongelas, cómelo de inmediato y no
+        lo vuelvas a congelar.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h2 class="faq-pregunta">¿En qué formato viene?</h2>
+      <p class="faq-respuesta">
+        Vendemos por pieza, no por kilo completo. El salmón ahumado viene en pieza pequeña
+        (150–250 g aprox.) o pieza grande (250–350 g aprox.), y el peso exacto puede variar
+        un poco entre piezas. También tenemos salmón ahumado desmenuzado (250 g) y paté de
+        salmón ahumado (500 g).
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h2 class="faq-pregunta">¿Cómo pago mi pedido?</h2>
+      <p class="faq-respuesta">
+        El pago es por transferencia bancaria. Al confirmar tu pedido te llevamos a WhatsApp
+        con el detalle ya escrito, y ahí mismo te pasamos los datos de la cuenta para que
+        hagas la transferencia.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h2 class="faq-pregunta">¿Cuándo y dónde hacen despacho?</h2>
+      <p class="faq-respuesta">
+        Despachamos los días viernes, dentro de un ciclo de producción semanal. Por ahora
+        llegamos a Lo Barnechea, Las Condes, Vitacura, Providencia y La Reina.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h2 class="faq-pregunta">¿Cuánto cuesta el envío?</h2>
+      <p class="faq-respuesta">
+        El despacho tiene un costo fijo de $2.000, y es gratis en compras desde $40.000.
+      </p>
+    </div>
+
+    <p class="faq-contacto">
+      ¿Tienes más dudas? Escríbenos por
+      <%= link_to "WhatsApp", "https://wa.me/#{CONTACTO[:whatsapp]}", target: "_blank", rel: "noopener" %>
+      o al mail <%= mail_to CONTACTO[:email] %>.
+    </p>
+  </div>
+</div>

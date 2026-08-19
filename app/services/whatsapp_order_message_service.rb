@@ -21,7 +21,7 @@ class WhatsappOrderMessageService
       "Envío: #{@order.envio.zero? ? "Gratis" : formato_pesos(@order.envio)}",
       "Total: #{formato_pesos(@order.total)}",
       "Fecha de entrega: viernes #{@order.fecha_entrega.strftime('%d/%m/%Y')}",
-      "Dirección de entrega: #{@order.direccion_calle}, #{@order.direccion_comuna}",
+      "Dirección de entrega: #{@order.direccion_completa}",
       "",
       "Quedo atento/a a los datos para pagar. Muchas gracias!"
     ].join("\n")

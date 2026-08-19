@@ -7,3 +7,10 @@ es:
         telefono_contacto: "Teléfono"
         direccion_calle: "Calle y número"
         direccion_comuna: "Comuna"
+      user:
+        nombre: "Nombre"
+        apellido: "Apellido"
+        email: "Email"
+        telefono: "Teléfono"
+        password: "Contraseña"
+        password_confirmation: "Confirmación de contraseña"

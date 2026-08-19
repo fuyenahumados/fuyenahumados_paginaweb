@@ -1,3 +1,5 @@
+<%= render "pedidos/whatsapp_cta", pedido: @pedido %>
+
 <div class="admin-header">
   <h1><%= @pedido.codigo_pedido %></h1>
   <%= estado_badge(@pedido.estado) %>
@@ -5,13 +7,40 @@
 
 <p>Gracias <strong><%= @pedido.nombre_completo_contacto %></strong>. Este es el estado de tu pedido.</p>
 
-<%= render "pedidos/whatsapp_cta", pedido: @pedido %>
-<%= render "pedidos/items", pedido: @pedido %>
+<div class="checkout-seccion" data-controller="colapsable">
+  <h2 class="checkout-seccion-titulo">
+    <button type="button" class="checkout-seccion-toggle" data-action="colapsable#toggle" data-colapsable-target="boton" aria-expanded="false">
+      Resumen de tu pedido
+      <svg class="checkout-seccion-toggle-icono" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </h2>
 
-<p style="margin-bottom: 1.5rem;">
-  <strong>Día de entrega:</strong> viernes <%= @pedido.fecha_entrega.strftime("%d/%m/%Y") %> (los despachos son solo los viernes)<br>
-  <strong>Dirección de entrega:</strong> <%= @pedido.direccion_calle %>, <%= @pedido.direccion_comuna %>
-  <% if @pedido.notas.present? %><br><strong>Instrucciones de entrega:</strong> <%= @pedido.notas %><% end %>
-</p>
+  <div data-colapsable-target="contenido" hidden>
+    <div class="checkout-resumen-datos">
+      <div class="checkout-resumen-dato">
+        <span>Número de pedido</span>
+        <span><%= @pedido.codigo_pedido %></span>
+      </div>
+      <div class="checkout-resumen-dato">
+        <span>Fecha de entrega</span>
+        <span>Viernes <%= @pedido.fecha_entrega.strftime("%d/%m/%Y") %></span>
+      </div>
+      <div class="checkout-resumen-dato">
+        <span>Dirección de entrega</span>
+        <span><%= @pedido.direccion_completa %></span>
+      </div>
+      <% if @pedido.notas.present? %>
+        <div class="checkout-resumen-dato">
+          <span>Instrucciones</span>
+          <span><%= @pedido.notas %></span>
+        </div>
+      <% end %>
+    </div>
 
-<%= link_to "← Volver al catálogo", productos_path, class: "btn btn-secondary" %>
+    <%= render "pedidos/items", pedido: @pedido %>
+
+    <%= link_to "Descargar mi pedido (PDF)", descargar_pedido_publico_path(@pedido.codigo_pedido), class: "btn btn-secondary" %>
+  </div>
+</div>

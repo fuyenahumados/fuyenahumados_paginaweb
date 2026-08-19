@@ -9,7 +9,6 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "leaflet", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
@@ -84,6 +83,7 @@
               <li><%= link_to "Nuestros productos", productos_path %></li>
               <li><%= link_to "Quiénes somos", nosotros_path %></li>
               <li><%= link_to "Consultar mi pedido", nuevo_pedido_publico_path %></li>
+              <li><%= link_to "Preguntas frecuentes", preguntas_frecuentes_path %></li>
             </ul>
           </div>
           <div class="footer-col">

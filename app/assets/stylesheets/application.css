@@ -324,61 +324,79 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
 }
 
 /* ─── NOSOTROS ────────────────────────────────────────── */
-.nosotros-hero {
-  text-align: center;
-  padding: 3rem 0 3.5rem;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 3rem;
-}
-.hero-eyebrow {
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--ocean);
-  margin-bottom: 0.5rem;
-}
-.nosotros-intro {
-  max-width: 600px;
-  margin: 1rem auto 0;
-  font-size: 1.2rem;
-  color: #555;
-  line-height: 1.8;
-}
+.nosotros-seccion { padding: 3.5rem 0; border-top: 1px solid var(--border); }
+.nosotros-seccion:first-of-type { border-top: none; padding-top: 0; }
 
-.nosotros-valores {
+.nosotros-seccion-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3.5rem;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 3rem;
+  align-items: start;
 }
-.valor-card {
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 1.75rem;
+.nosotros-seccion-grid--invertida {
+  grid-template-columns: 1.1fr 0.9fr;
 }
-.valor-card h3 {
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--ocean);
-  margin-bottom: 0.75rem;
-  font-weight: normal;
-}
-.valor-card p { font-size: 1.2rem; color: #555; line-height: 1.8; }
+.nosotros-seccion-grid--invertida .nosotros-seccion-foto { order: 2; }
+.nosotros-seccion-grid--invertida .nosotros-seccion-texto { order: 1; }
 
-.nosotros-historia {
-  max-width: 680px;
-  margin: 0 auto 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--border);
+.nosotros-seccion-foto {
+  aspect-ratio: 4 / 5;
+  border-radius: 12px;
+  overflow: hidden;
 }
-.nosotros-historia h2 { margin-bottom: 1.25rem; }
-.nosotros-historia p {
+.nosotros-seccion-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.nosotros-seccion-titulo {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--navy);
+  margin-bottom: 1.25rem;
+}
+.nosotros-seccion-parrafo {
   font-size: 1.2rem;
   color: #555;
   line-height: 1.8;
   margin-bottom: 1.25rem;
+}
+.nosotros-seccion-parrafo:last-child { margin-bottom: 0; }
+
+@media (max-width: 800px) {
+  .nosotros-seccion-grid,
+  .nosotros-seccion-grid--invertida {
+    grid-template-columns: 1fr;
+  }
+  .nosotros-seccion-grid--invertida .nosotros-seccion-foto,
+  .nosotros-seccion-grid--invertida .nosotros-seccion-texto {
+    order: 0;
+  }
+  .nosotros-seccion-foto { max-width: 320px; margin: 0 auto; }
+}
+
+/* ─── PREGUNTAS FRECUENTES ────────────────────────────── */
+.faq-inner { max-width: 720px; }
+
+.faq-item { padding: 1.75rem 0; border-top: 1px solid var(--border); }
+.faq-item:first-of-type { border-top: none; padding-top: 0; }
+
+.faq-pregunta {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--navy);
+  margin-bottom: 0.75rem;
+}
+.faq-respuesta { font-size: 1.1rem; color: #555; line-height: 1.8; }
+
+.faq-contacto {
+  margin-top: 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.8;
 }
 
 /* ─── CATÁLOGO: BANNER ────────────────────────────────── */
@@ -405,6 +423,37 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   color: #fff;
   margin-bottom: 0.6rem;
 }
+/* ─── QUIÉNES SOMOS: BANNER ────────────────────────────── */
+.nosotros-hero {
+  position: relative;
+  background:
+    linear-gradient(rgba(8, 31, 46, 0.6), rgba(8, 31, 46, 0.85)),
+    url("/docs/banners/quienes-somos.jpg") center / cover no-repeat;
+  color: #fff;
+  padding: 3.5rem 2rem 3rem;
+  text-align: center;
+}
+.nosotros-hero-inner { max-width: 700px; margin: 0 auto; }
+.nosotros-hero-breadcrumb {
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  color: #cfdbe1;
+  margin-bottom: 1.25rem;
+}
+.nosotros-hero-breadcrumb a { color: #cfdbe1; text-decoration: none; }
+.nosotros-hero-breadcrumb a:hover { color: #fff; text-decoration: underline; }
+.nosotros-hero-breadcrumb .separador { margin: 0 0.6rem; color: var(--celeste); }
+.nosotros-hero-titulo { color: #fff; margin-bottom: 0.6rem; }
+.nosotros-hero-subtitulo {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.2rem;
+  color: #eaf3f6;
+}
+
+/* ─── NUESTRO PROCESO: banda gris (mismo tono que "Quiénes somos" del home) ─ */
+.nosotros-seccion--gris { background: #eaedf0; border-top: none; padding: 3.5rem 2rem; }
+.nosotros-seccion--gris .nosotros-seccion-grid { max-width: 960px; margin: 0 auto; }
+
 .catalogo-hero-subtitulo {
   font-family: "Fraunces", Georgia, serif;
   font-size: 1.5rem;
@@ -751,16 +800,18 @@ td a:hover { color: var(--ocean); }
 
 /* ─── CONFIRMACIÓN POR WHATSAPP ───────────────────────── */
 .whatsapp-cta {
-  background: #fff;
-  border: 2px solid #25d366;
-  border-radius: 6px;
-  padding: 1.5rem 2rem;
-  margin: 1.5rem 0;
+  background: #f0fdf4;
+  border: 3px solid #25d366;
+  border-radius: 10px;
+  padding: 2.5rem 2rem;
+  margin: 0 0 2rem;
   text-align: center;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.25);
 }
-.whatsapp-cta h2 { color: #1b9e4f; margin-bottom: 0.4rem; }
-.whatsapp-cta p { margin-bottom: 1rem; }
-.btn-whatsapp-grande { font-size: 1.1rem; padding: 1rem 2rem; }
+.whatsapp-cta h2 { color: #1b9e4f; margin-bottom: 0.5rem; font-size: 1.7rem; }
+.whatsapp-cta p { margin-bottom: 1.5rem; font-size: 1.05rem; }
+.btn-whatsapp-grande { font-size: 1.25rem; padding: 1.2rem 3rem; }
+.whatsapp-cta-reinicio { color: #666; font-size: 0.85rem; margin: 1rem 0 0; }
 .datos-banco-nota { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
 
 /* ─── EXPORTAR EXCEL (ADMIN) ──────────────────────────── */
@@ -867,6 +918,66 @@ select {
 }
 .acciones { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-top: 1.5rem; }
 
+/* ─── CHECKOUT ────────────────────────────────────────── */
+.checkout-seccion { padding: 2.5rem 0; border-top: 1px solid var(--border); }
+.checkout-seccion:first-of-type { border-top: none; padding-top: 0; }
+
+.checkout-seccion-titulo {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--navy);
+  margin-bottom: 1.5rem;
+}
+
+.checkout-seccion-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.checkout-seccion-toggle-icono { flex-shrink: 0; color: var(--navy); transition: transform 0.2s ease; }
+.checkout-seccion-toggle[aria-expanded="true"] .checkout-seccion-toggle-icono { transform: rotate(180deg); }
+
+.checkout-item-peso { color: #666; }
+.checkout-envio-nota { color: #666; font-size: 0.85rem; margin: -1rem 0 1.5rem; }
+.checkout-direccion-detalle { color: #666; }
+
+.checkout-resumen-datos { margin: 1.5rem 0; }
+.checkout-resumen-dato {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+.checkout-resumen-dato:last-child { border-bottom: none; }
+.checkout-resumen-dato span:first-child { color: #666; }
+.checkout-resumen-dato span:last-child { text-align: right; font-weight: 500; }
+
+.checkout-requisitos-aviso {
+  background: #f0f6f9;
+  border: 1px solid var(--ocean);
+  border-radius: 4px;
+  padding: 0.75rem 1.25rem;
+  margin-top: 1.5rem;
+  color: var(--ocean);
+  font-size: 0.9rem;
+  text-align: center;
+}
+.checkout-acciones { margin-top: 2rem; text-align: center; }
+.checkout-boton-confirmar { font-size: 1.15rem; padding: 1rem 3rem; }
+
 .direcciones-guardadas { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 0.5rem; }
 .direccion-guardada-opcion {
   display: flex;
@@ -965,14 +1076,6 @@ button.viernes-calendario-dia.viernes-disponible {
 button.viernes-calendario-dia.viernes-disponible:hover { background: #a3cfbb; }
 .viernes-calendario-dia.seleccionado { background: var(--ocean) !important; color: #fff !important; }
 .viernes-calendario-nota { margin: 0.6rem 0 0; font-size: 0.75rem; color: #666; }
-
-.direccion-mapa {
-  height: 220px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  margin: 0.5rem 0 1rem;
-}
-.mapa-pin { background: none; border: none; }
 
 .direccion-card {
   background: #fff;
@@ -1236,7 +1339,7 @@ footer {
   object-fit: cover;
   border-radius: 6px;
 }
-.carrito-item-info { flex: 1; min-width: 0; }
+.carrito-item-info { flex: 1; min-width: 0; align-self: flex-start; }
 .carrito-item-nombre { font-weight: bold; margin-bottom: 0.2rem; }
 .carrito-item-peso { color: #666; font-size: 0.82rem; margin-bottom: 0.2rem; }
 .carrito-item-precio-unit { color: var(--ocean); font-size: 0.88rem; }

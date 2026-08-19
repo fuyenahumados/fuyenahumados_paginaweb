@@ -20,7 +20,7 @@ class OrderTest < ActiveSupport::TestCase
     usuario = crear_cliente
     pedido = Order.new(
       user: usuario, nombre_contacto: nil, apellido_contacto: nil,
-      direccion_calle: nil, direccion_comuna: "Providencia",
+      direccion_calle: nil, direccion_numero_depto: nil, direccion_comuna: "Providencia",
       telefono_contacto: "+56911111111", email_contacto: "a@test.cl",
       fecha_entrega: viernes_valido, total: 0
     )
@@ -28,6 +28,19 @@ class OrderTest < ActiveSupport::TestCase
     assert_includes pedido.errors[:nombre_contacto], "no puede estar en blanco"
     assert_includes pedido.errors[:apellido_contacto], "no puede estar en blanco"
     assert_includes pedido.errors[:direccion_calle], "no puede estar en blanco"
+  end
+
+  test "direccion_numero_depto es opcional" do
+    pedido = crear_pedido(direccion_numero_depto: nil)
+    assert pedido.valid?
+  end
+
+  test "direccion_completa arma la dirección saltándose el numero_depto si está vacío" do
+    pedido = crear_pedido(direccion_calle: "Cerro de Ramón 12334", direccion_numero_depto: nil, direccion_comuna: "La Reina")
+    assert_equal "Cerro de Ramón 12334, La Reina", pedido.direccion_completa
+
+    pedido.direccion_numero_depto = "Casa 8"
+    assert_equal "Cerro de Ramón 12334, Casa 8, La Reina", pedido.direccion_completa
   end
 
   test "la comuna debe estar en la lista fija" do
@@ -70,7 +83,7 @@ class OrderTest < ActiveSupport::TestCase
     pedido = Order.new(
       user: nil, nombre_contacto: "Test", apellido_contacto: "Cliente",
       telefono_contacto: "+56911111111", email_contacto: "a@test.cl",
-      direccion_calle: "Calle 123", direccion_comuna: "Providencia",
+      direccion_calle: "Calle 123", direccion_numero_depto: "Depto 1", direccion_comuna: "Providencia",
       fecha_entrega: viernes_valido - 7.days, total: 0
     )
     assert_not pedido.valid?
@@ -105,7 +118,7 @@ class OrderTest < ActiveSupport::TestCase
     barato = crear_producto(precio: 1000)
     pedido = Order.new(
       nombre_contacto: "Test", apellido_contacto: "Cliente", telefono_contacto: "+56911111111",
-      email_contacto: "a@test.cl", direccion_calle: "Calle 123", direccion_comuna: "Providencia",
+      email_contacto: "a@test.cl", direccion_calle: "Calle 123", direccion_numero_depto: "Depto 1", direccion_comuna: "Providencia",
       fecha_entrega: viernes_valido, total: 0
     )
     pedido.save!

@@ -40,6 +40,10 @@ class Order < ApplicationRecord
     "#{nombre_contacto} #{apellido_contacto}"
   end
 
+  def direccion_completa
+    [ direccion_calle, direccion_numero_depto, direccion_comuna ].reject(&:blank?).join(", ")
+  end
+
   def invitado?
     user.nil?
   end

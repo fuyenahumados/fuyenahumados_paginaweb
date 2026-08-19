@@ -12,4 +12,9 @@ class PagesTest < ActionDispatch::IntegrationTest
     get nosotros_path
     assert_response :success
   end
+
+  test "la página de preguntas frecuentes carga" do
+    get preguntas_frecuentes_path
+    assert_response :success
+  end
 end

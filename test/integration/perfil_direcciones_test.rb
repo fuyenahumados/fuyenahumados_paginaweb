@@ -42,7 +42,7 @@ class PerfilDireccionesTest < ActionDispatch::IntegrationTest
 
   test "agregar una nueva dirección" do
     assert_difference "@cliente.direcciones.count", 1 do
-      post direcciones_path, params: { direccion: { etiqueta: "Oficina", comuna: "Las Condes", calle: "Apoquindo 4500" } }
+      post direcciones_path, params: { direccion: { etiqueta: "Oficina", comuna: "Las Condes", calle: "Apoquindo 4500", numero_depto: "Depto 12" } }
     end
     assert_redirected_to perfil_path
   end

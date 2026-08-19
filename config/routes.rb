@@ -12,9 +12,10 @@ Rails.application.routes.draw do
 
   resource :checkout, only: [ :show, :create ], controller: :checkout
 
-  get  "mi-pedido",         to: "pedidos_publicos#nuevo",  as: :nuevo_pedido_publico
-  post "mi-pedido",         to: "pedidos_publicos#buscar", as: :buscar_pedido_publico
-  get  "mi-pedido/:codigo", to: "pedidos_publicos#show",   as: :pedido_publico
+  get  "mi-pedido",                   to: "pedidos_publicos#nuevo",     as: :nuevo_pedido_publico
+  post "mi-pedido",                   to: "pedidos_publicos#buscar",    as: :buscar_pedido_publico
+  get  "mi-pedido/:codigo",           to: "pedidos_publicos#show",      as: :pedido_publico
+  get  "mi-pedido/:codigo/descargar", to: "pedidos_publicos#descargar", as: :descargar_pedido_publico
 
   get   "perfil",         to: "perfil#show",   as: :perfil
   get   "perfil/editar",  to: "perfil#edit",   as: :editar_perfil
@@ -41,6 +42,7 @@ Rails.application.routes.draw do
     resources :resenas, only: [ :create ]
   end
   get "nosotros",  to: "pages#nosotros",  as: :nosotros
+  get "preguntas-frecuentes", to: "pages#preguntas_frecuentes", as: :preguntas_frecuentes
 
   get "up" => "rails/health#show", as: :rails_health_check
 

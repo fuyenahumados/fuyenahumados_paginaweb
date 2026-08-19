@@ -67,3 +67,6 @@ group :test do
 end
 
 gem "caxlsx", "~> 4.1"
+# Genera el PDF descargable del pedido, sin binario externo (a diferencia de wicked_pdf)
+gem "prawn", "~> 2.5"
+gem "prawn-table", "~> 0.2"

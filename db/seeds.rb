@@ -60,6 +60,7 @@ def crear_pedido_prueba(cliente, estado:, usuario: cliente, notas: nil)
     telefono_contacto: usuario&.telefono || "+56922223333",
     email_contacto:    usuario&.email || "invitado@example.com",
     direccion_calle:   cliente.direccion_principal&.calle || "Calle de Prueba 123",
+    direccion_numero_depto: "Depto 1",
     direccion_comuna:  cliente.direccion_principal&.comuna || "Providencia",
     notas:             notas,
     total:             0,

@@ -44,6 +44,6 @@ class DireccionesController < ApplicationController
   end
 
   def direccion_params
-    params.require(:direccion).permit(:etiqueta, :comuna, :calle, :lat, :lng, :principal)
+    params.require(:direccion).permit(:etiqueta, :comuna, :calle, :numero_depto, :principal)
   end
 end

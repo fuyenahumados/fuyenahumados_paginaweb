@@ -36,7 +36,7 @@
           <span class="badge-principal">(Principal)</span>
         <% end %>
       </div>
-      <div class="direccion-card-detalle"><%= direccion.calle %>, <%= direccion.comuna %></div>
+      <div class="direccion-card-detalle"><%= direccion.direccion_completa %></div>
     </div>
     <div class="direccion-card-acciones">
       <%= link_to "Editar", edit_direccion_path(direccion) %>

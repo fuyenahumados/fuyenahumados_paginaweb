@@ -1,25 +1,20 @@
-<div data-controller="direccion-map"
-     data-direccion-map-lat-value="<%= f.object.lat %>"
-     data-direccion-map-lng-value="<%= f.object.lng %>">
-  <div class="form-group">
-    <%= f.label :etiqueta, "Nombre de la dirección (ej: Casa, Oficina)" %>
-    <%= f.text_field :etiqueta, placeholder: "Casa" %>
-  </div>
+<div class="form-group">
+  <%= f.label :etiqueta, "Nombre de la dirección (ej: Casa, Oficina)" %>
+  <%= f.text_field :etiqueta, placeholder: "Casa" %>
+</div>
 
-  <div class="form-group">
-    <%= f.label :comuna, "Comuna" %>
-    <%= f.select :comuna, Direccion::COMUNAS, { include_blank: "Selecciona tu comuna" },
-          data: { "direccion-map-target": "comuna" } %>
-  </div>
+<div class="form-group">
+  <%= f.label :comuna, "Comuna" %>
+  <%= f.select :comuna, Direccion::COMUNAS, { include_blank: "Selecciona tu comuna" } %>
+</div>
 
-  <div class="form-group">
-    <%= f.label :calle, "Dirección (calle y número)" %>
-    <%= f.text_field :calle,
-          data: { "direccion-map-target": "calle", action: "input->direccion-map#buscar" } %>
-    <small class="field-hint">Escribe tu dirección y el mapa se irá actualizando. Si el pin no queda exacto, arrástralo.</small>
-  </div>
+<div class="form-group">
+  <%= f.label :calle, "Dirección (calle y número)" %>
+  <%= f.text_field :calle %>
+</div>
 
-  <div data-direccion-map-target="map" class="direccion-mapa"></div>
-  <%= f.hidden_field :lat, data: { "direccion-map-target": "lat" } %>
-  <%= f.hidden_field :lng, data: { "direccion-map-target": "lng" } %>
+<div class="form-group">
+  <%= f.label :numero_depto, "Número de casa o departamento (opcional)" %>
+  <%= f.text_field :numero_depto %>
+  <small class="field-hint">Solo si tu casa o depto tiene un número aparte del de la calle (ej: "Depto 56", "Casa 12"). Si tu dirección ya es completa tal cual, déjalo en blanco.</small>
 </div>

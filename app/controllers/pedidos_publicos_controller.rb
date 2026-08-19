@@ -17,4 +17,12 @@ class PedidosPublicosController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     redirect_to nuevo_pedido_publico_path, alert: "No encontramos ningún pedido con ese código."
   end
+
+  def descargar
+    pedido = Order.includes(order_items: :product).find_by!(codigo_pedido: params[:codigo])
+    servicio = PedidoReciboService.new(pedido)
+    send_data servicio.pdf, filename: servicio.nombre_archivo, type: "application/pdf", disposition: "attachment"
+  rescue ActiveRecord::RecordNotFound
+    redirect_to nuevo_pedido_publico_path, alert: "No encontramos ningún pedido con ese código."
+  end
 end

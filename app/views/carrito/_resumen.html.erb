@@ -6,10 +6,6 @@
     <span><%= formato_pesos(carrito_total) %></span>
   </div>
   <div class="carrito-resumen-fila">
-    <span>Despacho</span>
-    <span>Viernes</span>
-  </div>
-  <div class="carrito-resumen-fila">
     <span>Envío</span>
     <span>
       <% if carrito_envio.zero? %>
@@ -29,6 +25,6 @@
     <span><%= formato_pesos(carrito_gran_total) %></span>
   </div>
 
-  <%= link_to "Completar datos de envío →", checkout_path, class: "btn btn-ocean carrito-resumen-boton", data: { turbo_frame: "_top" } %>
-  <%= link_to "← Seguir comprando", productos_path, class: "carrito-resumen-seguir", data: { turbo_frame: "_top" } %>
+  <%= link_to "Completar datos de envío", checkout_path, class: "btn btn-ocean carrito-resumen-boton", data: { turbo_frame: "_top" } %>
+  <%= link_to "Seguir comprando", productos_path, class: "carrito-resumen-seguir", data: { turbo_frame: "_top" } %>
 </div>

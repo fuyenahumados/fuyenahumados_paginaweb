@@ -10,6 +10,10 @@ class Direccion < ApplicationRecord
   before_save :gestionar_principal
   after_destroy :promover_otra_a_principal
 
+  def direccion_completa
+    [ calle, numero_depto, comuna ].reject(&:blank?).join(", ")
+  end
+
   private
 
   def gestionar_principal
