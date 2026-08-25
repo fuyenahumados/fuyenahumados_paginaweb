@@ -2,7 +2,9 @@ class ProductosController < ApplicationController
   ORDENES = {
     "precio_asc"  => { precio: :asc },
     "precio_desc" => { precio: :desc },
-    "nombre"      => { nombre: :asc }
+    "nombre_asc"  => { nombre: :asc },
+    "nombre_desc" => { nombre: :desc },
+    "recientes"   => { created_at: :desc }
   }.freeze
 
   RANGOS_PRECIO = [

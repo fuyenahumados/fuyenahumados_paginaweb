@@ -7,6 +7,7 @@
   --foam:    #f3f8f8; /* espuma de mar — fondos claros */
   --ink:     #1c2b35; /* texto principal */
   --border:  #d5e3ea; /* bordes sutiles, tono frío azulado */
+  --ancho-contenido: 1248px; /* Home / Nuestros productos / Quiénes somos — 960px + 30%, ver .container (960px) para el resto del sitio */
 }
 
 /* Oculta visualmente pero deja disponible para lectores de pantalla. */
@@ -180,6 +181,10 @@ nav .logo {
 h1, h2 { font-family: "Fraunces", Georgia, serif; }
 h1 { font-size: 1.8rem; margin-bottom: 1.5rem; font-weight: 600; letter-spacing: 0.5px; color: var(--navy); }
 h2 { font-size: 1.3rem; margin-bottom: 1rem; }
+/* Todos los párrafos justificados, en todo el sitio. Los textos centrados a propósito
+   (hero, tarjetas, etc.) usan clases con más especificidad que este selector de tag,
+   así que siguen ganando y no se ven afectados. */
+p { text-align: justify; }
 
 /* ─── PAGE HEADER (catálogo, etc.) ───────────────────── */
 .page-header {
@@ -189,7 +194,7 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   margin-bottom: 2.5rem;
 }
 .page-header h1 { margin-bottom: 0.4rem; }
-.page-header-desc { color: #555; font-size: 1.2rem; line-height: 1.8; }
+.page-header-desc { color: #555; font-size: 1.2rem; line-height: 1.8; text-align: center; }
 
 /* ─── AUTH ────────────────────────────────────────────── */
 .auth-card {
@@ -222,7 +227,7 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   padding: 2rem;
   text-align: center;
 }
-.hero-inner { max-width: 960px; margin: 0 auto; }
+.hero-inner { max-width: var(--ancho-contenido); margin: 0 auto; }
 .hero-titulo {
   font-family: "Fraunces", Georgia, serif;
   font-size: clamp(2.75rem, 6vw, 4.5rem);
@@ -238,6 +243,9 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   color: #eaf3f6;
   margin-bottom: 2.5rem;
   line-height: 1.6;
+  /* Reafirma el centrado que antes venía heredado de ".hero" — la regla nueva
+     "p { text-align: justify }" (global) gana contra un valor solo heredado. */
+  text-align: center;
 }
 
 /* ─── SECCIONES (inicio) ──────────────────────────────── */
@@ -246,7 +254,7 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
 .seccion-oscura { background: var(--navy); }
 
 .seccion-inner {
-  max-width: 960px;
+  max-width: var(--ancho-contenido);
   margin: 0 auto;
 }
 .seccion-inner--centrada { text-align: center; max-width: 680px; }
@@ -282,7 +290,7 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
 /* ─── QUIÉNES SOMOS (home) ────────────────────────────── */
 .quienes-somos { padding: 5rem 2rem; background: #eaedf0; }
 .quienes-somos-grid {
-  max-width: 960px;
+  max-width: var(--ancho-contenido);
   margin: 0 auto;
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
@@ -290,7 +298,7 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   gap: 3.5rem;
 }
 .quienes-somos-foto {
-  max-width: 380px;
+  max-width: 494px; /* 380px + 30% */
   aspect-ratio: 4 / 5;
   border-radius: 12px;
   overflow: hidden;
@@ -301,7 +309,13 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   flex-direction: column;
   justify-content: flex-start;
   padding-top: 0;
+  /* Estira esta columna a la altura completa de la fila (la foto es más alta que el
+     texto) para que el botón, empujado abajo con margin-top: auto, quede a la misma
+     altura que el borde inferior de la foto — el título sigue arriba, contra el borde
+     superior de la foto, como ya estaba. */
+  align-self: stretch;
 }
+.quienes-somos-texto > .btn-navy-grande { margin-top: auto; }
 .quienes-somos-titulo {
   font-family: "Fraunces", Georgia, serif;
   font-size: 1.8rem;
@@ -324,13 +338,22 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
 }
 
 /* ─── NOSOTROS ────────────────────────────────────────── */
-.nosotros-seccion { padding: 3.5rem 0; border-top: 1px solid var(--border); }
-.nosotros-seccion:first-of-type { border-top: none; padding-top: 0; }
+/* Mismo ancho de contenido que la Home (960px): padding horizontal en la sección + max-width en el grid interno, igual que .seccion/.seccion-inner. */
+/* border-top negro, igual que ".seccion" en la Home (misma línea separadora entre secciones). */
+.nosotros-seccion { padding: 3.5rem 2rem; border-top: 1px solid #000; }
+/* padding-top: 2.5rem (no 0) — mismo aire que .container da al resto de las páginas
+   entre el nav fijo y el contenido; sin esto "Sobre nosotros" quedaba pegado al nav. */
+.nosotros-seccion:first-of-type { border-top: none; padding-top: 2.5rem; }
 
 .nosotros-seccion-grid {
+  max-width: var(--ancho-contenido);
+  margin: 0 auto;
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
   gap: 3rem;
+  /* "start": el título ("Sobre nosotros"/"Nuestro proceso") queda a la misma altura
+     que el borde superior de la foto — a propósito deja espacio debajo del texto si
+     la foto es más alta que el párrafo, es el trade-off pedido. */
   align-items: start;
 }
 .nosotros-seccion-grid--invertida {
@@ -399,109 +422,83 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
   line-height: 1.8;
 }
 
-/* ─── CATÁLOGO: BANNER ────────────────────────────────── */
-.catalogo-hero {
-  position: relative;
-  background:
-    linear-gradient(rgba(8, 31, 46, 0.6), rgba(8, 31, 46, 0.85)),
-    url("/docs/banners/catalogo-hero.jpg") center / cover no-repeat;
-  color: #fff;
-  padding: 3.5rem 2rem 3rem;
-  text-align: center;
-}
-.catalogo-hero-inner { max-width: 700px; margin: 0 auto; }
-.catalogo-hero-breadcrumb {
-  font-size: 0.8rem;
-  letter-spacing: 0.5px;
-  color: #cfdbe1;
-  margin-bottom: 1.25rem;
-}
-.catalogo-hero-breadcrumb a { color: #cfdbe1; text-decoration: none; }
-.catalogo-hero-breadcrumb a:hover { color: #fff; text-decoration: underline; }
-.catalogo-hero-breadcrumb .separador { margin: 0 0.6rem; color: var(--celeste); }
-.catalogo-hero-titulo {
-  color: #fff;
-  margin-bottom: 0.6rem;
-}
-/* ─── QUIÉNES SOMOS: BANNER ────────────────────────────── */
-.nosotros-hero {
-  position: relative;
-  background:
-    linear-gradient(rgba(8, 31, 46, 0.6), rgba(8, 31, 46, 0.85)),
-    url("/docs/banners/quienes-somos.jpg") center / cover no-repeat;
-  color: #fff;
-  padding: 3.5rem 2rem 3rem;
-  text-align: center;
-}
-.nosotros-hero-inner { max-width: 700px; margin: 0 auto; }
-.nosotros-hero-breadcrumb {
-  font-size: 0.8rem;
-  letter-spacing: 0.5px;
-  color: #cfdbe1;
-  margin-bottom: 1.25rem;
-}
-.nosotros-hero-breadcrumb a { color: #cfdbe1; text-decoration: none; }
-.nosotros-hero-breadcrumb a:hover { color: #fff; text-decoration: underline; }
-.nosotros-hero-breadcrumb .separador { margin: 0 0.6rem; color: var(--celeste); }
-.nosotros-hero-titulo { color: #fff; margin-bottom: 0.6rem; }
-.nosotros-hero-subtitulo {
-  font-family: "Fraunces", Georgia, serif;
-  font-size: 1.2rem;
-  color: #eaf3f6;
-}
-
 /* ─── NUESTRO PROCESO: banda gris (mismo tono que "Quiénes somos" del home) ─ */
-.nosotros-seccion--gris { background: #eaedf0; border-top: none; padding: 3.5rem 2rem; }
-.nosotros-seccion--gris .nosotros-seccion-grid { max-width: 960px; margin: 0 auto; }
+.nosotros-seccion--gris { background: #eaedf0; }
 
-.catalogo-hero-subtitulo {
-  font-family: "Fraunces", Georgia, serif;
-  font-size: 1.5rem;
-  color: #eaf3f6;
-  line-height: 1.6;
-}
+/* ─── CATÁLOGO (barra de filtros horizontal + grid ancho) ─ */
+/* Mismo ancho de contenido que la Home (960px): wrapper con padding + inner con max-width, no max-width con padding en el mismo elemento (ver .container vs .seccion/.seccion-inner). */
+.catalogo-page { padding: 2.5rem 2rem; }
+.catalogo-inner { max-width: var(--ancho-contenido); margin: 0 auto; }
 
-/* ─── CATÁLOGO (layout de 2 columnas) ─────────────────── */
-.catalogo-page { max-width: 1600px; margin: 0 auto; padding: 2.5rem 2rem; }
-.catalogo-layout {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 2rem;
-  align-items: start;
-}
-.catalogo-filtros {
+.catalogo-filtros-barra {
   background: #fff;
   border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 1.25rem;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
 }
-.filtros-titulo { font-size: 1rem; margin-bottom: 1rem; }
-.filtro-grupo { margin-bottom: 1.25rem; }
-.filtro-grupo h3 {
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #666;
-  margin-bottom: 0.6rem;
-}
-.filtro-check {
-  display: flex;
+.catalogo-filtros-toggle {
+  display: none; /* solo visible en mobile, ver media query */
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.88rem;
-  margin-bottom: 0.4rem;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--navy);
+  text-align: left;
   cursor: pointer;
 }
-.filtro-grupo select,
-.filtro-buscar {
+.catalogo-filtros-toggle-icono { flex-shrink: 0; color: var(--navy); transition: transform 0.2s ease; }
+.catalogo-filtros-toggle[aria-expanded="true"] .catalogo-filtros-toggle-icono { transform: rotate(180deg); }
+
+.catalogo-filtros-campos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1.25rem 1.5rem;
+}
+.filtro-campo { display: flex; flex-direction: column; flex: 0 0 220px; }
+.filtro-campo label { margin-bottom: 0.35rem; font-size: 0.85rem; }
+.filtro-campo--buscar { flex: 1 1 280px; }
+/* Selector con más especificidad que las reglas globales de "select"/"input[type=text]"
+   (app/assets/stylesheets/application.css, sección FORMULARIOS) — con ".filtro-buscar"
+   a solas el input de búsqueda perdía contra esas reglas globales y quedaba con otro
+   tamaño de letra/padding/borde que los <select> de al lado. */
+.filtro-campo select,
+.filtro-campo input[type="text"] {
   width: 100%;
-  padding: 0.4rem 0.6rem;
+  height: 2.75rem;
+  padding: 0.5rem 0.7rem;
   border: 1px solid var(--border);
   border-radius: 4px;
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   background: #fff;
 }
+.filtro-buscar-wrap { position: relative; }
+/* Misma especificidad que la regla de arriba (.filtro-campo input[type="text"]) para
+   garantizar que gane por orden de aparición, sin depender de casualidades de cascada. */
+.filtro-campo input.filtro-buscar { padding-right: 2.4rem; }
+.filtro-buscar-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #666;
+  cursor: pointer;
+}
+.filtro-buscar-btn:hover { color: var(--ocean); }
 
 /* ─── COLLAGE DE PRODUCTOS (home) ─────────────────────── */
 .productos-collage {
@@ -538,7 +535,7 @@ h2 { font-size: 1.3rem; margin-bottom: 1rem; }
 /* ─── PRODUCTOS ───────────────────────────────────────── */
 .productos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   margin-bottom: 1rem;
 }
@@ -809,7 +806,7 @@ td a:hover { color: var(--ocean); }
   box-shadow: 0 6px 20px rgba(37, 211, 102, 0.25);
 }
 .whatsapp-cta h2 { color: #1b9e4f; margin-bottom: 0.5rem; font-size: 1.7rem; }
-.whatsapp-cta p { margin-bottom: 1.5rem; font-size: 1.05rem; }
+.whatsapp-cta p { margin-bottom: 1.5rem; font-size: 1.05rem; text-align: center; }
 .btn-whatsapp-grande { font-size: 1.25rem; padding: 1.2rem 3rem; }
 .whatsapp-cta-reinicio { color: #666; font-size: 0.85rem; margin: 1rem 0 0; }
 .datos-banco-nota { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
@@ -1210,6 +1207,7 @@ footer {
   font-size: 0.8rem;
   color: #555;
 }
+.footer-copy p { text-align: center; }
 
 /* ─── MODAL CARRITO ───────────────────────────────────── */
 .modal-carrito-overlay {
@@ -1429,10 +1427,15 @@ footer {
   .modal-carrito-body { flex-direction: column; }
   .modal-carrito-resumen { border-left: none; border-top: 1px solid var(--border); padding-left: 0; padding-top: 1rem; }
   .modal-carrito-acciones { flex-direction: column; }
-  .catalogo-hero { padding: 2.5rem 1.5rem 2.25rem; }
-  .catalogo-hero-titulo { font-size: 1.7rem; letter-spacing: 2px; }
-  .catalogo-hero-subtitulo { font-size: 0.92rem; }
-  .catalogo-layout { grid-template-columns: 1fr; }
+  .catalogo-filtros-toggle { display: flex; }
+  .catalogo-filtros-campos {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .filtro-campo { flex: 1 1 auto; }
+  .productos-grid { grid-template-columns: repeat(2, 1fr); }
   .producto-detalle { grid-template-columns: 1fr; }
   .carrito-layout { grid-template-columns: 1fr; }
   .carrito-resumen-card { position: static; }

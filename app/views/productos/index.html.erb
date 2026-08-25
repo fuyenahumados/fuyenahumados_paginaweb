@@ -1,77 +1,63 @@
 <% content_for :fluid, true %>
 <% content_for :show_footer, true %>
 
-<div class="catalogo-hero">
-  <div class="catalogo-hero-inner">
-    <div class="catalogo-hero-breadcrumb" role="navigation" aria-label="breadcrumb">
-      <%= link_to "Inicio", root_path %>
-      <span class="separador">›</span>
-      <span aria-current="page">Nuestros productos</span>
-    </div>
-    <h1 class="catalogo-hero-titulo">Nuestros productos</h1>
-    <p class="catalogo-hero-subtitulo">Salmón ahumado artesanal, premium</p>
-  </div>
-</div>
-
 <div class="catalogo-page">
-<div class="catalogo-layout">
-  <%= form_with url: productos_path, method: :get, data: { turbo_frame: "productos-grid", controller: "filtros" }, class: "catalogo-filtros" do |f| %>
-    <h2 class="filtros-titulo">Filtros</h2>
+  <div class="catalogo-inner">
+    <%= form_with url: productos_path, method: :get, data: { turbo_frame: "productos-grid", controller: "filtros colapsable" }, class: "catalogo-filtros-barra" do |f| %>
+      <button type="button" class="catalogo-filtros-toggle" data-action="colapsable#toggle" data-colapsable-target="boton" aria-expanded="true">
+        Filtros
+        <svg class="catalogo-filtros-toggle-icono" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
 
-    <div class="filtro-grupo">
-      <h3>Buscar</h3>
-      <%= f.text_field :buscar, value: params[:buscar], placeholder: "Nombre o descripción...", class: "filtro-buscar", "aria-label": "Buscar por nombre o descripción" %>
-    </div>
-
-    <div class="filtro-grupo">
-      <h3>Ordenar por</h3>
-      <%= f.select :orden,
-            [["Posición", ""], ["Precio: menor a mayor", "precio_asc"], ["Precio: mayor a menor", "precio_desc"], ["Nombre", "nombre"]],
-            { selected: params[:orden] },
-            { id: "orden", data: { action: "change->filtros#aplicar" } } %>
-    </div>
-
-    <div class="filtro-grupo">
-      <h3>Precio</h3>
-      <label class="filtro-check">
-        <%= radio_button_tag :precio_rango, "", params[:precio_rango].blank?, data: { action: "change->filtros#aplicar" } %>
-        Todos
-      </label>
-      <% ProductosController::RANGOS_PRECIO.each do |valor, label| %>
-        <label class="filtro-check">
-          <%= radio_button_tag :precio_rango, valor, params[:precio_rango] == valor, data: { action: "change->filtros#aplicar" } %>
-          <%= label %>
-        </label>
-      <% end %>
-    </div>
-
-    <div class="filtro-grupo">
-      <h3>Categoría</h3>
-      <label class="filtro-check">
-        <%= radio_button_tag :categoria, "", params[:categoria].blank?, data: { action: "change->filtros#aplicar" } %>
-        Todas
-      </label>
-      <% Product.categorias.keys.each do |cat| %>
-        <label class="filtro-check">
-          <%= radio_button_tag :categoria, cat, params[:categoria] == cat, data: { action: "change->filtros#aplicar" } %>
-          <%= categoria_label(cat) %>
-        </label>
-      <% end %>
-    </div>
-
-    <button type="submit" class="btn btn-ocean btn-sm">Aplicar filtros</button>
-  <% end %>
-
-  <div class="catalogo-contenido">
-    <%= turbo_frame_tag "productos-grid" do %>
-      <% if @products.empty? %>
-        <p class="empty-state">No hay productos que coincidan con los filtros.</p>
-      <% else %>
-        <div class="productos-grid">
-          <%= render partial: "productos/card", collection: @products, as: :product %>
+      <div class="catalogo-filtros-campos" data-colapsable-target="contenido">
+        <div class="filtro-campo filtro-campo--buscar">
+          <label for="buscar">Buscar</label>
+          <div class="filtro-buscar-wrap">
+            <%= f.text_field :buscar, value: params[:buscar], placeholder: "Buscar productos...", class: "filtro-buscar", "aria-label": "Buscar por nombre o descripción" %>
+            <button type="submit" class="filtro-buscar-btn" aria-label="Buscar">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
         </div>
-      <% end %>
+
+        <div class="filtro-campo">
+          <label for="orden">Ordenar por</label>
+          <%= f.select :orden,
+                [["Posición", ""],
+                 ["Precio: menor a mayor", "precio_asc"],
+                 ["Precio: mayor a menor", "precio_desc"],
+                 ["Nombre: A-Z", "nombre_asc"],
+                 ["Nombre: Z-A", "nombre_desc"],
+                 ["Más nuevos primero", "recientes"]],
+                { selected: params[:orden] },
+                { id: "orden", data: { action: "change->filtros#aplicar" } } %>
+        </div>
+
+        <div class="filtro-campo">
+          <label for="precio_rango">Precio</label>
+          <%= f.select :precio_rango,
+                options_for_select([["Todos", ""]] + ProductosController::RANGOS_PRECIO.map { |valor, label| [label, valor] }, params[:precio_rango]),
+                {},
+                { id: "precio_rango", data: { action: "change->filtros#aplicar" } } %>
+        </div>
+      </div>
     <% end %>
+
+    <div class="catalogo-contenido">
+      <%= turbo_frame_tag "productos-grid" do %>
+        <% if @products.empty? %>
+          <p class="empty-state">No hay productos que coincidan con los filtros.</p>
+        <% else %>
+          <div class="productos-grid">
+            <%= render partial: "productos/card", collection: @products, as: :product %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
   </div>
-</div>
 </div>
