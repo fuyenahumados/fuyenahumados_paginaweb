@@ -1,17 +1,12 @@
 <div class="auth-card">
   <h1>Recupera tu contraseña</h1>
-  <p class="auth-alt">Escribe tu email y te enviamos un link para elegir una nueva contraseña.</p>
 
-  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-    <%= render "devise/shared/error_messages", resource: resource %>
-
-    <div class="form-group">
-      <%= f.label :email, "Email" %>
-      <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-    </div>
-
-    <%= f.submit "Enviar instrucciones", class: "btn btn-primary auth-submit" %>
-  <% end %>
+  <div class="whatsapp-cta">
+    <p>Escríbenos por WhatsApp y te ayudamos a recuperar el acceso a tu cuenta.</p>
+    <%= link_to "Escribir por WhatsApp",
+          "https://wa.me/#{CONTACTO[:whatsapp]}?text=#{ERB::Util.url_encode('Hola, olvidé mi contraseña y necesito ayuda para recuperar el acceso a mi cuenta.')}",
+          target: "_blank", rel: "noopener", class: "btn btn-whatsapp btn-whatsapp-grande" %>
+  </div>
 
   <p class="auth-alt">
     <%= link_to "Volver a iniciar sesión", new_session_path(resource_name) %>

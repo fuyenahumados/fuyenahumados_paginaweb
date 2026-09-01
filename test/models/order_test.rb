@@ -174,4 +174,72 @@ class OrderTest < ActiveSupport::TestCase
       pedido.update!(notas: "actualización sin cambiar estado")
     end
   end
+
+  test "source por defecto es 'web'" do
+    pedido = crear_pedido
+    assert_equal "web", pedido.source
+    assert_not pedido.manual?
+  end
+
+  test "un pedido manual puede tener fecha de entrega anterior al próximo viernes hábil" do
+    producto = crear_producto(stock: 5)
+    pedido = Order.new(
+      source: "manual", nombre_contacto: "Test", apellido_contacto: "Cliente",
+      telefono_contacto: "+56911111111", email_contacto: "a@test.cl",
+      direccion_calle: "Calle 123", direccion_comuna: "Providencia",
+      fecha_entrega: viernes_valido - 7.days, total: 0
+    )
+    pedido.order_items.build(product: producto, cantidad: 1, precio_unitario: producto.precio)
+
+    assert pedido.valid?
+  end
+
+  test "un pedido web no puede tener fecha de entrega anterior al próximo viernes hábil, aunque tenga productos" do
+    producto = crear_producto(stock: 5)
+    pedido = Order.new(
+      nombre_contacto: "Test", apellido_contacto: "Cliente",
+      telefono_contacto: "+56911111111", email_contacto: "a@test.cl",
+      direccion_calle: "Calle 123", direccion_comuna: "Providencia",
+      fecha_entrega: viernes_valido - 7.days, total: 0
+    )
+    pedido.order_items.build(product: producto, cantidad: 1, precio_unitario: producto.precio)
+
+    assert_not pedido.valid?
+  end
+
+  test "un pedido manual requiere al menos un producto" do
+    pedido = Order.new(
+      source: "manual", nombre_contacto: "Test", apellido_contacto: "Cliente",
+      telefono_contacto: "+56911111111", email_contacto: "a@test.cl",
+      direccion_calle: "Calle 123", direccion_comuna: "Providencia",
+      fecha_entrega: viernes_valido, total: 0
+    )
+
+    assert_not pedido.valid?
+    assert_includes pedido.errors[:base], "Agrega al menos un producto."
+  end
+
+  test "un pedido manual valida que haya stock suficiente por producto" do
+    producto = crear_producto(stock: 2)
+    pedido = Order.new(
+      source: "manual", nombre_contacto: "Test", apellido_contacto: "Cliente",
+      telefono_contacto: "+56911111111", email_contacto: "a@test.cl",
+      direccion_calle: "Calle 123", direccion_comuna: "Providencia",
+      fecha_entrega: viernes_valido, total: 0
+    )
+    pedido.order_items.build(product: producto, cantidad: 5, precio_unitario: producto.precio)
+
+    assert_not pedido.valid?
+    assert pedido.errors[:base].any? { |m| m.include?("quedan 2 unidades") }
+  end
+
+  test "un pedido web no exige productos al validar (se agregan después, en el checkout)" do
+    pedido = Order.new(
+      nombre_contacto: "Test", apellido_contacto: "Cliente",
+      telefono_contacto: "+56911111111", email_contacto: "a@test.cl",
+      direccion_calle: "Calle 123", direccion_comuna: "Providencia",
+      fecha_entrega: viernes_valido, total: 0
+    )
+    assert pedido.valid?
+  end
 end

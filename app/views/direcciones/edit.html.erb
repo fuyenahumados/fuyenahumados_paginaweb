@@ -1,6 +1,6 @@
-<%= link_to "← Volver a mi perfil", perfil_path %>
+<%= link_to "← Volver a mi perfil", perfil_path, class: "volver-link" %>
 
-<h1 style="margin-top: 1.5rem;">Editar dirección</h1>
+<h1>Editar dirección</h1>
 
 <%= form_with model: @direccion, class: "form-admin" do |f| %>
   <% if @direccion.errors.any? %>

@@ -1,6 +1,6 @@
-<%= link_to "← Todos los pedidos", admin_pedidos_path %>
+<%= link_to "← Todos los pedidos", admin_pedidos_path, class: "volver-link" %>
 
-<div class="admin-header" style="margin-top: 1.5rem;">
+<div class="admin-header">
   <h1><%= @pedido.codigo_pedido %></h1>
   <%= estado_badge(@pedido.estado) %>
 </div>
@@ -14,7 +14,7 @@
         <dt>Email</dt>    <dd><%= @pedido.user.email %></dd>
       </dl>
     <% else %>
-      <p style="color:#666; font-size:0.85rem; margin-bottom:0.75rem;">Pedido de invitado — sin cuenta.</p>
+      <p class="nota-muted">Pedido de invitado — sin cuenta.</p>
       <dl>
         <dt>Nombre</dt> <dd><%= @pedido.nombre_completo_contacto %></dd>
         <dt>Email</dt>  <dd><%= @pedido.email_contacto %></dd>
@@ -35,11 +35,11 @@
         <% end %>
       </dl>
     <% elsif (direccion = @pedido.user.direccion_principal) %>
-      <p style="color:#666; font-size:0.85rem; margin-bottom:0.75rem;">Pedido anterior a los datos de envío por pedido — se muestra la dirección actual del perfil.</p>
+      <p class="nota-muted">Pedido anterior a los datos de envío por pedido — se muestra la dirección actual del perfil.</p>
       <dl>
         <dt>Teléfono</dt>  <dd><%= @pedido.user.telefono %></dd>
         <dt>Comuna</dt>    <dd><%= direccion.comuna %></dd>
-        <dt>Dirección</dt> <dd><%= direccion.calle %> <span style="color:#666;">(<%= direccion.etiqueta %>)</span></dd>
+        <dt>Dirección</dt> <dd><%= direccion.calle %> <span class="texto-muted">(<%= direccion.etiqueta %>)</span></dd>
         <% if direccion.numero_depto.present? %>
           <dt>Depto/Casa</dt> <dd><%= direccion.numero_depto %></dd>
         <% end %>
@@ -51,6 +51,9 @@
     <h2>Pedido</h2>
     <dl>
       <dt>Fecha</dt>          <dd><%= @pedido.created_at.strftime("%d/%m/%Y a las %H:%M") %></dd>
+      <% if @pedido.manual? %>
+        <dt>Origen</dt>       <dd><span class="badge badge-manual">Manual</span></dd>
+      <% end %>
       <dt>Día de entrega</dt> <dd>Viernes <%= @pedido.fecha_entrega.strftime("%d/%m/%Y") %></dd>
       <dt>Envío</dt>          <dd><%= @pedido.envio.zero? ? "Gratis" : formato_pesos(@pedido.envio) %></dd>
       <dt>Total</dt>          <dd><strong><%= formato_pesos(@pedido.total) %></strong></dd>
@@ -63,7 +66,7 @@
 
 <%= render "pedidos/items", pedido: @pedido %>
 
-<h2 style="margin-top: 2rem;">Historial de estados</h2>
+<h2 class="titulo-separado">Historial de estados</h2>
 <table>
   <thead>
     <tr>

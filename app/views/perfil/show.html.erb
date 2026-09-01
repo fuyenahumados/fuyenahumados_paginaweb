@@ -1,79 +1,103 @@
-<div class="page-header">
-  <h1>Mi perfil</h1>
-  <p class="page-header-desc">Tus datos y el historial de tus pedidos</p>
-</div>
+<div class="perfil-panel">
+  <div class="perfil-seccion">
+    <h2 class="perfil-seccion-titulo">Mis datos</h2>
+    <dl>
+      <dt>Nombre</dt>
+      <dd><%= current_user.nombre %></dd>
+      <dt>Apellido</dt>
+      <dd><%= current_user.apellido %></dd>
+      <dt>Email</dt>
+      <dd><%= current_user.email %></dd>
+      <dt>Teléfono</dt>
+      <dd><%= current_user.telefono %></dd>
+    </dl>
 
-<div class="admin-card" style="max-width: 560px; margin-bottom: 2.5rem;">
-  <h2>Mis datos</h2>
-  <dl>
-    <dt>Nombre</dt>
-    <dd><%= current_user.nombre %></dd>
-    <dt>Apellido</dt>
-    <dd><%= current_user.apellido %></dd>
-    <dt>Email</dt>
-    <dd><%= current_user.email %></dd>
-    <dt>Teléfono</dt>
-    <dd><%= current_user.telefono %></dd>
-  </dl>
-
-  <div class="acciones">
-    <%= link_to "Editar mis datos", editar_perfil_path, class: "btn btn-primary btn-sm" %>
-    <%= link_to "Cambiar email o contraseña", edit_user_registration_path, class: "btn btn-secondary btn-sm" %>
+    <div class="acciones">
+      <%= link_to "Editar datos", edit_user_registration_path, class: "btn btn-navy-grande" %>
+    </div>
   </div>
-</div>
 
-<div class="admin-header">
-  <h2 style="margin-bottom: 0;">Mis direcciones</h2>
-  <%= link_to "+ Nueva dirección", new_direccion_path, class: "btn btn-primary btn-sm" %>
-</div>
+  <div class="perfil-seccion perfil-seccion-gris">
+    <h2 class="perfil-seccion-titulo">Mis direcciones</h2>
 
-<% current_user.direcciones.each do |direccion| %>
-  <div class="direccion-card">
-    <div>
-      <div class="direccion-card-etiqueta">
-        <%= direccion.etiqueta %>
-        <% if direccion.principal? %>
-          <span class="badge-principal">(Principal)</span>
+    <% current_user.direcciones.each do |direccion| %>
+      <div class="direccion-card">
+        <div>
+          <div class="direccion-card-etiqueta">
+            <%= direccion.etiqueta %>
+            <% if direccion.principal? %>
+              <span class="badge-principal">(Principal)</span>
+            <% end %>
+          </div>
+          <div class="direccion-card-detalle"><%= direccion.direccion_completa %></div>
+        </div>
+        <div class="direccion-card-acciones">
+          <%= link_to "Editar", edit_direccion_path(direccion) %>
+          <% if current_user.direcciones.size > 1 %>
+            <%= button_to "Eliminar",
+                  direccion_path(direccion),
+                  method: :delete,
+                  class: "btn-link-danger",
+                  data: { turbo_confirm: "¿Eliminar la dirección \"#{direccion.etiqueta}\"?" } %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="acciones">
+      <%= link_to "Nueva dirección", new_direccion_path, class: "btn btn-navy-grande" %>
+    </div>
+  </div>
+
+  <div class="perfil-seccion">
+    <h2 class="perfil-seccion-titulo">Mis pedidos</h2>
+
+    <% if @pedidos.any? %>
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th class="text-right">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @pedidos.each do |pedido| %>
+            <tr>
+              <td><%= link_to pedido.codigo_pedido, pedido_publico_path(pedido.codigo_pedido) %></td>
+              <td><%= pedido.created_at.strftime("%d-%m-%Y") %></td>
+              <td><%= estado_badge(pedido.estado) %></td>
+              <td class="text-right"><%= formato_pesos(pedido.total) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="empty-state">Todavía no has hecho ningún pedido.</p>
+    <% end %>
+  </div>
+
+  <div class="perfil-seccion perfil-seccion-gris">
+    <h2 class="perfil-seccion-titulo">Mis reseñas</h2>
+
+    <% if @resenas.any? %>
+      <div class="resenas-lista">
+        <% @resenas.each do |resena| %>
+          <div class="resena-item">
+            <div class="resena-item-header">
+              <%= link_to resena.product.nombre, producto_path(resena.product) %>
+              <%= render "shared/estrellas", calificacion: resena.calificacion %>
+              <span class="resena-fecha"><%= resena.created_at.strftime("%d/%m/%Y") %></span>
+            </div>
+            <% if resena.comentario.present? %>
+              <p class="resena-comentario"><%= resena.comentario %></p>
+            <% end %>
+          </div>
         <% end %>
       </div>
-      <div class="direccion-card-detalle"><%= direccion.direccion_completa %></div>
-    </div>
-    <div class="direccion-card-acciones">
-      <%= link_to "Editar", edit_direccion_path(direccion) %>
-      <% if current_user.direcciones.size > 1 %>
-        <%= button_to "Eliminar",
-              direccion_path(direccion),
-              method: :delete,
-              class: "btn-link-danger",
-              data: { turbo_confirm: "¿Eliminar la dirección \"#{direccion.etiqueta}\"?" } %>
-      <% end %>
-    </div>
+    <% else %>
+      <p class="empty-state">Todavía no has dejado ninguna reseña.</p>
+    <% end %>
   </div>
-<% end %>
-
-<h2>Mis pedidos</h2>
-
-<% if @pedidos.any? %>
-  <table>
-    <thead>
-      <tr>
-        <th>Código</th>
-        <th>Fecha</th>
-        <th>Estado</th>
-        <th class="text-right">Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @pedidos.each do |pedido| %>
-        <tr>
-          <td><%= link_to pedido.codigo_pedido, pedido_publico_path(pedido.codigo_pedido) %></td>
-          <td><%= pedido.created_at.strftime("%d-%m-%Y") %></td>
-          <td><%= estado_badge(pedido.estado) %></td>
-          <td class="text-right"><%= formato_pesos(pedido.total) %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <p class="empty-state">Todavía no has hecho ningún pedido.</p>
-<% end %>
+</div>

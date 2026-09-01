@@ -18,15 +18,29 @@ class PerfilDireccionesTest < ActionDispatch::IntegrationTest
   end
 
   test "editar los datos propios" do
-    patch perfil_path, params: { user: { nombre: "Nuevo Nombre", apellido: @cliente.apellido, telefono: @cliente.telefono } }
+    patch user_registration_path, params: { user: {
+      nombre: "Nuevo Nombre", apellido: @cliente.apellido, telefono: @cliente.telefono,
+      email: @cliente.email, current_password: "password123"
+    } }
     assert_redirected_to perfil_path
     assert_equal "Nuevo Nombre", @cliente.reload.nombre
   end
 
   test "no se puede dejar el teléfono con formato inválido" do
-    patch perfil_path, params: { user: { nombre: @cliente.nombre, apellido: @cliente.apellido, telefono: "abc" } }
+    patch user_registration_path, params: { user: {
+      nombre: @cliente.nombre, apellido: @cliente.apellido, telefono: "abc",
+      email: @cliente.email, current_password: "password123"
+    } }
     assert_response :unprocessable_entity
     assert_equal "+56911111111", @cliente.reload.telefono
+  end
+
+  test "no se pueden editar los datos sin la contraseña actual" do
+    patch user_registration_path, params: { user: {
+      nombre: "Nuevo Nombre", apellido: @cliente.apellido, telefono: @cliente.telefono, email: @cliente.email
+    } }
+    assert_response :unprocessable_entity
+    assert_equal @cliente.nombre, @cliente.reload.nombre
   end
 
   test "formulario de nueva dirección" do

@@ -1,63 +1,83 @@
-<%= link_to "← Todos los usuarios", admin_users_path %>
+<%= link_to "← Todos los usuarios", admin_users_path, class: "volver-link" %>
 
-<div class="admin-header" style="margin-top: 1.5rem;">
-  <h1><%= @usuario.nombre_completo %></h1>
-  <%= button_to "Eliminar usuario",
-        admin_user_path(@usuario),
-        method: :delete,
-        class: "btn btn-danger",
-        data: { turbo_confirm: "¿Eliminar a #{@usuario.nombre_completo}? Esta acción no se puede deshacer." } %>
-</div>
+<div class="perfil-panel">
+  <div class="perfil-seccion">
+    <h2 class="perfil-seccion-titulo">Datos del cliente</h2>
+    <dl>
+      <dt>Nombre</dt>
+      <dd><%= @usuario.nombre_completo %></dd>
+      <dt>Email</dt>
+      <dd><%= @usuario.email %></dd>
+      <dt>Teléfono</dt>
+      <dd><%= @usuario.telefono %></dd>
+      <dt>Cliente desde</dt>
+      <dd><%= @usuario.created_at.strftime("%d/%m/%Y") %></dd>
+    </dl>
 
-<div class="admin-card" style="max-width: 560px; margin-bottom: 2rem;">
-  <h2>Datos del cliente</h2>
-  <dl>
-    <dt>Email</dt>      <dd><%= @usuario.email %></dd>
-    <dt>Teléfono</dt>   <dd><%= @usuario.telefono %></dd>
-    <dt>Cliente desde</dt> <dd><%= @usuario.created_at.strftime("%d/%m/%Y") %></dd>
-  </dl>
-</div>
-
-<h2>Direcciones</h2>
-<% @usuario.direcciones.each do |direccion| %>
-  <div class="direccion-card">
-    <div>
-      <div class="direccion-card-etiqueta">
-        <%= direccion.etiqueta %>
-        <% if direccion.principal? %>
-          <span class="badge-principal">(Principal)</span>
-        <% end %>
-      </div>
-      <div class="direccion-card-detalle"><%= direccion.direccion_completa %></div>
+    <div class="acciones">
+      <%= button_to "Resetear contraseña",
+            resetear_password_admin_user_path(@usuario),
+            method: :patch,
+            class: "btn btn-primary",
+            data: { turbo_confirm: "¿Resetear la contraseña de #{@usuario.nombre_completo}? Se genera una nueva para pasarle por WhatsApp." } %>
+      <%= button_to "Eliminar usuario",
+            admin_user_path(@usuario),
+            method: :delete,
+            class: "btn-link-danger",
+            data: { turbo_confirm: "¿Eliminar a #{@usuario.nombre_completo}? Esta acción no se puede deshacer." } %>
     </div>
   </div>
-<% end %>
 
-<h2>Pedidos</h2>
+  <div class="perfil-seccion perfil-seccion-gris">
+    <h2 class="perfil-seccion-titulo">Direcciones</h2>
 
-<% if @pedidos.empty? %>
-  <p class="empty-state">Este cliente todavía no ha hecho pedidos.</p>
-<% else %>
-  <table>
-    <thead>
-      <tr>
-        <th>Código</th>
-        <th>Fecha</th>
-        <th>Estado</th>
-        <th class="text-right">Total</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @pedidos.each do |pedido| %>
-        <tr>
-          <td><%= pedido.codigo_pedido %></td>
-          <td><%= pedido.created_at.strftime("%d/%m/%Y") %></td>
-          <td><%= estado_badge(pedido.estado) %></td>
-          <td class="text-right"><%= formato_pesos(pedido.total) %></td>
-          <td><%= link_to "Ver Pedido", admin_pedido_path(pedido) %></td>
-        </tr>
+    <% if @usuario.direcciones.any? %>
+      <% @usuario.direcciones.each do |direccion| %>
+        <div class="direccion-card">
+          <div>
+            <div class="direccion-card-etiqueta">
+              <%= direccion.etiqueta %>
+              <% if direccion.principal? %>
+                <span class="badge-principal">(Principal)</span>
+              <% end %>
+            </div>
+            <div class="direccion-card-detalle"><%= direccion.direccion_completa %></div>
+          </div>
+        </div>
       <% end %>
-    </tbody>
-  </table>
-<% end %>
+    <% else %>
+      <p class="empty-state">Este cliente todavía no tiene direcciones guardadas.</p>
+    <% end %>
+  </div>
+
+  <div class="perfil-seccion">
+    <h2 class="perfil-seccion-titulo">Pedidos</h2>
+
+    <% if @pedidos.empty? %>
+      <p class="empty-state">Este cliente todavía no ha hecho pedidos.</p>
+    <% else %>
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th class="text-right">Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @pedidos.each do |pedido| %>
+            <tr>
+              <td><%= pedido.codigo_pedido %></td>
+              <td><%= pedido.created_at.strftime("%d/%m/%Y") %></td>
+              <td><%= estado_badge(pedido.estado) %></td>
+              <td class="text-right"><%= formato_pesos(pedido.total) %></td>
+              <td><%= link_to "Ver Pedido", admin_pedido_path(pedido) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>

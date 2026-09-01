@@ -2,8 +2,23 @@
   <h1>Usuarios</h1>
 </div>
 
+<%= form_with url: admin_users_path, method: :get, class: "admin-buscador" do %>
+  <div class="admin-buscador-wrap">
+    <%= text_field_tag :buscar, @buscar, placeholder: "Buscar por nombre, email o teléfono..." %>
+    <button type="submit" class="admin-buscador-btn" aria-label="Buscar">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <% if @buscar.present? %>
+    <%= link_to "Ver todos", admin_users_path, class: "carrito-resumen-seguir" %>
+  <% end %>
+<% end %>
+
 <% if @usuarios.empty? %>
-  <p class="empty-state">No hay clientes registrados aún.</p>
+  <p class="empty-state"><%= @buscar.present? ? "No hay clientes que coincidan con la búsqueda." : "No hay clientes registrados aún." %></p>
 <% else %>
   <table>
     <thead>

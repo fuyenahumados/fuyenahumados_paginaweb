@@ -1,0 +1,13 @@
+<div class="pedido-item-fila" data-pedido-items-target="fila">
+  <div class="form-group">
+    <%= f.select :product_id,
+          productos.map { |p| [ p.nombre, p.id, { "data-precio": p.precio.to_i } ] },
+          { include_blank: "Selecciona un producto" },
+          data: { action: "pedido-items#actualizar" } %>
+  </div>
+  <div class="form-group">
+    <%= f.number_field :cantidad, min: 1, value: f.object.cantidad || 1, data: { action: "pedido-items#actualizar" } %>
+  </div>
+  <span class="pedido-item-subtotal" data-pedido-items-target="subtotal">$0</span>
+  <button type="button" class="btn-link-danger" data-action="pedido-items#quitar">Quitar</button>
+</div>

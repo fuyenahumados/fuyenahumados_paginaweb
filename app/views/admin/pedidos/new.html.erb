@@ -1,0 +1,120 @@
+<%= link_to "← Todos los pedidos", admin_pedidos_path, class: "volver-link" %>
+
+<div class="admin-header">
+  <h1>Nuevo pedido manual</h1>
+</div>
+
+<% if @order.errors.any? %>
+  <div class="form-errores">
+    <ul>
+      <% @order.errors.full_messages.each do |mensaje| %>
+        <li><%= mensaje %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: @order, url: admin_pedidos_path, class: "pedido-manual-form", data: { controller: "pedido-cliente" } do |f| %>
+  <div class="admin-card">
+    <h2>Cliente</h2>
+    <div class="form-group">
+      <%= f.label :user_id, "Cliente existente" %>
+      <%= f.select :user_id,
+            @clientes.map { |c|
+              [ "#{c.nombre_completo} — #{c.telefono}", c.id, {
+                "data-nombre": c.nombre, "data-apellido": c.apellido, "data-telefono": c.telefono,
+                "data-email": c.email, "data-calle": c.direccion_principal&.calle,
+                "data-comuna": c.direccion_principal&.comuna, "data-numero-depto": c.direccion_principal&.numero_depto
+              } ]
+            },
+            { include_blank: "Cliente nuevo (sin cuenta)" },
+            data: { pedido_cliente_target: "select", action: "pedido-cliente#aplicar" } %>
+    </div>
+
+    <div class="form-grid-2">
+      <div class="form-group">
+        <%= f.label :nombre_contacto, "Nombre" %>
+        <%= f.text_field :nombre_contacto, data: { pedido_cliente_target: "nombre" } %>
+      </div>
+      <div class="form-group">
+        <%= f.label :apellido_contacto, "Apellido" %>
+        <%= f.text_field :apellido_contacto, data: { pedido_cliente_target: "apellido" } %>
+      </div>
+    </div>
+
+    <div class="form-grid-2">
+      <div class="form-group">
+        <%= f.label :telefono_contacto, "Teléfono" %>
+        <%= f.text_field :telefono_contacto, data: { pedido_cliente_target: "telefono" } %>
+      </div>
+      <div class="form-group">
+        <%= f.label :email_contacto, "Email" %>
+        <%= f.email_field :email_contacto, data: { pedido_cliente_target: "email" } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <h2>Dirección de entrega</h2>
+    <div class="form-grid-2">
+      <div class="form-group">
+        <%= f.label :direccion_calle, "Calle y número" %>
+        <%= f.text_field :direccion_calle, data: { pedido_cliente_target: "calle" } %>
+      </div>
+      <div class="form-group">
+        <%= f.label :direccion_comuna, "Comuna" %>
+        <%= f.select :direccion_comuna, Direccion::COMUNAS, { include_blank: "Selecciona una comuna" },
+              data: { pedido_cliente_target: "comuna" } %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :direccion_numero_depto, "Número de casa o departamento (opcional)" %>
+      <%= f.text_field :direccion_numero_depto, data: { pedido_cliente_target: "numeroDepto" } %>
+    </div>
+  </div>
+
+  <div class="admin-card" data-controller="pedido-items">
+    <h2>Productos</h2>
+
+    <div data-pedido-items-target="filas">
+      <% f.fields_for :order_items do |item_f| %>
+        <%= render "item_fields", f: item_f, productos: @productos %>
+      <% end %>
+    </div>
+
+    <template data-pedido-items-target="template">
+      <%= f.fields_for :order_items, Order.new.order_items.build, child_index: "NEW_RECORD" do |item_f| %>
+        <%= render "item_fields", f: item_f, productos: @productos %>
+      <% end %>
+    </template>
+
+    <button type="button" class="btn btn-secondary" data-action="pedido-items#agregar">+ Agregar producto</button>
+
+    <p class="pedido-items-total">Total estimado: <strong data-pedido-items-target="total">$0</strong></p>
+  </div>
+
+  <div class="admin-card">
+    <h2>Detalles del pedido</h2>
+    <div class="form-grid-2">
+      <div class="form-group">
+        <%= f.label :estado, "Estado inicial" %>
+        <%= f.select :estado, Order.estados.keys.map { |e| [ estado_label(e), e ] } %>
+      </div>
+      <div class="form-group">
+        <%= f.label :fecha_entrega, "Fecha de entrega" %>
+        <%= render "shared/selector_viernes",
+              name: "order[fecha_entrega]", id: "order_fecha_entrega",
+              value: @proximo_viernes.iso8601, min: nil %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :notas, "Notas / observaciones" %>
+      <%= f.text_area :notas, rows: 3 %>
+    </div>
+  </div>
+
+  <div class="acciones">
+    <%= f.submit "Crear pedido manual", class: "btn btn-primary" %>
+    <%= link_to "Cancelar", admin_pedidos_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

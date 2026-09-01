@@ -2,21 +2,64 @@
   <h1>Pedidos</h1>
 </div>
 
-<%= form_with url: exportar_admin_pedidos_path, method: :get, data: { turbo: false }, class: "exportar-excel-form" do %>
-  <label for="fecha_despacho">Fecha de despacho</label>
-  <%= render "shared/selector_viernes",
-        name: "fecha_despacho",
-        id: "fecha_despacho",
-        value: @proximo_despacho.iso8601,
-        min: nil %>
-  <%= submit_tag "Descargar Excel de despacho", class: "btn btn-ocean btn-sm" %>
-  <p style="color:#666; font-size:0.85rem; margin:0.25rem 0 0;">
-    Descarga solo los pedidos cuya fecha de entrega es la elegida.
-  </p>
+<div class="acciones">
+  <%= link_to "Nuevo pedido manual", new_admin_pedido_path, class: "btn btn-primary" %>
+</div>
+
+<%= form_with url: admin_pedidos_path, method: :get, class: "admin-buscador" do %>
+  <div class="admin-buscador-wrap">
+    <%= text_field_tag :buscar, @buscar, placeholder: "Buscar por código, cliente o email..." %>
+    <button type="submit" class="admin-buscador-btn" aria-label="Buscar">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <% if @buscar.present? %>
+    <%= link_to "Ver todos", admin_pedidos_path, class: "carrito-resumen-seguir" %>
+  <% end %>
 <% end %>
 
+<div class="admin-herramientas">
+  <%= form_with url: admin_pedidos_path, method: :get, class: "admin-herramienta" do %>
+    <label for="fecha">Filtrar por fecha de entrega</label>
+    <div class="admin-herramienta-controles">
+      <%= render "shared/selector_viernes",
+            name: "fecha",
+            id: "fecha",
+            value: @fecha_filtro&.iso8601,
+            min: nil %>
+      <%= submit_tag "Filtrar", class: "btn btn-primary" %>
+    </div>
+    <% if @fecha_filtro.present? %>
+      <%= link_to "Ver todos", admin_pedidos_path, class: "carrito-resumen-seguir" %>
+    <% end %>
+  <% end %>
+
+  <%= form_with url: exportar_admin_pedidos_path, method: :get, data: { turbo: false }, class: "admin-herramienta" do %>
+    <label for="fecha_despacho">Descargar Excel de despacho</label>
+    <div class="admin-herramienta-controles">
+      <%= render "shared/selector_viernes",
+            name: "fecha_despacho",
+            id: "fecha_despacho",
+            value: @proximo_despacho.iso8601,
+            min: nil %>
+      <%= submit_tag "Descargar", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
+
 <% if @pedidos.empty? %>
-  <p class="empty-state">No hay pedidos aún.</p>
+  <p class="empty-state">
+    <% if @buscar.present? %>
+      No hay pedidos que coincidan con la búsqueda.
+    <% elsif @fecha_filtro.present? %>
+      No hay pedidos con esa fecha de entrega.
+    <% else %>
+      No hay pedidos aún.
+    <% end %>
+  </p>
 <% else %>
   <table>
     <thead>
@@ -34,12 +77,15 @@
     <tbody>
       <% @pedidos.each do |pedido| %>
         <tr>
-          <td><%= pedido.codigo_pedido %></td>
+          <td>
+            <%= pedido.codigo_pedido %>
+            <% if pedido.manual? %><span class="badge badge-manual">Manual</span><% end %>
+          </td>
           <td>
             <% if pedido.user.present? %>
               <%= link_to pedido.user.nombre_completo, admin_user_path(pedido.user) %>
             <% else %>
-              <%= pedido.nombre_completo_contacto %> <span style="color:#666;">(invitado)</span>
+              <%= pedido.nombre_completo_contacto %> <span class="texto-muted">(invitado)</span>
             <% end %>
           </td>
           <td><%= pedido.created_at.strftime("%d/%m/%Y %H:%M") %></td>

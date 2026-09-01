@@ -1,4 +1,4 @@
-<%= form_with model: @order, url: checkout_path, method: :post, data: { controller: "checkout-resumen checkout-requisitos" } do |f| %>
+<%= form_with model: @order, url: checkout_path, method: :post, data: { controller: "checkout-resumen" } do |f| %>
   <div class="checkout-seccion">
     <h1>Completa la información para tu pedido</h1>
 
@@ -12,32 +12,38 @@
       </div>
     <% end %>
 
-    <div class="form-grid-2">
-      <div class="form-group">
-        <%= f.label :nombre_contacto, "Nombre" %>
-        <%= f.text_field :nombre_contacto %>
+    <div class="checkout-subseccion">
+      <h3 class="checkout-subseccion-titulo">Información de contacto</h3>
+
+      <div class="form-grid-2">
+        <div class="form-group" data-controller="campo-requerido" data-action="input->campo-requerido#verificar">
+          <%= f.label :nombre_contacto do %>Nombre <span class="campo-requerido-marca" data-campo-requerido-target="marca">*</span><% end %>
+          <%= f.text_field :nombre_contacto %>
+        </div>
+        <div class="form-group" data-controller="campo-requerido" data-action="input->campo-requerido#verificar">
+          <%= f.label :apellido_contacto do %>Apellido <span class="campo-requerido-marca" data-campo-requerido-target="marca">*</span><% end %>
+          <%= f.text_field :apellido_contacto %>
+        </div>
       </div>
-      <div class="form-group">
-        <%= f.label :apellido_contacto, "Apellido" %>
-        <%= f.text_field :apellido_contacto %>
+
+      <div class="form-grid-2">
+        <div class="form-group" data-controller="campo-requerido" data-action="input->campo-requerido#verificar">
+          <%= f.label :telefono_contacto do %>Teléfono <span class="campo-requerido-marca" data-campo-requerido-target="marca">*</span><% end %>
+          <%= f.text_field :telefono_contacto %>
+        </div>
+        <div class="form-group" data-controller="campo-requerido" data-action="input->campo-requerido#verificar">
+          <%= f.label :email_contacto do %>Email <span class="campo-requerido-marca" data-campo-requerido-target="marca">*</span><% end %>
+          <%= f.email_field :email_contacto %>
+        </div>
       </div>
     </div>
 
-    <div class="form-grid-2">
-      <div class="form-group">
-        <%= f.label :telefono_contacto, "Teléfono" %>
-        <%= f.text_field :telefono_contacto %>
-      </div>
-      <div class="form-group">
-        <%= f.label :email_contacto, "Email" %>
-        <%= f.email_field :email_contacto %>
-      </div>
-    </div>
+    <div class="checkout-subseccion" data-controller="direccion-selector">
+      <h3 class="checkout-subseccion-titulo">Dirección de entrega</h3>
 
-    <div data-controller="direccion-selector">
       <% if @direcciones.any? %>
         <div class="form-group">
-          <label>Dirección de entrega</label>
+          <label>Dirección guardada</label>
           <div class="direcciones-guardadas">
             <% @direcciones.each do |direccion| %>
               <label class="direccion-guardada-opcion">
@@ -59,15 +65,15 @@
       <% end %>
 
       <div class="form-grid-2">
-        <div class="form-group">
-          <%= f.label :direccion_calle, "Calle y número" %>
+        <div class="form-group" data-controller="campo-requerido" data-action="input->campo-requerido#verificar">
+          <%= f.label :direccion_calle do %>Calle y número <span class="campo-requerido-marca" data-campo-requerido-target="marca">*</span><% end %>
           <%= f.text_field :direccion_calle, data: {
                 "direccion-selector-target": "calle", "checkout-resumen-target": "calle",
                 action: "input->checkout-resumen#actualizarDireccion"
               } %>
         </div>
-        <div class="form-group">
-          <%= f.label :direccion_comuna, "Comuna" %>
+        <div class="form-group" data-controller="campo-requerido" data-action="change->campo-requerido#verificar">
+          <%= f.label :direccion_comuna do %>Comuna <span class="campo-requerido-marca" data-campo-requerido-target="marca">*</span><% end %>
           <%= f.select :direccion_comuna, Direccion::COMUNAS, { prompt: "Selecciona una comuna" }, data: {
                 "direccion-selector-target": "comuna", "checkout-resumen-target": "comuna",
                 action: "change->checkout-resumen#actualizarDireccion"
@@ -83,86 +89,95 @@
             } %>
         <small class="field-hint">Solo si tu casa o depto tiene un número aparte del de la calle (ej: "Depto 56", "Casa 12"). Si tu dirección ya es completa tal cual, déjalo en blanco. Se completa solo si eliges una dirección guardada, pero puedes corregirlo.</small>
       </div>
+
+      <div class="form-group">
+        <%= f.label :notas, "Instrucciones de entrega (opcional)" %>
+        <%= f.text_area :notas, rows: 3, placeholder: "Ej: dejar en conserjería, timbre 2, etc.", data: { "checkout-resumen-target": "notas", action: "input->checkout-resumen#actualizarNotas" } %>
+      </div>
     </div>
 
-    <div class="form-group" data-action="change->checkout-resumen#actualizarFecha">
-      <%= f.label :fecha_entrega, "Fecha de entrega" %>
-      <%= render "shared/selector_viernes",
-            name: "order[fecha_entrega]",
-            id: "order_fecha_entrega",
-            value: @order.fecha_entrega&.iso8601,
-            min: Order.proximo_viernes_habil.iso8601 %>
-    </div>
+    <div class="checkout-subseccion">
+      <h3 class="checkout-subseccion-titulo">Fecha de entrega</h3>
 
-    <div class="form-group">
-      <%= f.label :notas, "Instrucciones de entrega (opcional)" %>
-      <%= f.text_area :notas, rows: 3, placeholder: "Ej: dejar en conserjería, timbre 2, etc.", data: { "checkout-resumen-target": "notas", action: "input->checkout-resumen#actualizarNotas" } %>
+      <div class="form-group" data-controller="campo-requerido" data-action="change->checkout-resumen#actualizarFecha change->campo-requerido#verificar">
+        <%= f.label :fecha_entrega do %>Fecha de entrega <span class="campo-requerido-marca" data-campo-requerido-target="marca">*</span><% end %>
+        <%= render "shared/selector_viernes",
+              name: "order[fecha_entrega]",
+              id: "order_fecha_entrega",
+              value: @order.fecha_entrega&.iso8601,
+              min: Order.proximo_viernes_habil.iso8601 %>
+      </div>
     </div>
   </div>
 
-  <div class="checkout-seccion">
-    <h2 class="checkout-seccion-titulo">Resumen de tu pedido</h2>
+  <div class="checkout-seccion" data-controller="colapsable">
+    <h2 class="checkout-seccion-titulo">
+      <button type="button" class="checkout-seccion-toggle" data-action="colapsable#toggle" data-colapsable-target="boton" aria-expanded="true">
+        Resumen de tu pedido
+        <svg class="checkout-seccion-toggle-icono" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </h2>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Producto</th>
-          <th>Cantidad</th>
-          <th>Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% carrito_items.each do |item| %>
+    <div data-colapsable-target="contenido">
+      <table>
+        <thead>
           <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% carrito_items.each do |item| %>
+            <tr>
+              <td>
+                <%= item[:product].nombre %>
+                <% if item[:product].peso_descripcion.present? %>
+                  <br><small class="checkout-item-peso"><%= item[:product].peso_descripcion %></small>
+                <% end %>
+              </td>
+              <td><%= item[:cantidad] %></td>
+              <td><%= number_to_currency(item[:subtotal], unit: "$", separator: ",", delimiter: ".", precision: 0) %></td>
+            </tr>
+          <% end %>
+          <tr>
+            <td colspan="2">Envío</td>
             <td>
-              <%= item[:product].nombre %>
-              <% if item[:product].peso_descripcion.present? %>
-                <br><small class="checkout-item-peso"><%= item[:product].peso_descripcion %></small>
+              <% if carrito_envio.zero? %>
+                <span class="envio-gratis">Gratis</span>
+              <% else %>
+                <%= number_to_currency(carrito_envio, unit: "$", separator: ",", delimiter: ".", precision: 0) %>
               <% end %>
             </td>
-            <td><%= item[:cantidad] %></td>
-            <td><%= number_to_currency(item[:subtotal], unit: "$", separator: ",", delimiter: ".", precision: 0) %></td>
           </tr>
-        <% end %>
-        <tr>
-          <td colspan="2">Envío</td>
-          <td>
-            <% if carrito_envio.zero? %>
-              <span class="envio-gratis">Gratis</span>
-            <% else %>
-              <%= number_to_currency(carrito_envio, unit: "$", separator: ",", delimiter: ".", precision: 0) %>
-            <% end %>
-          </td>
-        </tr>
-        <tr class="total-row">
-          <td colspan="2">Total a transferir</td>
-          <td><%= number_to_currency(carrito_gran_total, unit: "$", separator: ",", delimiter: ".", precision: 0) %></td>
-        </tr>
-      </tbody>
-    </table>
-    <% if carrito_envio.positive? %>
-      <p class="checkout-envio-nota">
-        Envío gratis en compras desde <%= number_to_currency(CostoEnvio::GRATIS_DESDE, unit: "$", separator: ",", delimiter: ".", precision: 0) %>.
-      </p>
-    <% end %>
+          <tr class="total-row">
+            <td colspan="2">Total a transferir</td>
+            <td><%= number_to_currency(carrito_gran_total, unit: "$", separator: ",", delimiter: ".", precision: 0) %></td>
+          </tr>
+        </tbody>
+      </table>
+      <% if carrito_envio.positive? %>
+        <p class="checkout-envio-nota">
+          Envío gratis en compras desde <%= number_to_currency(CostoEnvio::GRATIS_DESDE, unit: "$", separator: ",", delimiter: ".", precision: 0) %>.
+        </p>
+      <% end %>
 
-    <div class="checkout-resumen-datos">
-      <div class="checkout-resumen-dato">
-        <span>Dirección de entrega</span>
-        <span data-checkout-resumen-target="resumenDireccion">—</span>
+      <div class="checkout-resumen-datos">
+        <div class="checkout-resumen-dato">
+          <span>Dirección de entrega</span>
+          <span data-checkout-resumen-target="resumenDireccion">—</span>
+        </div>
+        <div class="checkout-resumen-dato">
+          <span>Fecha de despacho</span>
+          <span data-checkout-resumen-target="resumenFecha">—</span>
+        </div>
+        <div class="checkout-resumen-dato" data-checkout-resumen-target="resumenNotasFila" hidden>
+          <span>Instrucciones</span>
+          <span data-checkout-resumen-target="resumenNotasTexto"></span>
+        </div>
       </div>
-      <div class="checkout-resumen-dato">
-        <span>Fecha de despacho</span>
-        <span data-checkout-resumen-target="resumenFecha">—</span>
-      </div>
-      <div class="checkout-resumen-dato" data-checkout-resumen-target="resumenNotasFila" hidden>
-        <span>Instrucciones</span>
-        <span data-checkout-resumen-target="resumenNotasTexto"></span>
-      </div>
-    </div>
-
-    <div class="checkout-requisitos-aviso" data-checkout-requisitos-target="aviso" hidden>
-      Antes de confirmar, completa: <strong data-checkout-requisitos-target="lista"></strong>
     </div>
 
     <div class="checkout-acciones">

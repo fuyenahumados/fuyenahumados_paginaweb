@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: { registrations: "users/registrations" }
 
   get "acceso/:token", to: "acceso#entrar",   as: :acceso
   get "acceso",        to: "acceso#invalido",  as: :acceso_invalido
@@ -17,15 +17,13 @@ Rails.application.routes.draw do
   get  "mi-pedido/:codigo",           to: "pedidos_publicos#show",      as: :pedido_publico
   get  "mi-pedido/:codigo/descargar", to: "pedidos_publicos#descargar", as: :descargar_pedido_publico
 
-  get   "perfil",         to: "perfil#show",   as: :perfil
-  get   "perfil/editar",  to: "perfil#edit",   as: :editar_perfil
-  patch "perfil",         to: "perfil#update"
+  get "perfil", to: "perfil#show", as: :perfil
 
   resources :direcciones, only: [ :new, :create, :edit, :update, :destroy ]
 
   namespace :admin do
     root to: "pedidos#index"
-    resources :pedidos, only: [ :index, :show ] do
+    resources :pedidos, only: [ :index, :show, :new, :create ] do
       member do
         patch :avanzar_estado
         patch :cancelar
@@ -35,7 +33,11 @@ Rails.application.routes.draw do
       end
     end
     resources :products, only: [ :index, :new, :create, :edit, :update, :destroy ]
-    resources :users,    only: [ :index, :show, :destroy ]
+    resources :users,    only: [ :index, :show, :destroy ] do
+      member do
+        patch :resetear_password
+      end
+    end
   end
 
   resources :productos, only: [ :index, :show ] do

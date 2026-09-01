@@ -213,6 +213,23 @@ p { text-align: justify; }
 .auth-alt a:hover { text-decoration: underline; }
 .field-hint { display: block; font-size: 0.78rem; color: #666; margin-bottom: 0.25rem; }
 
+/* Registrarse: letra más grande y clara — este formulario es más largo que el
+   resto de las pantallas de auth (nombre/apellido/email/teléfono/dirección/
+   contraseña) y quedaba con la letra chica por defecto de FORMULARIOS. Solo
+   afecta esta página, no el resto de `.auth-card` (login, recuperar contraseña). */
+.auth-card--registro label { font-size: 1.05rem; color: #444; }
+.auth-card--registro input[type="text"],
+.auth-card--registro input[type="email"],
+.auth-card--registro input[type="tel"],
+.auth-card--registro input[type="password"],
+.auth-card--registro select {
+  font-size: 1.05rem;
+  padding: 0.75rem;
+}
+.auth-card--registro .field-hint { font-size: 0.88rem; }
+.auth-card--registro .auth-alt { font-size: 1rem; }
+.auth-card--registro .auth-submit { font-size: 1.05rem; }
+
 /* ─── HERO ────────────────────────────────────────────── */
 .hero {
   position: relative;
@@ -627,11 +644,16 @@ p { text-align: justify; }
 .stepper-cantidad { min-width: 1.5rem; text-align: center; font-weight: bold; color: var(--ink); }
 
 /* ─── DETALLE DE PRODUCTO ─────────────────────────────── */
+/* 3 secciones: link "volver" arriba a la izquierda, foto/información en 2
+   columnas iguales, reseñas abajo. La columna de información se estira a la
+   altura de la foto (align-items: stretch) para que el botón "Agregar al
+   carrito" quede pegado a su borde inferior (margin-top: auto), mismo truco
+   que ya usa ".quienes-somos-texto" en la Home. */
 .producto-detalle {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2.5rem;
-  align-items: start;
+  align-items: stretch;
 }
 .producto-detalle-foto {
   background: #fff;
@@ -652,14 +674,16 @@ p { text-align: justify; }
 }
 .producto-detalle-volver {
   display: inline-block;
-  color: var(--ocean);
+  color: var(--navy);
   text-decoration: none;
   font-size: 0.88rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
+.producto-detalle-info { display: flex; flex-direction: column; }
 .producto-detalle-nombre { margin-bottom: 0.5rem; }
-.producto-detalle-precio { font-size: 1.5rem; color: var(--ocean); font-weight: bold; margin-bottom: 1rem; }
+.producto-detalle-precio { font-size: 1.5rem; color: var(--navy); font-weight: bold; margin-bottom: 1rem; }
 .producto-detalle-desc { font-size: 1.2rem; color: #555; line-height: 1.8; margin-bottom: 1.5rem; }
+.producto-detalle-info form { display: flex; flex-direction: column; flex: 1; }
 .cantidad-selector {
   display: flex;
   align-items: center;
@@ -681,15 +705,23 @@ p { text-align: justify; }
   width: 100%;
   padding: 1.1rem 2rem;
   font-size: 1.05rem;
+  margin-top: auto;
 }
 
 /* ─── RESEÑAS ─────────────────────────────────────────── */
-.producto-resenas { max-width: 1000px; margin: 2.5rem auto 0; border-top: 1px solid var(--border); padding: 2rem 1rem 0; }
-.producto-resenas h2 { margin-bottom: 1rem; }
+.producto-resenas { max-width: 1000px; margin: 2.5rem auto 0; border-top: 1px solid #000; padding: 2.5rem 1rem 0; }
+.producto-resenas-titulo {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--navy);
+  margin-bottom: 1.25rem;
+}
 
 .estrellas { display: inline-flex; gap: 2px; vertical-align: middle; }
 .icon-estrella { width: 18px; height: 18px; color: #666; }
-.icon-estrella-llena { color: var(--ocean); }
+.icon-estrella-llena { color: var(--navy); }
 
 .resenas-resumen { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.5rem; }
 .resenas-promedio { font-weight: bold; }
@@ -811,19 +843,65 @@ td a:hover { color: var(--ocean); }
 .whatsapp-cta-reinicio { color: #666; font-size: 0.85rem; margin: 1rem 0 0; }
 .datos-banco-nota { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
 
-/* ─── EXPORTAR EXCEL (ADMIN) ──────────────────────────── */
-.exportar-excel-form {
+/* ─── BUSCADOR (ADMIN) ────────────────────────────────── */
+/* Mismo patrón de lupa embebida que ya usa "Consultar mi pedido"
+   (.consulta-pedido-buscar-wrap), reusado acá para Usuarios y Pedidos. */
+.admin-buscador { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.admin-buscador-wrap { position: relative; max-width: 420px; flex: 1 1 320px; }
+.admin-buscador-wrap input[type="text"] { height: 3rem; padding-right: 3rem; }
+.admin-buscador-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #666;
+  cursor: pointer;
+}
+.admin-buscador-btn:hover { color: var(--navy); }
+
+/* ─── HERRAMIENTAS DE PEDIDOS (ADMIN) ─────────────────── */
+/* Filtro de fecha y export a Excel, uno al lado del otro dentro de la misma
+   tarjeta — antes eran 2 cajas separadas que se veían como si fueran cosas
+   repetidas, siendo dos herramientas distintas. */
+.admin-herramientas {
+  display: flex;
   flex-wrap: wrap;
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 1rem 1.25rem;
+  padding: 1.25rem 1.5rem;
   margin-bottom: 1.5rem;
 }
-.exportar-excel-form label { font-size: 0.85rem; color: #666; }
+.admin-herramienta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1 1 320px;
+}
+.admin-herramienta label { font-size: 0.85rem; color: #666; margin: 0; }
+.admin-herramienta-controles { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.admin-herramienta + .admin-herramienta {
+  border-left: 1px solid var(--border);
+  margin-left: 1.5rem;
+  padding-left: 1.5rem;
+}
+@media (max-width: 700px) {
+  .admin-herramienta + .admin-herramienta {
+    border-left: none;
+    margin-left: 0;
+    padding-left: 0;
+    border-top: 1px solid var(--border);
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+  }
+}
 
 /* ─── DATOS BANCARIOS ─────────────────────────────────── */
 .datos-banco {
@@ -893,6 +971,7 @@ td a:hover { color: var(--ocean); }
 }
 .form-errores ul { margin: 0; padding-left: 1.1rem; }
 label { display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #555; }
+.campo-requerido-marca { color: #c0392b; }
 textarea,
 select,
 input[type="text"],
@@ -913,10 +992,33 @@ select {
   height: 2.75rem;
   padding-right: 1.5rem;
 }
-.acciones { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-top: 1.5rem; }
+.acciones { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-top: 1.5rem; margin-bottom: 1.5rem; }
+
+/* ─── CONSULTAR MI PEDIDO ─────────────────────────────── */
+/* Input con la lupa embebida a la derecha en vez de un botón "Buscar" aparte
+   — mismo patrón que el buscador del catálogo (.filtro-buscar-wrap), pero con
+   sus propias medidas (esta página no comparte la barra de filtros chica). */
+.consulta-pedido-buscar-wrap { position: relative; max-width: 420px; }
+.consulta-pedido-buscar-wrap input[type="text"] { height: 3rem; padding-right: 3rem; }
+.consulta-pedido-buscar-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #666;
+  cursor: pointer;
+}
+.consulta-pedido-buscar-btn:hover { color: var(--navy); }
 
 /* ─── CHECKOUT ────────────────────────────────────────── */
-.checkout-seccion { padding: 2.5rem 0; border-top: 1px solid var(--border); }
+.checkout-seccion { padding: 2.5rem 0; border-top: 1px solid #000; }
 .checkout-seccion:first-of-type { border-top: none; padding-top: 0; }
 
 .checkout-seccion-titulo {
@@ -926,6 +1028,18 @@ select {
   letter-spacing: 0.5px;
   color: var(--navy);
   margin-bottom: 1.5rem;
+}
+
+/* Subsecciones dentro de "Completa la información para tu pedido"
+   (Información de contacto / Dirección de entrega / Fecha de entrega). */
+.checkout-subseccion { margin-bottom: 2.25rem; }
+.checkout-subseccion:last-child { margin-bottom: 0; }
+.checkout-subseccion-titulo {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 1rem;
 }
 
 .checkout-seccion-toggle {
@@ -945,9 +1059,24 @@ select {
 .checkout-seccion-toggle-icono { flex-shrink: 0; color: var(--navy); transition: transform 0.2s ease; }
 .checkout-seccion-toggle[aria-expanded="true"] .checkout-seccion-toggle-icono { transform: rotate(180deg); }
 
-.checkout-item-peso { color: #666; }
-.checkout-envio-nota { color: #666; font-size: 0.85rem; margin: -1rem 0 1.5rem; }
-.checkout-direccion-detalle { color: #666; }
+/* Labels/inputs/textos secundarios de esta página venían con los tamaños chicos
+   por defecto de FORMULARIOS (pensados para formularios cortos tipo admin) —
+   se agrandan solo acá, sin tocar el resto de los formularios del sitio. */
+.checkout-seccion label { font-size: 1.05rem; color: #444; }
+.checkout-seccion input[type="text"],
+.checkout-seccion input[type="email"],
+.checkout-seccion input[type="tel"],
+.checkout-seccion input[type="number"],
+.checkout-seccion select,
+.checkout-seccion textarea {
+  font-size: 1.05rem;
+  padding: 0.75rem;
+}
+.checkout-seccion .field-hint { font-size: 0.88rem; }
+
+.checkout-item-peso { color: #666; font-size: 0.95rem; }
+.checkout-envio-nota { color: #666; font-size: 0.95rem; margin: -1rem 0 1.5rem; }
+.checkout-direccion-detalle { color: #666; font-size: 0.95rem; }
 
 .checkout-resumen-datos { margin: 1.5rem 0; }
 .checkout-resumen-dato {
@@ -956,24 +1085,14 @@ select {
   gap: 1rem;
   padding: 0.6rem 0;
   border-bottom: 1px solid var(--border);
-  font-size: 0.95rem;
+  font-size: 1.1rem;
 }
 .checkout-resumen-dato:last-child { border-bottom: none; }
 .checkout-resumen-dato span:first-child { color: #666; }
 .checkout-resumen-dato span:last-child { text-align: right; font-weight: 500; }
 
-.checkout-requisitos-aviso {
-  background: #f0f6f9;
-  border: 1px solid var(--ocean);
-  border-radius: 4px;
-  padding: 0.75rem 1.25rem;
-  margin-top: 1.5rem;
-  color: var(--ocean);
-  font-size: 0.9rem;
-  text-align: center;
-}
 .checkout-acciones { margin-top: 2rem; text-align: center; }
-.checkout-boton-confirmar { font-size: 1.15rem; padding: 1rem 3rem; }
+.checkout-boton-confirmar { display: block; width: 100%; font-size: 1.15rem; padding: 1rem 3rem; }
 
 .direcciones-guardadas { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 0.5rem; }
 .direccion-guardada-opcion {
@@ -984,7 +1103,7 @@ select {
   border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: normal;
 }
 .direccion-guardada-opcion:has(input:checked) { border-color: var(--ocean); background: var(--foam); }
@@ -1126,6 +1245,10 @@ button.viernes-calendario-dia.viernes-disponible:hover { background: #a3cfbb; }
 .badge-despachado     { background: #e2d9f3; color: #432874; }
 .badge-entregado      { background: #d1e7dd; color: #0a3622; border: 1px solid #a3cfbb; }
 .badge-cancelado      { background: #f8d7da; color: #842029; }
+/* Discreto a propósito: distingue un pedido cargado a mano por el admin sin
+   competir visualmente con el badge de estado (que es la información principal
+   de esa columna) — mismo tono que --ocean, no un color de alerta. */
+.badge-manual { background: #d6e4ec; color: var(--ocean); margin-left: 0.4rem; }
 
 /* ─── PANEL ADMIN ─────────────────────────────────────── */
 .admin-header {
@@ -1147,11 +1270,38 @@ button.viernes-calendario-dia.viernes-disponible:hover { background: #a3cfbb; }
   border-radius: 6px;
   padding: 1.25rem 1.5rem;
 }
+.admin-card--compacto { max-width: 560px; margin-bottom: 2rem; }
 .admin-card h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 0.75rem; }
+/* Separación consistente entre el link "← Volver a..." y el título que viene
+   después, en vez de un `style="margin-top: ..."` puesto a mano en cada vista
+   (repetía el mismo valor en admin/productos, admin/usuarios, admin/pedidos y
+   direcciones — el sitio ya no usa estilos inline en ningún otro lado). */
+.volver-link { display: inline-block; margin-bottom: 1.5rem; }
+/* Texto/nota gris reutilizable — reemplaza los `style="color:#666; ..."`
+   sueltos que había en varias vistas del admin. ".texto-muted" para una
+   palabra suelta dentro de una línea (ej. "(invitado)"), sin tocar el tamaño;
+   ".nota-muted" para un párrafo aparte más chico (ej. aviso de pedido de
+   invitado, aclaración de "dirección anterior"). */
+.texto-muted { color: #666; }
+.nota-muted { color: #666; font-size: 0.85rem; margin-bottom: 0.75rem; }
+.titulo-separado { margin-top: 2rem; }
 dl { display: grid; grid-template-columns: 120px 1fr; gap: 0.4rem 1rem; font-size: 0.95rem; }
 dt { color: #666; }
 dd { color: var(--ink); font-weight: 500; }
 .form-admin { max-width: 560px; }
+/* "Nuevo pedido manual": varias .admin-card apiladas (no en .admin-grid, que
+   está pensado para 2 columnas), necesitan su propio espaciado vertical. */
+.pedido-manual-form .admin-card { margin-bottom: 1.5rem; }
+.pedido-item-fila {
+  display: grid;
+  grid-template-columns: 2fr 100px 110px auto;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+.pedido-item-fila .form-group { margin-bottom: 0; }
+.pedido-item-subtotal { color: #666; text-align: right; }
+.pedido-items-total { margin-top: 1rem; font-size: 1.05rem; text-align: right; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .form-check { display: flex; align-items: center; gap: 0.5rem; }
 .form-check input[type="checkbox"] { width: auto; }
@@ -1161,6 +1311,48 @@ dd { color: var(--ink); font-weight: 500; }
 .row-inactivo td { opacity: 0.5; }
 .stock-bajo { color: #c0392b; font-weight: bold; }
 tbody tr:hover { background: var(--foam); }
+
+/* ─── PERFIL ──────────────────────────────────────────── */
+/* Mismo padding (vertical y horizontal) en las 4 secciones, tengan o no fondo gris,
+   para que el contenido de todas arranque/termine en el mismo ancho y respete el
+   mismo alto respecto de las líneas negras que las separan. */
+.perfil-seccion { padding: 2.5rem 2rem; border-top: 1px solid #000; }
+.perfil-seccion:first-child { border-top: none; padding-top: 0; }
+.perfil-seccion-gris { background: #eaedf0; border-radius: 8px; }
+.perfil-seccion-titulo {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--navy);
+  margin-bottom: 1.25rem;
+}
+/* Mismo tamaño/color/line-height que el cuerpo de "Quiénes somos" (.quienes-somos-texto .seccion-texto),
+   aplicado a todo el texto de cuerpo de las 4 secciones por igual. */
+.perfil-panel dt,
+.perfil-panel dd,
+.perfil-panel td,
+.perfil-panel .direccion-card-etiqueta,
+.perfil-panel .direccion-card-detalle,
+.perfil-panel .resena-comentario,
+.perfil-panel .resena-item-header a,
+.perfil-panel .empty-state {
+  font-size: 1.2rem;
+  color: #555;
+  line-height: 1.8;
+}
+.perfil-panel dd { margin-bottom: 0.5rem; }
+.perfil-panel table { margin-bottom: 0; }
+.perfil-panel .direccion-card {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  padding: 1.25rem 0;
+}
+.perfil-panel .direccion-card:last-of-type { border-bottom: none; }
+/* Mismo tamaño exacto para los botones grandes de esta página, sin importar el largo del texto. */
+.perfil-panel .acciones .btn-navy-grande { width: 260px; padding-left: 0; padding-right: 0; }
 
 /* ─── FOOTER ──────────────────────────────────────────── */
 footer {
@@ -1388,6 +1580,16 @@ footer {
   text-decoration: none;
 }
 .carrito-nota-peso { color: #666; font-size: 0.85rem; margin-top: 1.25rem; }
+.carrito-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 4rem 1rem;
+  text-align: center;
+}
+.carrito-vacio-icono { width: 56px; height: 56px; color: var(--ocean); }
+.carrito-vacio-texto { font-size: 1.3rem; font-weight: 600; color: var(--ink); margin: 0; }
 
 /* ─── RESPONSIVO ──────────────────────────────────────── */
 @media (max-width: 768px) {

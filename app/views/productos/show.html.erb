@@ -1,5 +1,7 @@
 <% content_for :show_footer, true %>
 
+<%= link_to "← Volver al catálogo", productos_path, class: "producto-detalle-volver" %>
+
 <div class="producto-detalle">
   <div class="producto-detalle-foto">
     <% if @product.foto_url.present? %>
@@ -10,7 +12,6 @@
   </div>
 
   <div class="producto-detalle-info">
-    <%= link_to "← Volver al catálogo", productos_path, class: "producto-detalle-volver" %>
     <h1 class="producto-detalle-nombre"><%= @product.nombre %></h1>
     <p class="producto-detalle-precio"><%= formato_pesos(@product.precio) %></p>
     <p class="producto-detalle-desc"><%= @product.descripcion %></p>
@@ -25,13 +26,13 @@
         <button type="button" class="stepper-btn" data-action="cantidad-selector#sumar" aria-label="Sumar">+</button>
       </div>
 
-      <%= f.submit "Agregar al carrito", class: "btn btn-ocean producto-detalle-agregar" %>
+      <%= f.submit "Agregar al carrito", class: "btn btn-primary producto-detalle-agregar" %>
     <% end %>
   </div>
 </div>
 
 <div class="producto-resenas">
-  <h2>Reseñas</h2>
+  <h2 class="producto-resenas-titulo">Reseñas</h2>
 
   <% if @product.calificacion_promedio.present? %>
     <div class="resenas-resumen">
