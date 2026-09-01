@@ -278,6 +278,9 @@ Cuando llegue el momento (y no antes), esto implica:
 - [ ] Revisar que cada página tenga <title> y meta description únicos para SEO
 - [ ] Solicitar indexación manual de la home en Search Console para acelerar el
       proceso (puede tardar días a semanas de forma orgánica)
+- [ ] **Login con Google (u otro proveedor) además de email/password** (2026-09-01, idea de Joaquín) — bajar la fricción de registro, pensando en que el sitio va a hacerse público pronto. Factible con Devise + gema `omniauth-google-oauth2` (módulo `:omniauthable` en `User`, `Users::OmniauthCallbacksController` nuevo, client ID/secret de Google Cloud Console en `bin/rails credentials:edit`). Dos decisiones de diseño a resolver al implementarlo:
+  - **`telefono` deja de ser obligatorio al momento del login con Google** — hoy `User` valida `telefono` con `presence: true` (`app/models/user.rb`), pero un login con Google no entrega ese dato. A pedido explícito de Joaquín: el teléfono debe poder completarse **más adelante si el cliente quiere**, no bloquear el registro/primer login pidiéndolo de entrada — evitar agregar fricción justo en el paso que se quiere simplificar. Implica relajar esa validación (o volverla condicional) y probablemente pedirlo más adelante (ej. al momento del checkout, si todavía no lo tiene) en vez de en el registro.
+  - **Vinculación de cuentas**: qué pasa si alguien ya tiene cuenta por email/password y después entra con Google usando el mismo correo — vincular a la cuenta existente en vez de crear una duplicada.
 
 ### Todo lo que falta antes de eso
 
