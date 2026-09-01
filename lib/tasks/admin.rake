@@ -8,13 +8,10 @@ namespace :admin do
     email    = ENV.fetch("EMAIL")    { abort "Falta EMAIL. Uso: bin/rails admin:crear EMAIL=admin@fuyen.cl PASSWORD=xxxxxx" }
     password = ENV.fetch("PASSWORD") { abort "Falta PASSWORD. Uso: bin/rails admin:crear EMAIL=admin@fuyen.cl PASSWORD=xxxxxx" }
 
-    usuario = User.find_or_initialize_by(email: email)
-    usuario.password = password if usuario.new_record?
-    usuario.nombre    = ENV.fetch("NOMBRE", usuario.nombre.presence || "Admin")
-    usuario.apellido  = ENV.fetch("APELLIDO", usuario.apellido.presence || "Fuyén")
-    usuario.telefono  = ENV.fetch("TELEFONO", usuario.telefono.presence || "+56900000000")
-    usuario.role      = :admin
-    usuario.save!
+    usuario = User.crear_o_promover_admin!(
+      email: email, password: password,
+      nombre: ENV["NOMBRE"], apellido: ENV["APELLIDO"], telefono: ENV["TELEFONO"]
+    )
 
     puts "Admin listo: #{usuario.email}"
   end

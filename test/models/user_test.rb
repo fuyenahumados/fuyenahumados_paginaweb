@@ -53,6 +53,25 @@ class UserTest < ActiveSupport::TestCase
     assert_equal primera, usuario.reload.direccion_principal
   end
 
+  test "crear_o_promover_admin! crea un admin nuevo con la contraseña dada" do
+    usuario = User.crear_o_promover_admin!(email: "nuevo-admin@test.cl", password: "password123")
+
+    assert usuario.persisted?
+    assert usuario.admin?
+    assert usuario.valid_password?("password123")
+  end
+
+  test "crear_o_promover_admin! promueve una cuenta existente sin pisar su contraseña" do
+    cliente = crear_cliente(email: "promovido@test.cl", password: "clave-original")
+
+    usuario = User.crear_o_promover_admin!(email: "promovido@test.cl", password: "otra-clave-cualquiera")
+
+    assert_equal cliente.id, usuario.id
+    assert usuario.admin?
+    assert usuario.valid_password?("clave-original")
+    assert_not usuario.valid_password?("otra-clave-cualquiera")
+  end
+
   test "borrar el usuario borra sus pedidos y direcciones" do
     usuario = crear_cliente
     crear_direccion(usuario)

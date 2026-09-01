@@ -43,6 +43,21 @@ class User < ApplicationRecord
     )
   end
 
+  # Crea o promueve un usuario a admin. Usado por `bin/rails admin:crear` (lib/tasks/admin.rake)
+  # y por config/initializers/admin_bootstrap.rb (creación automática en el boot del server en
+  # producción, para plataformas sin Shell como el plan Free de Render). Nunca pisa la contraseña
+  # de una cuenta que ya existía -- solo la setea si el usuario es nuevo.
+  def self.crear_o_promover_admin!(email:, password:, nombre: nil, apellido: nil, telefono: nil)
+    usuario = find_or_initialize_by(email: email)
+    usuario.password = password if usuario.new_record?
+    usuario.nombre    = nombre    || usuario.nombre.presence    || "Admin"
+    usuario.apellido  = apellido  || usuario.apellido.presence  || "Fuyén"
+    usuario.telefono  = telefono  || usuario.telefono.presence  || "+56900000000"
+    usuario.role      = :admin
+    usuario.save!
+    usuario
+  end
+
   def nombre_completo
     "#{nombre} #{apellido}"
   end
