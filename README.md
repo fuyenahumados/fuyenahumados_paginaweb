@@ -71,7 +71,7 @@ pago a mano.
 - `Admin::ProductsController` (`index`, `new`, `create`, `edit`, `update`, `destroy`) — CRUD de productos.
 - `Admin::UsersController` (`index`, `show`, `destroy`) — listado/borrado de clientes.
 - `Admin::BaseController` — controller base del panel admin (exige sesión + rol admin, sin acciones propias, todo el admin hereda de él).
-- `ApplicationController` — controller base de todo el sitio (valida el token de acceso en cada request, desactiva flashes automáticos de Devise, agrega `X-Robots-Tag: noindex`, sin acciones propias).
+- `ApplicationController` — controller base de todo el sitio (desactiva flashes automáticos de Devise, agrega `X-Robots-Tag: noindex`, sin acciones propias).
 
 ## Estado actual (ya implementado)
 
@@ -283,6 +283,12 @@ resto de esta lista **sigue pendiente**, ahora sin la urgencia de "paso final":
 
 ### Pendiente: Publicación del sitio en internet
 
+- [ ] **Sacar el header `X-Robots-Tag: noindex, nofollow`** (`app/controllers/application_controller.rb`,
+      línea con `after_action`) — hoy queda a propósito, sin esto el sitio no se indexa aunque
+      ya no tenga token de acceso (2026-09-01: Joaquín va a compartir el link a mano por ahora,
+      "por mientras lo tendré solo yo en mi teléfono el link"). Sacarlo recién cuando el resto de
+      este checklist (dominio, sitemap, robots.txt, títulos/meta description) esté listo — hacerlo
+      antes solo deja que Google indexe una versión a medio terminar.
 - [ ] Verificar que catálogo, checkout y home funcionen bien en producción (Render)
       tras el deploy con el gate de token ya sacado
 - [ ] Comprar dominio propio (ej. .cl en NIC Chile, o .com)
