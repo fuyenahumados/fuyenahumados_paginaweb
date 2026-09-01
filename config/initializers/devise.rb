@@ -284,6 +284,15 @@ Devise.setup do |config|
   if ENV["GOOGLE_CLIENT_ID"].present? && ENV["GOOGLE_CLIENT_SECRET"].present?
     config.omniauth :google_oauth2, ENV["GOOGLE_CLIENT_ID"], ENV["GOOGLE_CLIENT_SECRET"], scope: "email,profile"
   end
+  #
+  # Login con Facebook — FACEBOOK_APP_ID/FACEBOOK_APP_SECRET se obtienen creando
+  # una app en developers.facebook.com (Facebook Login > Settings) y hay que
+  # setearlas como variables de entorno en Render antes de que el botón funcione
+  # en producción. El callback autorizado en Facebook debe ser
+  # "<host>/users/auth/facebook/callback".
+  if ENV["FACEBOOK_APP_ID"].present? && ENV["FACEBOOK_APP_SECRET"].present?
+    config.omniauth :facebook, ENV["FACEBOOK_APP_ID"], ENV["FACEBOOK_APP_SECRET"], scope: "email", info_fields: "email,name,first_name,last_name"
+  end
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

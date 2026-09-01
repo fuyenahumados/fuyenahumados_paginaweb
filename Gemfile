@@ -17,8 +17,9 @@ gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 gem "devise"
-# Login con Google vía Devise
+# Login con Google/Facebook vía Devise
 gem "omniauth-google-oauth2"
+gem "omniauth-facebook"
 gem "omniauth-rails_csrf_protection"
 # Mensajes de validación de Rails/ActiveRecord en español
 gem "rails-i18n"

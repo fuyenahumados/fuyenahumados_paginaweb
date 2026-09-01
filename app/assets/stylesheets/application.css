@@ -213,26 +213,31 @@ p { text-align: justify; }
 .auth-alt a:hover { text-decoration: underline; }
 .field-hint { display: block; font-size: 0.78rem; color: #666; margin-bottom: 0.25rem; }
 
-/* Botón "Continuar con Google" — estilo clásico blanco con borde gris, sin
-   tomar los colores de marca del sitio (convención visual de Google, no del sitio). */
-.btn-google {
+/* Botones "Continuar con Google/Facebook" — estilo clásico blanco con borde
+   gris, sin tomar los colores de marca del sitio (el logo de cada proveedor
+   ya aporta su propio color, así se mantienen consistentes entre sí). */
+.social-login { display: flex; flex-direction: column; gap: 0.75rem; }
+.btn-google,
+.btn-facebook {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
   width: 100%;
-  padding: 0.7rem;
+  padding: 0.9rem;
   background: #fff;
   border: 1px solid #dadce0;
   border-radius: 6px;
   color: #3c4043;
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-size: 1.05rem;
+  font-weight: 700;
   cursor: pointer;
   transition: box-shadow 0.15s, background 0.15s;
 }
-.btn-google:hover { background: #f8f9fa; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
-.btn-google svg { flex-shrink: 0; }
+.btn-google:hover,
+.btn-facebook:hover { background: #f8f9fa; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+.btn-google svg,
+.btn-facebook svg { flex-shrink: 0; }
 .auth-divider {
   display: flex;
   align-items: center;
