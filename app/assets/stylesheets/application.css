@@ -213,6 +213,42 @@ p { text-align: justify; }
 .auth-alt a:hover { text-decoration: underline; }
 .field-hint { display: block; font-size: 0.78rem; color: #666; margin-bottom: 0.25rem; }
 
+/* Botón "Continuar con Google" — estilo clásico blanco con borde gris, sin
+   tomar los colores de marca del sitio (convención visual de Google, no del sitio). */
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.7rem;
+  background: #fff;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  color: #3c4043;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: box-shadow 0.15s, background 0.15s;
+}
+.btn-google:hover { background: #f8f9fa; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+.btn-google svg { flex-shrink: 0; }
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  color: #888;
+  font-size: 0.85rem;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
 /* Registrarse: letra más grande y clara — este formulario es más largo que el
    resto de las pantallas de auth (nombre/apellido/email/teléfono/dirección/
    contraseña) y quedaba con la letra chica por defecto de FORMULARIOS. Solo

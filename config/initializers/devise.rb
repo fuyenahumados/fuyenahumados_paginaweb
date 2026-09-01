@@ -275,6 +275,15 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
+  #
+  # Login con Google — GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET se obtienen creando
+  # un proyecto en Google Cloud Console (APIs & Services > Credentials > OAuth
+  # client ID, tipo "Web application") y hay que setearlas como variables de
+  # entorno en Render antes de que el botón funcione en producción. El callback
+  # autorizado en Google Cloud debe ser "<host>/users/auth/google_oauth2/callback".
+  if ENV["GOOGLE_CLIENT_ID"].present? && ENV["GOOGLE_CLIENT_SECRET"].present?
+    config.omniauth :google_oauth2, ENV["GOOGLE_CLIENT_ID"], ENV["GOOGLE_CLIENT_SECRET"], scope: "email,profile"
+  end
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

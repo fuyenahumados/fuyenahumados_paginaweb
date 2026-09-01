@@ -1,6 +1,8 @@
 <div class="auth-card">
   <h1>Iniciar sesión</h1>
 
+  <%= render "devise/shared/google_button" %>
+
   <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
     <div class="form-group">
       <%= f.label :email, "Email" %>

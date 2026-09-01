@@ -1,6 +1,8 @@
 <div class="auth-card auth-card--registro">
   <h1>Bienvenido a la familia Fuyén</h1>
 
+  <%= render "devise/shared/google_button" %>
+
   <% resource.direcciones.build(etiqueta: "Principal") if resource.direcciones.empty? %>
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
     <%= render "devise/shared/error_messages", resource: resource %>

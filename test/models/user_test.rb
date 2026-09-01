@@ -18,6 +18,11 @@ class UserTest < ActiveSupport::TestCase
     assert usuario.valid?
   end
 
+  test "el teléfono no es obligatorio para una cuenta creada vía Google" do
+    usuario = User.new(email: "google@test.cl", password: "password123", nombre: "Ana", apellido: "Pérez", provider: "google_oauth2", uid: "1")
+    assert usuario.valid?
+  end
+
   test "role por defecto es cliente y admite admin" do
     cliente = crear_cliente
     admin = crear_admin
