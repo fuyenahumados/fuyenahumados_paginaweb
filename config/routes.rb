@@ -4,9 +4,6 @@ Rails.application.routes.draw do
     omniauth_callbacks: "users/omniauth_callbacks"
   }
 
-  get "acceso/:token", to: "acceso#entrar",   as: :acceso
-  get "acceso",        to: "acceso#invalido",  as: :acceso_invalido
-
   resource :carrito,  only: [ :show ], controller: :carrito do
     post   :agregar
     patch  :actualizar

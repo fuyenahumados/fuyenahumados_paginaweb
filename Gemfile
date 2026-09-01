@@ -21,6 +21,9 @@ gem "devise"
 gem "omniauth-google-oauth2"
 gem "omniauth-facebook"
 gem "omniauth-rails_csrf_protection"
+# Rate limiting en el login/recuperar contraseña, para frenar fuerza bruta
+# ahora que el sitio ya no exige token para entrar
+gem "rack-attack"
 # Mensajes de validación de Rails/ActiveRecord en español
 gem "rails-i18n"
 

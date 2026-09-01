@@ -2,8 +2,6 @@ require "test_helper"
 
 class RegistroLoginTest < ActionDispatch::IntegrationTest
   test "un visitante puede registrarse con dirección incluida y queda logueado" do
-    entrar_con_token!
-
     assert_difference [ "User.count", "Direccion.count" ], 1 do
       post user_registration_path, params: {
         user: {
@@ -24,8 +22,6 @@ class RegistroLoginTest < ActionDispatch::IntegrationTest
   end
 
   test "no se puede registrar con datos inválidos" do
-    entrar_con_token!
-
     assert_no_difference "User.count" do
       post user_registration_path, params: {
         user: { nombre: "", apellido: "", email: "no-es-email", telefono: "123", password: "abc", password_confirmation: "xyz" }
@@ -37,13 +33,11 @@ class RegistroLoginTest < ActionDispatch::IntegrationTest
   end
 
   test "el login muestra un link para recuperar la contraseña" do
-    entrar_con_token!
     get new_user_session_path
     assert_select "a[href=?]", new_user_password_path, text: "¿Olvidaste tu contraseña?"
   end
 
   test "pedir recuperar la contraseña envía un email y redirige al login" do
-    entrar_con_token!
     cliente = crear_cliente(password: "password123")
 
     assert_emails 1 do
@@ -53,8 +47,6 @@ class RegistroLoginTest < ActionDispatch::IntegrationTest
   end
 
   test "pedir recuperar la contraseña con un email que no existe muestra un error sin romper la página" do
-    entrar_con_token!
-
     assert_no_emails do
       post user_password_path, params: { user: { email: "no-existe@test.cl" } }
     end
@@ -63,7 +55,6 @@ class RegistroLoginTest < ActionDispatch::IntegrationTest
   end
 
   test "login con credenciales correctas deja entrar, incorrectas no" do
-    entrar_con_token!
     cliente = crear_cliente(password: "password123")
 
     iniciar_sesion!(cliente, password: "clave-incorrecta")
@@ -76,7 +67,6 @@ class RegistroLoginTest < ActionDispatch::IntegrationTest
   end
 
   test "logout cierra la sesión" do
-    entrar_con_token!
     cliente = crear_cliente(password: "password123")
     iniciar_sesion!(cliente)
 
@@ -88,7 +78,6 @@ class RegistroLoginTest < ActionDispatch::IntegrationTest
   end
 
   test "un admin logueado no puede entrar a rutas solo-clientes como el perfil" do
-    entrar_con_token!
     admin = crear_admin(password: "password123")
     iniciar_sesion!(admin)
 

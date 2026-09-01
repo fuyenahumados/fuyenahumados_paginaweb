@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
   stale_when_importmap_changes
 
-  before_action :verificar_acceso
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   after_action { response.headers["X-Robots-Tag"] = "noindex, nofollow" }
@@ -23,15 +22,6 @@ class ApplicationController < ActionController::Base
       direcciones_attributes: [ :etiqueta, :comuna, :calle, :numero_depto ]
     ])
     devise_parameter_sanitizer.permit(:account_update, keys: [ :nombre, :apellido, :telefono ])
-  end
-
-  def verificar_acceso
-    if session[:acceso_token].nil? && AccessToken.valido?(cookies[:acceso_token])
-      session[:acceso_token] = cookies[:acceso_token]
-    end
-    return if AccessToken.valido?(session[:acceso_token])
-
-    redirect_to acceso_invalido_path
   end
 
   def solo_clientes

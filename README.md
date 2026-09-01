@@ -11,10 +11,13 @@ a medida que avanza el desarrollo — no es documentación estática.
 
 ## Qué es esto
 
-Tienda online **privada** (no indexada, sin acceso público) para vender salmón
-ahumado artesanal, mientras la formalización legal del negocio está pendiente.
+Tienda online para vender salmón ahumado artesanal, mientras la formalización
+legal del negocio está pendiente.
 
-- Acceso solo vía link con token secreto (`/acceso/:token`) + `X-Robots-Tag: noindex`.
+- **Sin gate de acceso por token** (eliminado el 2026-09-01, ver "Estado actual" más
+  abajo) — cualquiera con el link puede entrar. Sigue con `X-Robots-Tag: noindex` para
+  no aparecer en buscadores mientras Joaquín solo comparte el link a mano (fase de
+  pruebas antes de la publicación SEO formal, ver `## Pendiente`).
 - Pago por transferencia bancaria (sin pasarela de pago).
 - Venta por pieza/porción (no por kilo completo): salmón ahumado en pieza pequeña o grande, salmón ahumado desmenuzado y paté de salmón ahumado. ~25 kg disponibles por semana en total.
 - Ciclo de producción semanal, entregas los viernes.
@@ -22,10 +25,9 @@ ahumado artesanal, mientras la formalización legal del negocio está pendiente.
 ## Descripción y funciones principales
 
 Sitio a medida para que Joaquín venda salmón ahumado artesanal por internet sin
-depender de un marketplace ni exponer la tienda al público general — solo entra
-quien tiene el link con token de acceso. No hay pasarela de pago: el flujo completo
-está pensado para transferencia bancaria coordinada por WhatsApp, con el negocio
-confirmando el pago a mano.
+depender de un marketplace. No hay pasarela de pago: el flujo completo está pensado
+para transferencia bancaria coordinada por WhatsApp, con el negocio confirmando el
+pago a mano.
 
 **Para el cliente:**
 - Ve el catálogo (filtros de precio/categoría, orden, búsqueda visual por tarjetas), agrega productos al carrito y ajusta cantidades sin recargar la página.
@@ -57,7 +59,6 @@ confirmando el pago a mano.
 
 ## Controladores principales
 
-- `AccesoController` (`entrar`, `invalido`, `bienvenida`) — valida el token de la URL y abre la sesión de "sitio visible" (no confundir con el login de usuario).
 - `PagesController` (`inicio`, `nosotros`) — páginas estáticas de la home.
 - `ProductosController` (`index`, `show`) — catálogo con filtros/orden y ficha de producto.
 - `CarritoController` (`show`, `agregar`, `actualizar`, `quitar`) — carrito en sesión, no se persiste en base hasta el checkout.
@@ -79,7 +80,7 @@ confirmando el pago a mano.
 - [x] Catálogo y carrito de compras
 - [x] Checkout con pago por transferencia bancaria
 - [x] Panel de administración: **Pedidos** (ver, avanzar estado, cancelar), **Productos** (CRUD completo, con bloqueo de borrado si tiene pedidos asociados), **Usuarios** (listado de clientes + detalle con su historial de pedidos, solo lectura)
-- [x] Acceso protegido por token secreto + noindex
+- [x] ~~Acceso protegido por token secreto~~ — eliminado el 2026-09-01, ver entrada en "Estado actual" más abajo. Sigue con `noindex`.
 - [x] Paleta de color definida (2026-07-08): azul marino/océano (`--navy` #081f2e, `--ocean` #145577) + dorado apagado de detalle (`--gold` #b8934f) sobre fondos frío-claros (`--foam`)
 - [x] Perfil de cliente (`/perfil`, solo clientes — el admin no tiene perfil, gestiona usuarios desde el panel): ver y editar datos propios, ver historial de pedidos; ícono de perfil en la nav
 - [x] Flashes automáticos de Devise desactivados (login/logout/registro ya no muestran notificación; los flashes propios del negocio siguen funcionando — **ojo:** esto también silencia el mensaje de "email o contraseña inválidos" en un login fallido, es intencional según lo pedido)
@@ -254,29 +255,36 @@ confirmando el pago a mano.
   - **`Users::OmniauthCallbacksController`**: acciones `#google_oauth2` y `#facebook`, ambas delegan a un mismo método privado `autenticar_con_omniauth` (`sign_in_and_redirect`); `#failure` (si el proveedor devuelve un error o el usuario cancela) vuelve al login.
   - **Cada botón se muestra solo si sus credenciales están seteadas** (`Devise.omniauth_configs.key?(:google_oauth2)`/`:facebook` en `devise/shared/_google_button.html.erb`/`_facebook_button.html.erb`, agrupados por `devise/shared/_social_login.html.erb`) — hoy ninguna de las dos existe en ningún entorno, así que ambos botones están invisibles hasta que Joaquín las configure. **Para activar Google**: proyecto en [Google Cloud Console](https://console.cloud.google.com/) → APIs & Services → Credentials → OAuth client ID (tipo "Web application"), redirect URI `https://<dominio>/users/auth/google_oauth2/callback`, variables `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` en Render. **Para activar Facebook**: app en [developers.facebook.com](https://developers.facebook.com/) → Facebook Login → Settings, redirect URI `https://<dominio>/users/auth/facebook/callback`, variables `FACEBOOK_APP_ID`/`FACEBOOK_APP_SECRET` en Render — Facebook además exige un "App Review" del permiso de email para que cualquier visitante pueda entrar (no solo cuentas de prueba que Joaquín agregue a mano en el panel de la app).
   - Verificado con la suite completa (**175 tests, 574 assertions**, sigue en verde — 6 tests nuevos parametrizados por proveedor: registro nuevo sin teléfono, login repetido no duplica la cuenta, cuenta existente por email/password se vincula en vez de duplicarse, para Google y para Facebook cada uno), Rubocop y Brakeman limpios, y probado de punta a punta simulando el flujo de OmniAuth en modo test (`OmniAuth::AuthHash`) más contra el server real por `curl` con credenciales de prueba: los dos botones aparecen/desaparecen según si cada una está seteada, y las rutas `/users/auth/google_oauth2` y `/users/auth/facebook` apuntan bien. **No se pudo probar el flujo real contra una cuenta de verdad de ninguno de los dos** (no hay credenciales todavía) ni confirmar visualmente los botones en un browser real (mismo motivo de siempre) — falta que Joaquín cree las credenciales de cada proveedor y pruebe entrando de verdad.
+  - **Ajuste de alineación (2026-09-01)**: el `do...end` de `button_to` capturaba el ícono SVG y el texto con saltos de línea/indentación entre medio — el navegador convertía eso en un espacio extra sumado al `gap` del flexbox, descuadrando el ícono contra el texto. Se reescribieron ambos partials con el contenido del botón en una sola línea (sin espacio en blanco entre `<svg>` y `<span>`), más `line-height: 1` y `svg/span { display: block }` en el CSS para que el espaciado dependa solo de `gap`, nunca del HTML. De paso, el logo de Facebook (que era una aproximación armada a mano) se reemplazó por un path más preciso y reconocible (el ícono clásico de círculo con "f"). Botón también más grande y en negrita, a pedido de Joaquín. Letra en negrita (`font-weight: 700`) y botón más grande (`padding: 0.9rem`, `font-size: 1.05rem`) en los dos, a pedido de Joaquín.
+
+- [x] **Sitio público: se eliminó el gate de acceso por token + rate limiting en el login** (2026-09-01, a pedido explícito de Joaquín — "hoy quiero que cualquiera pueda entrar", adelantando el paso que este README tenía marcado como "el último, sin excepción"). Cambios:
+  - **Eliminado por completo**: `AccesoController` (y sus vistas), el modelo `AccessToken` (migración `DropAccessTokens`, tabla `access_tokens` borrada), las rutas `/acceso/:token` y `/acceso`, y `ApplicationController#verificar_acceso` (el `before_action` que exigía el token en cada request). `db/seeds.rb` ya no crea los tokens hardcodeados (`fuyen-admin-2024`, `fuyen-acceso-clientes`) que existían ahí.
+  - **`X-Robots-Tag: noindex, nofollow` se mantiene** — es un `after_action` aparte, no se tocó. El sitio queda técnicamente abierto a cualquiera con el link, pero sigue sin buscarse a propósito que los buscadores lo indexen: por ahora Joaquín va a compartir el link a mano (ej. desde su teléfono), no es todavía la publicación SEO formal (ver checklist "Publicación del sitio en internet" más abajo, sigue pendiente tal cual).
+  - **Rate limiting nuevo con `rack-attack`** (gema nueva), pensado específicamente para esto: sin el token de acceso, `/users/sign_in` queda expuesto a cualquiera en internet, incluyendo intentos de fuerza bruta contra la cuenta del admin. `config/initializers/rack_attack.rb` define 3 throttles: máx. 10 intentos de login por IP cada 20 segundos, máx. 5 intentos por minuto contra un mismo email (para frenar fuerza bruta dirigida aunque el atacante rote de IP), y máx. 5 intentos por minuto por IP contra "recuperar contraseña" (evita usar ese formulario para confirmar a fuerza bruta qué emails existen). Devuelve `429 Too Many Requests` al superar el límite.
+  - **HTTPS forzado en producción**: `config.force_ssl = true` + `config.assume_ssl = true` en `config/environments/production.rb` (con excepción del healthcheck `/up`, que Render pega por HTTP interno) — Render termina el SSL en su proxy, así que sin `assume_ssl` Rails no se daba cuenta de que la conexión ya llegaba segura. Esto fuerza todo el tráfico por HTTPS, agrega el header Strict-Transport-Security, y marca la cookie de sesión de Devise como `Secure` — antes estaba comentado/deshabilitado.
+  - **Lo que ya estaba bien y no hizo falta tocar**: las contraseñas ya se guardan hasheadas con bcrypt (`encrypted_password`, Devise `:database_authenticatable`, de fábrica), la cookie de sesión ya viene firmada y cifrada por Rails (`secret_key_base`/credentials), y no existe ningún formulario público que permita autopromoverse a admin (`role` no está en los parámetros permitidos del registro, `Admin::BaseController` exige sesión + `current_user.admin?` en cada acción).
+  - Verificado con la suite completa (**169 tests, 572 assertions**, sigue en verde — 2 tests nuevos de `rack-attack` que confirman el bloqueo real con `429`, usando un `MemoryStore` propio en el test porque el cache de test (`:null_store`) no trackea contadores), Rubocop y Brakeman limpios, y confirmado por `curl` que las rutas `/acceso/*` ya no existen (404) y que todas las páginas cargan directo sin redirigir a ningún lado. **No se pudo probar `force_ssl` contra un browser real ni contra Render** (en local, sin HTTPS, `assume_ssl` hace que el dev server siga funcionando igual) — falta confirmar en producción que no rompe nada (el healthcheck `/up` de Render en particular) una vez deployado.
 
 ## Pendiente
 
-### 🔒 Último paso, sin excepción: sacar el sitio del modo privado
+### 🔒 Ya no aplica tal cual — el gate de token se sacó antes de tiempo
 
-**Confirmado 2026-08-17: esto se hace estrictamente al final, después de que todo lo demás en esta
-lista esté terminado — no antes.** Joaquín quiere entregar una página perfecta antes de sacarla del
-modo privado y dejarla de acceso público. Hasta entonces, el sitio sigue exactamente como está:
-solo accesible vía link con token secreto (`/acceso/:token`).
+**Este bloque decía (desde 2026-08-17) que sacar el sitio del modo privado era el
+último paso, sin excepción, recién cuando todo lo demás estuviera terminado.**
+Joaquín adelantó esa parte explícitamente el 2026-09-01 ("hoy quiero que cualquiera
+pueda entrar") — ver la entrada correspondiente en "Estado actual" más arriba. El
+resto de esta lista **sigue pendiente**, ahora sin la urgencia de "paso final":
 
-Cuando llegue el momento (y no antes), esto implica:
-- Sacar el gate de `AccessToken` / `ApplicationController#verificar_acceso` que hoy exige el token en cada request.
-- Setear `WHATSAPP_BUSINESS_NUMBER` en las variables de entorno de Render con el número real del negocio.
-- Setear `BUSINESS_EMAIL` en Render con `ventasfuyen@gmail.com`.
-- Revisar que no quede ninguna credencial de prueba (`db/seeds.rb`) pensada para un entorno privado.
-- **Configurar un proveedor de SMTP** (`config.action_mailer.smtp_settings` en `config/environments/production.rb`, hoy comentado) — sin esto, "Recuperar contraseña" nunca le va a llegar el email al cliente. Cualquier proveedor sirve (SendGrid, Postmark, Gmail SMTP); las credenciales van en `bin/rails credentials:edit`, no en el código.
+- [x] ~~Sacar el gate de `AccessToken` / `ApplicationController#verificar_acceso`~~ — hecho 2026-09-01.
+- [ ] Setear `WHATSAPP_BUSINESS_NUMBER` en las variables de entorno de Render con el número real del negocio.
+- [ ] Setear `BUSINESS_EMAIL` en Render con `ventasfuyen@gmail.com`.
+- [ ] Revisar que no quede ninguna otra credencial de prueba pensada para un entorno privado (el cliente de prueba `cliente@fuyen.cl` / `12345678` de `db/seeds.rb` solo se crea si alguien corre `db:seed` a mano, no es un riesgo por sí solo, pero conviene no dejarlo en una base de producción real).
+- **Configurar un proveedor de SMTP** (`config.action_mailer.smtp_settings` en `config/environments/production.rb`, hoy comentado) — sin esto, "Recuperar contraseña" nunca le va a llegar el email al cliente (hoy ese flujo está resuelto por WhatsApp en vez de email, ver más abajo, así que esto es menos urgente que antes). Cualquier proveedor sirve (SendGrid, Postmark, Gmail SMTP); las credenciales van en `bin/rails credentials:edit`, no en el código.
 
 ### Pendiente: Publicación del sitio en internet
 
-- [ ] Quitar el middleware/filtro de acceso privado por token (before_action que
-      redirige si no hay token válido) para que el sitio sea de acceso público
-- [ ] Verificar que catálogo, checkout y home funcionen sin token en ventana de
-      incógnito tras el deploy
+- [ ] Verificar que catálogo, checkout y home funcionen bien en producción (Render)
+      tras el deploy con el gate de token ya sacado
 - [ ] Comprar dominio propio (ej. .cl en NIC Chile, o .com)
 - [ ] Configurar Custom Domain en Render (Settings → Custom Domains) y apuntar
       los registros DNS (CNAME/A) según indique Render
@@ -359,7 +367,7 @@ Cuando llegue el momento (y no antes), esto implica:
 - [ ] Variantes/miniaturas de fotos de producto (hoy se sirve la imagen original sin redimensionar; no bloqueante, solo rendimiento)
 - [ ] **Contenido real en las páginas de texto** (2026-08-17, "Nosotros" resuelto 2026-08-18): "Nuestros productos" y páginas similares pueden tener todavía texto de relleno pendiente de revisar — falta que Joaquín confirme si queda algo por reemplazar antes de salir a producción. (La sección "Nuestra historia" de `/nosotros`, que era el caso más obvio, ya tiene contenido real — ver ítem 1 del repaso view-por-view arriba.)
 - [ ] Confirmar visualmente en un browser real el rediseño completo de la Home (paleta, nav flotante/transparente, hero, collage de productos, "Quiénes somos") — verificado solo por HTML/CSS/tests, sin browser disponible en este entorno.
-- [ ] **Responsive / versión mobile** (2026-08-17): todo el sitio está pensado y probado en pantalla de PC — falta revisar y ajustar cómo se ve en el teléfono (nav, hero, collage de productos, "Quiénes somos", footer, catálogo con filtros). Se soluciona con media queries en `app/assets/stylesheets/application.css` adaptando los layouts de grid/flex actuales a una sola columna en pantallas angostas. Dejado a propósito como el penúltimo paso: se hace cuando el resto del sitio (contenido, fotos, textos) ya esté terminado y confirmado en PC, justo antes de sacar el sitio del modo privado.
+- [ ] **Responsive / versión mobile** (2026-08-17, plan actualizado 2026-09-01): todo el sitio está pensado y probado en pantalla de PC — falta revisar y ajustar cómo se ve en el teléfono (nav, hero, collage de productos, "Quiénes somos", footer, catálogo con filtros). Se soluciona con media queries en `app/assets/stylesheets/application.css` adaptando los layouts de grid/flex actuales a una sola columna en pantallas angostas. **Plan acordado con Joaquín**: en vez de adivinar los ajustes mobile sin poder verlos (este entorno no tiene browser real disponible, ver nota de siempre en varias entradas de arriba), primero se publica el sitio en Render (ya sin el gate de token, ver "Estado actual") para que Joaquín lo revise directo desde su teléfono con el link — y a partir de lo que vea ahí, se ajustan puntualmente los problemas reales en vez de un pase genérico de media queries a ciegas.
 - [x] **Banners con foto de "Quiénes somos" y "Nuestros productos" eliminados** (2026-08-24, a pedido de Joaquín) — resuelve la duda pendiente del ítem anterior: se sacaron los banners (`.catalogo-hero`, `.nosotros-hero`, con foto placeholder de fondo, breadcrumb y bajada) de ambas páginas. Cada página ahora arranca directo en su contenido, sin ningún título arriba. CSS muerto de ambos banners eliminado de `application.css` (incluida la regla mobile de `.catalogo-hero`). Las fotos de las secciones "Sobre nosotros"/"Nuestro proceso" (más abajo en `/nosotros`) no se tocaron, solo el banner de arriba. `public/docs/banners/catalogo-hero.jpg` quedó sin usar (no se borró el archivo).
   **Ajuste inmediato (2026-08-24, a pedido de Joaquín)**: se había dejado un `<h1>` plano ("Nuestros productos" / "Quiénes somos") reemplazando al banner, pero Joaquín pidió sacar también ese título — ninguna de las dos páginas tiene ahora un `<h1>` visible (en "Quiénes somos" quedan los `<h2>` "Sobre nosotros"/"Nuestro proceso"; el catálogo arranca directo en filtros/grilla). **Nota de accesibilidad**: esto deja ambas páginas sin un `<h1>` (WCAG 4.1.1/estructura de encabezados, no es un error crítico pero rompe la jerarquía semántica que se armó en la auditoría AA de 2026-08-17) — si en algún momento se quiere retomar, lo más simple es un `<h1>` visualmente oculto (`.sr-only`, clase que ya existe en el sitio) que no cambie nada visualmente.
   Verificado con la suite completa (146 tests, 458 assertions, sigue en verde) y el HTML renderizado contra el server real por `curl`, confirmando que no queda ningún `<h1>` en ninguna de las dos páginas y que no quedan referencias a las clases de banner eliminadas.

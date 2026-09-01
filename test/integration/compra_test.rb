@@ -2,7 +2,6 @@ require "test_helper"
 
 class CompraTest < ActionDispatch::IntegrationTest
   setup do
-    entrar_con_token!
     @producto = crear_producto(nombre: "Salmón pieza chica", precio: 4500, stock: 10)
   end
 

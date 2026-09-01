@@ -13,17 +13,6 @@ require "rails/test_help"
 # validaciones cruzadas que las fixtures se saltan — es más simple y confiable
 # crear los objetos pasando siempre por las validaciones reales.
 module TestFactories
-  def crear_token_acceso(token: "token-test-#{SecureRandom.hex(4)}", activo: true)
-    AccessToken.create!(token: token, activo: activo)
-  end
-
-  # Solo para integration tests: simula entrar por el link con token secreto,
-  # que es lo primero que exige ApplicationController#verificar_acceso.
-  def entrar_con_token!(token: nil)
-    token ||= crear_token_acceso.token
-    get "/acceso/#{token}"
-  end
-
   # Solo para integration tests: login real vía POST (la protección CSRF está
   # desactivada en el entorno de test, así que no hace falta el token).
   def iniciar_sesion!(usuario, password: "password123")

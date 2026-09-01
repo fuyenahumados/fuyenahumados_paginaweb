@@ -21,14 +21,17 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
-  # Assume all access to the app is happening through a SSL-terminating reverse proxy.
-  # config.assume_ssl = true
+  # Render termina el SSL en su propio proxy y reenvía a la app por HTTP interno,
+  # así que hay que decirle a Rails que asuma que la conexión ya llegó segura.
+  config.assume_ssl = true
 
-  # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  # Fuerza HTTPS en toda la app, agrega Strict-Transport-Security y hace que las
+  # cookies (incluida la de sesión de Devise) se marquen como Secure — ahora que
+  # el sitio ya no exige token de acceso, esto importa más que antes.
+  config.force_ssl = true
 
   # Skip http-to-https redirect for the default health check endpoint.
-  # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
+  config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 
   # Log to STDOUT with the current request id as a default log tag.
   config.log_tags = [ :request_id ]

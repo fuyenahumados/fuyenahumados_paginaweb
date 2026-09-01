@@ -2,7 +2,6 @@ require "test_helper"
 
 class PerfilDireccionesTest < ActionDispatch::IntegrationTest
   setup do
-    entrar_con_token!
     @cliente = crear_cliente(password: "password123")
     crear_direccion(@cliente, etiqueta: "Casa")
     iniciar_sesion!(@cliente)

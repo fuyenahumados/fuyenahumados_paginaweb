@@ -26,8 +26,6 @@ class OmniauthLoginTest < ActionDispatch::IntegrationTest
 
   callback_path_por_proveedor.each do |provider, callback_path_helper|
     test "un visitante nuevo se registra con #{provider} sin necesidad de teléfono" do
-      entrar_con_token!
-
       assert_difference "User.count", 1 do
         get send(callback_path_helper), env: { "omniauth.auth" => mock_auth(provider, email: "nueva.#{provider}@test.cl") }
       end
@@ -41,7 +39,6 @@ class OmniauthLoginTest < ActionDispatch::IntegrationTest
     end
 
     test "un mismo usuario de #{provider} que vuelve a entrar no crea una cuenta duplicada" do
-      entrar_con_token!
       auth = mock_auth(provider, email: "repite.#{provider}@test.cl", uid: "999")
 
       assert_difference "User.count", 1 do
@@ -56,7 +53,6 @@ class OmniauthLoginTest < ActionDispatch::IntegrationTest
     end
 
     test "un cliente que ya tenía cuenta por email/password se vincula a #{provider} en vez de duplicarse" do
-      entrar_con_token!
       cliente = crear_cliente(email: "vinculo.#{provider}@test.cl")
 
       assert_no_difference "User.count" do

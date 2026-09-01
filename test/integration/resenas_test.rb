@@ -2,7 +2,6 @@ require "test_helper"
 
 class ResenasTest < ActionDispatch::IntegrationTest
   setup do
-    entrar_con_token!
     @producto = crear_producto(nombre: "Salmón pieza chica")
   end
 

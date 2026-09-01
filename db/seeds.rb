@@ -10,15 +10,9 @@
 #
 # Los pedidos de prueba necesitan productos para poder crearse: si todavía no
 # hay ningún producto cargado (primera vez que se corre la seed, antes de
-# entrar al panel admin), esta seed crea el cliente y los tokens de acceso
-# nomás, y avisa que faltan productos. Corre `bin/rails db:seed` de nuevo
-# después de cargar productos desde el admin para que se generen los pedidos.
-
-token_admin = "fuyen-admin-2024"
-token_clientes = "fuyen-acceso-clientes"
-
-AccessToken.find_or_create_by!(token: token_admin)
-AccessToken.find_or_create_by!(token: token_clientes)
+# entrar al panel admin), esta seed crea el cliente nomás, y avisa que faltan
+# productos. Corre `bin/rails db:seed` de nuevo después de cargar productos
+# desde el admin para que se generen los pedidos.
 
 cliente = User.find_or_create_by!(email: "cliente@fuyen.cl") do |u|
   u.nombre    = "Cliente"
@@ -33,9 +27,6 @@ cliente.direcciones.find_or_create_by!(etiqueta: "Casa") do |d|
   d.calle  = "Av. Providencia 1234, depto 56"
 end
 
-puts "Tokens de acceso:"
-puts "  Admin:    /acceso/#{token_admin}"
-puts "  Clientes: /acceso/#{token_clientes}"
 puts "Cliente de prueba: cliente@fuyen.cl / 12345678"
 
 if Product.none?

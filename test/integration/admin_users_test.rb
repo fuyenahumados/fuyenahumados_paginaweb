@@ -2,7 +2,6 @@ require "test_helper"
 
 class AdminUsersTest < ActionDispatch::IntegrationTest
   setup do
-    entrar_con_token!
     @admin = crear_admin(password: "password123")
     iniciar_sesion!(@admin)
   end

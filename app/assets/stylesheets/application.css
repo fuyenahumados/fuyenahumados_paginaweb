@@ -231,13 +231,16 @@ p { text-align: justify; }
   color: #3c4043;
   font-size: 1.05rem;
   font-weight: 700;
+  line-height: 1;
   cursor: pointer;
   transition: box-shadow 0.15s, background 0.15s;
 }
 .btn-google:hover,
 .btn-facebook:hover { background: #f8f9fa; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
 .btn-google svg,
-.btn-facebook svg { flex-shrink: 0; }
+.btn-facebook svg { display: block; flex-shrink: 0; }
+.btn-google span,
+.btn-facebook span { display: block; }
 .auth-divider {
   display: flex;
   align-items: center;
