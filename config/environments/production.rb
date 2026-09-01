@@ -46,8 +46,11 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Replace the default in-process memory cache store with a durable alternative.
-  config.cache_store = :solid_cache_store
+  # Solid Cache requiere la tabla solid_cache_entries, que no se está creando bien
+  # en Render (plan gratuito, sin shell/one-off jobs para correr db:prepare a mano
+  # sobre la base secundaria que además comparte la base física con primary) --
+  # causaba PG::UndefinedTable en producción. Cache en memoria por ahora.
+  config.cache_store = :memory_store
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
   config.active_job.queue_adapter = :solid_queue
