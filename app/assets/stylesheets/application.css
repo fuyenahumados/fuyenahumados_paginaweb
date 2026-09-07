@@ -64,6 +64,9 @@ body.nav-transparente nav.scrolled { background: rgba(8, 31, 46, 0.8); }
 nav a { color: #fff; text-decoration: none; }
 .nav-left { justify-self: start; }
 nav .logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   font-family: "Fraunces", Georgia, serif;
   font-size: 1.5rem;
   letter-spacing: 1.5px;
@@ -71,13 +74,14 @@ nav .logo {
   white-space: nowrap;
   flex-shrink: 0;
 }
+.logo-imagen { height: 40px; width: auto; }
 .nav-center {
   justify-self: center;
   display: flex;
   gap: 2.5rem;
   align-items: center;
   font-family: "Fraunces", Georgia, serif;
-  font-size: 1.15rem;
+  font-size: 1.5rem;
   letter-spacing: 0.3px;
   text-transform: capitalize;
 }
@@ -93,7 +97,7 @@ nav .logo {
   gap: 1.25rem;
   align-items: center;
   font-family: "Fraunces", Georgia, serif;
-  font-size: 1.15rem;
+  font-size: 1.5rem;
   text-transform: capitalize;
   flex-shrink: 0;
 }
@@ -112,7 +116,7 @@ nav .logo {
 }
 .nav-nombre {
   color: #fff;
-  font-size: 1.15rem;
+  font-size: 1.5rem;
   max-width: 160px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -131,7 +135,7 @@ nav .logo {
   border: none;
   padding: 0;
   color: #fff;
-  font-size: 1.15rem;
+  font-size: 1.5rem;
   font-family: inherit;
   cursor: pointer;
 }
@@ -149,6 +153,9 @@ nav .logo {
   align-items: center;
 }
 .admin-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   font-family: "Fraunces", Georgia, serif;
   font-size: 1.5rem;
   letter-spacing: 1.5px;
@@ -156,6 +163,7 @@ nav .logo {
   color: #fff;
   white-space: nowrap;
 }
+.admin-nav-logo .logo-imagen { height: 30px; }
 .admin-tag {
   font-size: 1.5rem;
   letter-spacing: 1.5px;
@@ -872,20 +880,49 @@ td a:hover { color: var(--ocean); }
 .total-row td { font-weight: bold; font-size: 1.1rem; border-top: 2px solid var(--navy); border-bottom: none; }
 
 /* ─── CONFIRMACIÓN POR WHATSAPP ───────────────────────── */
-.whatsapp-cta {
-  background: #f0fdf4;
-  border: 3px solid #25d366;
-  border-radius: 10px;
-  padding: 2.5rem 2rem;
-  margin: 0 0 2rem;
-  text-align: center;
-  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.25);
+.whatsapp-cta { margin: 0 0 2rem; }
+.whatsapp-cta h2 {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--navy);
+  margin-bottom: 1.5rem;
 }
-.whatsapp-cta h2 { color: #1b9e4f; margin-bottom: 0.5rem; font-size: 1.7rem; }
-.whatsapp-cta p { margin-bottom: 1.5rem; font-size: 1.05rem; text-align: center; }
+.whatsapp-cta-pasos {
+  margin: 0 0 2rem 1.5rem;
+  padding-left: 1.4rem;
+  font-family: "Inter", sans-serif;
+  font-size: 1.2rem;
+  color: #555;
+  line-height: 1.8;
+}
+.whatsapp-cta-pasos li { margin-bottom: 0.6rem; white-space: nowrap; }
+.whatsapp-cta-pasos li:last-child { margin-bottom: 0; }
+.whatsapp-cta-pasos a { color: var(--ocean); font-weight: 600; }
 .btn-whatsapp-grande { font-size: 1.25rem; padding: 1.2rem 3rem; }
 .whatsapp-cta-reinicio { color: #666; font-size: 0.85rem; margin: 1rem 0 0; }
 .datos-banco-nota { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
+
+/* ─── BOTÓN FLOTANTE DE WHATSAPP (HOME) ───────────────── */
+.whatsapp-flotante {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  width: 76px;
+  height: 76px;
+  background: #25d366;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  z-index: 200;
+  transition: transform 0.2s ease;
+}
+.whatsapp-flotante:hover { transform: scale(1.08); }
+.whatsapp-flotante svg { width: 42px; height: 42px; }
 
 /* ─── BUSCADOR (ADMIN) ────────────────────────────────── */
 /* Mismo patrón de lupa embebida que ya usa "Consultar mi pedido"
@@ -1362,7 +1399,7 @@ tbody tr:hover { background: var(--foam); }
    mismo alto respecto de las líneas negras que las separan. */
 .perfil-seccion { padding: 2.5rem 2rem; border-top: 1px solid #000; }
 .perfil-seccion:first-child { border-top: none; padding-top: 0; }
-.perfil-seccion-gris { background: #eaedf0; border-radius: 8px; }
+.perfil-seccion-gris { background: #eaedf0; }
 .perfil-seccion-titulo {
   font-family: "Fraunces", Georgia, serif;
   font-size: 1.8rem;
@@ -1670,6 +1707,8 @@ footer {
   .admin-grid { grid-template-columns: 1fr; }
   .form-row { grid-template-columns: 1fr; }
   .auth-card { margin: 2rem 0; }
+  .whatsapp-cta-pasos { margin-left: 0.5rem; }
+  .whatsapp-cta-pasos li { white-space: normal; }
   .modal-carrito-body { flex-direction: column; }
   .modal-carrito-resumen { border-left: none; border-top: 1px solid var(--border); padding-left: 0; padding-top: 1rem; }
   .modal-carrito-acciones { flex-direction: column; }

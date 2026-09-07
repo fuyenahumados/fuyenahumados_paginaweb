@@ -1,8 +1,20 @@
 <% if pedido.pendiente_pago? %>
-  <div class="whatsapp-cta" data-controller="pedido-reinicio" data-pedido-reinicio-redirigir-a-value="<%= root_path %>">
-    <h2>Último paso: confirma por WhatsApp</h2>
-    <p>Envíanos tu pedido por WhatsApp y te pasamos los datos para transferir.</p>
-    <a href="<%= WhatsappOrderMessageService.new(pedido).url %>"
+  <% whatsapp_url = WhatsappOrderMessageService.new(pedido).url %>
+  <div class="whatsapp-cta"
+       data-controller="pedido-reinicio"
+       data-pedido-reinicio-redirigir-a-value="<%= root_path %>"
+       data-pedido-reinicio-whatsapp-value="<%= whatsapp_url %>">
+    <h2>Falta un paso: confirma tu pedido por WhatsApp</h2>
+    <ol class="whatsapp-cta-pasos">
+      <li>
+        Aprieta el botón y escríbenos por
+        <%= link_to "WhatsApp", whatsapp_url, target: "_blank", data: { action: "click->pedido-reinicio#iniciar" } %>.
+      </li>
+      <li>Coordinamos el pago a través de una transferencia.</li>
+      <li>Tu pedido se prepara y se despacha en la fecha solicitada.</li>
+      <li>Disfrutas de un producto de calidad.</li>
+    </ol>
+    <a href="<%= whatsapp_url %>"
        target="_blank"
        data-action="click->pedido-reinicio#iniciar"
        class="btn btn-whatsapp btn-whatsapp-grande">

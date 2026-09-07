@@ -2,7 +2,12 @@
   <h1>Recupera tu contraseña</h1>
 
   <div class="whatsapp-cta">
-    <p>Escríbenos por WhatsApp y te ayudamos a recuperar el acceso a tu cuenta.</p>
+    <ol class="whatsapp-cta-pasos">
+      <li>Aprieta el botón y escríbenos por WhatsApp.</li>
+      <li>Confirmamos que la cuenta es tuya.</li>
+      <li>Te enviamos una contraseña nueva por ese mismo chat.</li>
+      <li>Inicias sesión con ella y listo.</li>
+    </ol>
     <%= link_to "Escribir por WhatsApp",
           "https://wa.me/#{CONTACTO[:whatsapp]}?text=#{ERB::Util.url_encode('Hola, olvidé mi contraseña y necesito ayuda para recuperar el acceso a mi cuenta.')}",
           target: "_blank", rel: "noopener", class: "btn btn-whatsapp btn-whatsapp-grande" %>

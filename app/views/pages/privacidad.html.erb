@@ -1,0 +1,60 @@
+<% content_for :show_footer, true %>
+
+<div class="container">
+  <div class="faq-inner">
+    <h1>Política de Privacidad</h1>
+
+    <div class="faq-item">
+      <h2 class="faq-pregunta">Qué información recopilamos</h2>
+      <p class="faq-respuesta">
+        Cuando creas una cuenta o haces un pedido guardamos tu nombre, apellido, email,
+        teléfono y la dirección de entrega (calle, comuna y, si la ubicas en el mapa,
+        coordenadas aproximadas). Si inicias sesión con Google o Facebook, recibimos tu
+        nombre y email desde esa cuenta. También guardamos el historial de tus pedidos y,
+        si dejas una, tus reseñas de producto.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h2 class="faq-pregunta">Para qué la usamos</h2>
+      <p class="faq-respuesta">
+        Solo para operar la tienda: procesar y despachar tus pedidos, contactarte por
+        WhatsApp para coordinar el pago y la fecha de entrega, y mostrarte tu historial de
+        compras en tu perfil. No usamos tus datos para publicidad ni los analizamos con
+        fines distintos a estos.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h2 class="faq-pregunta">Con quién la compartimos</h2>
+      <p class="faq-respuesta">
+        Con nadie. No vendemos ni compartimos tu información con terceros. El pago se
+        coordina directamente por WhatsApp entre tú y Fuyén — no guardamos ningún dato de
+        tarjetas ni de cuentas bancarias, porque el sitio no procesa pagos.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h2 class="faq-pregunta">Cómo la guardamos</h2>
+      <p class="faq-respuesta">
+        Tu contraseña se guarda cifrada, nunca en texto plano. El sitio viaja siempre por
+        una conexión segura (HTTPS). El acceso a la base de datos y al panel de
+        administración está restringido solo al equipo de Fuyén.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h2 class="faq-pregunta">Tus derechos</h2>
+      <p class="faq-respuesta">
+        Puedes pedirnos en cualquier momento que revisemos, corrijamos o eliminemos tu
+        cuenta y tus datos, escribiéndonos por WhatsApp o al mail de contacto.
+      </p>
+    </div>
+
+    <p class="faq-contacto">
+      ¿Dudas sobre esta política? Escríbenos por
+      <%= link_to "WhatsApp", "https://wa.me/#{CONTACTO[:whatsapp]}", target: "_blank", rel: "noopener" %>
+      o al mail <%= mail_to CONTACTO[:email] %>.
+    </p>
+  </div>
+</div>

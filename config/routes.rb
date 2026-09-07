@@ -45,6 +45,7 @@ Rails.application.routes.draw do
   end
   get "nosotros",  to: "pages#nosotros",  as: :nosotros
   get "preguntas-frecuentes", to: "pages#preguntas_frecuentes", as: :preguntas_frecuentes
+  get "politica-de-privacidad", to: "pages#privacidad", as: :privacidad
 
   get "up" => "rails/health#show", as: :rails_health_check
 

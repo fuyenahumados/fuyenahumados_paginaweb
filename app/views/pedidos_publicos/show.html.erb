@@ -1,12 +1,5 @@
 <%= render "pedidos/whatsapp_cta", pedido: @pedido %>
 
-<div class="admin-header">
-  <h1><%= @pedido.codigo_pedido %></h1>
-  <%= estado_badge(@pedido.estado) %>
-</div>
-
-<p>Gracias <strong><%= @pedido.nombre_completo_contacto %></strong>. Este es el estado de tu pedido.</p>
-
 <div class="checkout-seccion" data-controller="colapsable">
   <h2 class="checkout-seccion-titulo">
     <button type="button" class="checkout-seccion-toggle" data-action="colapsable#toggle" data-colapsable-target="boton" aria-expanded="false">
@@ -18,6 +11,13 @@
   </h2>
 
   <div data-colapsable-target="contenido" hidden>
+    <div class="admin-header">
+      <h1><%= @pedido.codigo_pedido %></h1>
+      <%= estado_badge(@pedido.estado) %>
+    </div>
+
+    <p>Gracias <strong><%= @pedido.nombre_completo_contacto %></strong>. Este es el estado de tu pedido.</p>
+
     <div class="checkout-resumen-datos">
       <div class="checkout-resumen-dato">
         <span>Número de pedido</span>

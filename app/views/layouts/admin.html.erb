@@ -15,7 +15,10 @@
   <body class="admin-body">
     <nav class="admin-nav">
       <div class="nav-left">
-        <span class="admin-nav-logo">FUYÉN <span class="admin-tag">Administrador</span></span>
+        <span class="admin-nav-logo">
+          <%= image_tag "/docs/logo/logo-blanco.png", alt: "", class: "logo-imagen" %>
+          Fuyén Ahumados <span class="admin-tag">Administrador</span>
+        </span>
       </div>
       <div class="nav-center">
         <%= link_to "Pedidos", admin_pedidos_path, class: ("active" if controller_path == "admin/pedidos") %>

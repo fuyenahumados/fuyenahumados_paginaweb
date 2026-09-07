@@ -8,4 +8,7 @@ class PagesController < ApplicationController
 
   def preguntas_frecuentes
   end
+
+  def privacidad
+  end
 end

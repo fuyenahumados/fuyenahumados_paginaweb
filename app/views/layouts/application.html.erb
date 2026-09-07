@@ -15,7 +15,10 @@
   <body class="<%= "nav-transparente" if controller_name == "pages" && action_name == "inicio" %>">
     <nav data-controller="nav-scroll">
       <div class="nav-left">
-        <a href="<%= root_path %>" class="logo">FUYÉN AHUMADOS</a>
+        <a href="<%= root_path %>" class="logo">
+          <%= image_tag "/docs/logo/logo-blanco.png", alt: "", class: "logo-imagen" %>
+          Fuyén Ahumados
+        </a>
       </div>
       <div class="nav-center">
         <%= link_to "Nuestros productos", productos_path, class: ("active" if current_page?(productos_path)) %>
@@ -84,6 +87,7 @@
               <li><%= link_to "Quiénes somos", nosotros_path %></li>
               <li><%= link_to "Consultar mi pedido", nuevo_pedido_publico_path %></li>
               <li><%= link_to "Preguntas frecuentes", preguntas_frecuentes_path %></li>
+              <li><%= link_to "Política de privacidad", privacidad_path %></li>
             </ul>
           </div>
           <div class="footer-col">
