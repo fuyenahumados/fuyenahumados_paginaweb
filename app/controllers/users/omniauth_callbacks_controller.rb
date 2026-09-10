@@ -3,10 +3,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     autenticar_con_omniauth
   end
 
-  def facebook
-    autenticar_con_omniauth
-  end
-
   def failure
     redirect_to new_user_session_path
   end

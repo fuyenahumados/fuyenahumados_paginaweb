@@ -140,6 +140,17 @@ nav .logo {
   cursor: pointer;
 }
 .nav-salir:hover { color: var(--celeste); text-decoration: underline; }
+.nav-hamburguesa {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 0.4rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+.nav-hamburguesa svg { width: 28px; height: 28px; }
 
 /* ─── ADMIN NAV ───────────────────────────────────────── */
 .admin-body { background: var(--foam); padding-top: 0; } /* .admin-nav no es fixed, no necesita compensación */
@@ -221,12 +232,10 @@ p { text-align: justify; }
 .auth-alt a:hover { text-decoration: underline; }
 .field-hint { display: block; font-size: 0.78rem; color: #666; margin-bottom: 0.25rem; }
 
-/* Botones "Continuar con Google/Facebook" — estilo clásico blanco con borde
-   gris, sin tomar los colores de marca del sitio (el logo de cada proveedor
-   ya aporta su propio color, así se mantienen consistentes entre sí). */
+/* Botón "Continuar con Google" — estilo clásico blanco con borde gris, sin
+   tomar los colores de marca del sitio. */
 .social-login { display: flex; flex-direction: column; gap: 0.75rem; }
-.btn-google,
-.btn-facebook {
+.btn-google {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -243,12 +252,9 @@ p { text-align: justify; }
   cursor: pointer;
   transition: box-shadow 0.15s, background 0.15s;
 }
-.btn-google:hover,
-.btn-facebook:hover { background: #f8f9fa; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
-.btn-google svg,
-.btn-facebook svg { display: block; flex-shrink: 0; }
-.btn-google span,
-.btn-facebook span { display: block; }
+.btn-google:hover { background: #f8f9fa; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+.btn-google svg { display: block; flex-shrink: 0; }
+.btn-google span { display: block; }
 .auth-divider {
   display: flex;
   align-items: center;
@@ -287,7 +293,7 @@ p { text-align: justify; }
   position: relative;
   background:
     linear-gradient(rgba(8, 31, 46, 0.45), rgba(8, 31, 46, 0.7)),
-    url("/docs/banners/home-hero.jpg") center / cover no-repeat;
+    url("/docs/banners/salmon-recien-salido-home.jpg") center / cover no-repeat;
   color: #fff;
   min-height: 92vh;
   display: flex;
@@ -1674,27 +1680,59 @@ footer {
 
 /* ─── RESPONSIVO ──────────────────────────────────────── */
 @media (max-width: 768px) {
-  nav, .admin-nav {
+  .admin-nav {
     grid-template-columns: 1fr;
     justify-items: center;
     height: auto;
     gap: 0.5rem;
     padding: 0.75rem 1.25rem;
   }
-  .nav-left, .nav-center, .nav-right { justify-self: center; }
-  .nav-center {
-    border-left: none;
-    border-right: none;
-    padding: 0.5rem 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.18);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+
+  /* Nav del sitio: colapsa a logo + botón de hamburguesa (mismos 76px de
+     alto que en desktop, así el padding-top del body y el hero no quedan
+     descuadrados). Nuestros productos/Quiénes somos/carrito/perfil/
+     Instagram se esconden en un panel que se despliega debajo del nav
+     (nav_menu_controller.js agrega/saca la clase "menu-abierto"). */
+  nav { grid-template-columns: 1fr auto; padding: 0 1.25rem; }
+  .nav-hamburguesa { display: flex; justify-self: end; }
+  body.nav-transparente nav.menu-abierto { background: var(--navy); }
+
+  .nav-center,
+  .nav-right {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    background: var(--navy);
+    padding: 0.5rem 1.5rem 1rem;
+    font-size: 1.05rem;
   }
-  .nav-center, .nav-right {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    font-size: 0.82rem;
+  nav.menu-abierto .nav-center,
+  nav.menu-abierto .nav-right {
+    display: flex;
   }
+  .nav-center a,
+  .nav-right > a,
+  .nav-right > form {
+    width: 100%;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  .nav-right > form { padding: 0; }
+  .nav-right .nav-salir {
+    width: 100%;
+    text-align: left;
+    padding: 0.85rem 0;
+  }
+  .nav-carrito, .nav-perfil { justify-content: flex-start; }
+  .nav-instagram { margin-left: 0; }
+  .nav-center a:last-child,
+  .nav-right > a:last-child { border-bottom: none; }
+
   .hero { padding: 4.5rem 1.5rem; }
   .hero-titulo { font-size: 2.6rem; letter-spacing: 6px; }
   .hero-subtitulo { font-size: 1rem; }

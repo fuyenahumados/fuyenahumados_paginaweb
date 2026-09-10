@@ -17,9 +17,8 @@ gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 gem "devise"
-# Login con Google/Facebook vía Devise
+# Login con Google vía Devise
 gem "omniauth-google-oauth2"
-gem "omniauth-facebook"
 gem "omniauth-rails_csrf_protection"
 # Rate limiting en el login/recuperar contraseña, para frenar fuerza bruta
 # ahora que el sitio ya no exige token para entrar

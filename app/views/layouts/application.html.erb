@@ -13,18 +13,18 @@
   </head>
 
   <body class="<%= "nav-transparente" if controller_name == "pages" && action_name == "inicio" %>">
-    <nav data-controller="nav-scroll">
+    <nav data-controller="nav-scroll nav-menu">
       <div class="nav-left">
         <a href="<%= root_path %>" class="logo">
           <%= image_tag "/docs/logo/logo-blanco.png", alt: "", class: "logo-imagen" %>
           Fuyén Ahumados
         </a>
       </div>
-      <div class="nav-center">
+      <div class="nav-center" data-nav-menu-target="panel">
         <%= link_to "Nuestros productos", productos_path, class: ("active" if current_page?(productos_path)) %>
         <%= link_to "Quiénes somos", nosotros_path, class: ("active" if current_page?(nosotros_path)) %>
       </div>
-      <div class="nav-right">
+      <div class="nav-right" data-nav-menu-target="panel">
         <% unless user_signed_in? && current_user.admin? %>
           <%= render "shared/nav_carrito" %>
         <% end %>
@@ -53,6 +53,16 @@
           <span class="sr-only">Fuyén en Instagram</span>
         </a>
       </div>
+      <button type="button"
+              class="nav-hamburguesa"
+              data-nav-menu-target="boton"
+              data-action="click->nav-menu#toggle"
+              aria-label="Abrir menú"
+              aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
     </nav>
 
     <% if notice.present? %>

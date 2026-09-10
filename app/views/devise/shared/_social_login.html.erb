@@ -1,7 +1,6 @@
-<% if Devise.omniauth_configs.key?(:google_oauth2) || Devise.omniauth_configs.key?(:facebook) %>
+<% if Devise.omniauth_configs.key?(:google_oauth2) %>
   <div class="social-login">
     <%= render "devise/shared/google_button" %>
-    <%= render "devise/shared/facebook_button" %>
   </div>
   <div class="auth-divider">o</div>
 <% end %>

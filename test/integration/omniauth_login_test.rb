@@ -8,7 +8,6 @@ class OmniauthLoginTest < ActionDispatch::IntegrationTest
   teardown do
     OmniAuth.config.test_mode = false
     OmniAuth.config.mock_auth[:google_oauth2] = nil
-    OmniAuth.config.mock_auth[:facebook] = nil
   end
 
   def mock_auth(provider, email:, uid: "1234567890", first_name: "Nueva", last_name: "Clienta")
@@ -20,8 +19,7 @@ class OmniauthLoginTest < ActionDispatch::IntegrationTest
   end
 
   callback_path_por_proveedor = {
-    "google_oauth2" => :user_google_oauth2_omniauth_callback_path,
-    "facebook" => :user_facebook_omniauth_callback_path
+    "google_oauth2" => :user_google_oauth2_omniauth_callback_path
   }
 
   callback_path_por_proveedor.each do |provider, callback_path_helper|

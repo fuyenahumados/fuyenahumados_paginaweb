@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
-         :omniauthable, omniauth_providers: [ :google_oauth2, :facebook ]
+         :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
   has_many :orders, dependent: :destroy
   has_many :direcciones, dependent: :destroy
@@ -20,8 +20,8 @@ class User < ApplicationRecord
   validates :telefono, presence: true, unless: -> { provider.present? }
   validates :telefono, format: { with: TELEFONO_FORMATO, message: "no es un número de teléfono válido" }, allow_blank: true
 
-  # Busca o crea el User correspondiente a un login con Google/Facebook (auth es el
-  # OmniAuth::AuthHash del proveedor que sea). Si ya existe una cuenta con ese email
+  # Busca o crea el User correspondiente a un login con Google (auth es el
+  # OmniAuth::AuthHash del proveedor). Si ya existe una cuenta con ese email
   # (creada por email/password, o por el otro proveedor), la vincula en vez de duplicarla.
   def self.from_omniauth(auth)
     return find_by(provider: auth.provider, uid: auth.uid) if exists?(provider: auth.provider, uid: auth.uid)
