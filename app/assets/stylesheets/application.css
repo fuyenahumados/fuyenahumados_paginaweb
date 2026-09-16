@@ -576,35 +576,68 @@ p { text-align: justify; }
 .filtro-buscar-btn:hover { color: var(--ocean); }
 
 /* ─── COLLAGE DE PRODUCTOS (home) ─────────────────────── */
+/* La altura de todo el bloque la fija el contenedor con un alto fijo (no
+   aspect-ratio), no el contenido de las fotos — así el alto no depende de
+   un cálculo automático que compita entre la imagen grande y las 2 chicas
+   apiladas (eso causaba el desnivel).
+   650px (subido desde 618px a pedido de Joaquín, para aprovechar más alto
+   de las fotos y recortarlas menos) — ya no coincide a propósito con el
+   alto de .quienes-somos-foto (617.5px) como antes; si se quiere volver a
+   esa simetría, hay que bajar este valor de nuevo.
+   `grid-template-rows: 100%` es necesario además de `height: 650px`: sin
+   declarar el row explícitamente, el row implícito de un grid crece al
+   contenido (la foto sin recortar, a su aspect-ratio real) en vez de
+   respetar el alto del contenedor — eso desbordaba la foto grande y una de
+   las chicas fuera de sus cajas, tapando "Quiénes somos" más abajo.
+   `overflow: hidden` en el contenedor es además una red de seguridad: si
+   algo interno igual pidiera más alto, queda recortado acá y nunca se
+   derrama sobre la sección siguiente. */
 .productos-collage {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 55fr 45fr;
+  grid-template-rows: 100%;
   gap: 1rem;
-  aspect-ratio: 2 / 1;
+  height: 650px;
+  overflow: hidden;
   margin-bottom: 2rem;
 }
 .collage-grande,
 .collage-chica {
   position: relative;
-  display: flex;
-  align-items: flex-end;
+  height: 100%;
   border-radius: 10px;
   overflow: hidden;
   background-color: var(--foam);
-  background-size: cover;
-  background-position: center;
-  text-decoration: none;
 }
+.collage-grande img,
+.collage-chica img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+/* Fila de arriba (salmon-redimensionado-1, panorámica) más baja que la de
+   abajo (salmon-redimensionado-2, más cuadrada) — 45/55 a pedido de
+   Joaquín, además calza mejor con la proporción real de cada foto y así
+   se recorta menos. */
 .collage-chicas {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: 45fr 55fr;
   gap: 1rem;
 }
 @media (max-width: 720px) {
-  .productos-collage { grid-template-columns: 1fr; aspect-ratio: auto; }
-  .collage-grande { aspect-ratio: 1 / 1; }
-  .collage-chicas { aspect-ratio: 1 / 1; }
+  /* En mobile se pierde la necesidad de alinear ambas columnas (pasan a ser
+     bloques apilados), pero el recorte se mantiene igual que en desktop y
+     que el resto del sitio (.quienes-somos-foto, .nosotros-seccion-foto):
+     cada foto tiene un alto propio vía aspect-ratio y se recorta prolija
+     con object-fit: cover — nunca se muestra "cruda" a su alto natural,
+     que en fotos de celular (muy verticales) se veía descomunal. */
+  .productos-collage { grid-template-columns: 1fr; grid-template-rows: auto; height: auto; overflow: visible; }
+  .collage-grande { height: auto; aspect-ratio: 4 / 3; }
+  .collage-chicas { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+  .collage-chica { height: auto; aspect-ratio: 1 / 1; }
 }
 
 /* ─── PRODUCTOS ───────────────────────────────────────── */
@@ -638,19 +671,51 @@ p { text-align: justify; }
   background: linear-gradient(135deg, var(--foam), var(--border));
   border-radius: 4px;
 }
+/* Dos líneas controladas por markup (.producto-nombre-texto / -peso, desde
+   `nombre` y `peso_descripcion` directamente), no por wrap libre del texto
+   — antes el nombre completo (con el peso pegado al final) se cortaba a
+   mitad de palabra por el line-clamp. Sin text-transform: uppercase a
+   propósito, para respetar tal cual la mayúscula/minúscula que se escribe
+   en el admin. Nombre y peso comparten tipografía/tamaño/alto y van
+   centrados en todo el ancho de la card, a pedido de Joaquín.
+   El alto fijo se reserva en el contenedor (.producto-nombre), no en cada
+   línea por separado — así nombre y peso quedan pegados como un solo
+   bloque compacto (gap chico) y el espacio sobrante de un nombre de 1 sola
+   línea cae DESPUÉS del peso, no entre nombre y peso. min-height: 5.05rem =
+   padding (0.5rem) + nombre a 2 líneas (2 × 1.15rem × line-height 1.3 =
+   2.99rem) + gap (0.05rem) + peso a 1 línea (1.495rem). */
 .producto-nombre {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-height: 5.05rem;
+  padding: 0.3rem 1rem 0.2rem;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+  text-align: center;
+  color: var(--ink);
+  text-decoration: none;
+}
+/* Tope duro de 2 líneas (line-clamp), no min-height: así un nombre que
+   necesitaría una 3ª línea no rompe el alto reservado arriba — se recorta
+   con "…" en vez de desalinear la card. */
+.producto-nombre-texto {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  padding: 0.2rem 1rem 0.2rem;
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 0.92rem;
+  font-size: 1.15rem;
   line-height: 1.3;
-  letter-spacing: 0.3px;
-  color: var(--ink);
-  text-decoration: none;
+}
+/* Siempre presente en el markup (aunque quede vacío en productos sin peso)
+   para que el precio y el botón queden a la misma altura en todas las
+   cards, tengan o no segunda línea de peso. Mismo tamaño/alto que
+   .producto-nombre-texto a propósito. */
+.producto-nombre-peso {
+  display: block;
+  min-height: 1.495rem;
+  font-size: 1.15rem;
+  line-height: 1.3;
 }
 .producto-precio {
   padding: 0 1rem 1rem;
@@ -1484,7 +1549,7 @@ footer {
   text-align: center;
   padding: 1rem 2rem;
   font-size: 0.8rem;
-  color: #555;
+  color: #aaa;
 }
 .footer-copy p { text-align: center; }
 
@@ -1759,6 +1824,18 @@ footer {
   }
   .filtro-campo { flex: 1 1 auto; }
   .productos-grid { grid-template-columns: repeat(2, 1fr); }
+  /* Cards a la mitad de ancho en mobile (2 columnas): un nombre largo como
+     "Salmón Ahumado Desmenuzado" no entra en 2 líneas ahí — el line-clamp
+     de desktop lo cortaría con "…" y se perdería "Desmenuzado", que es
+     información real del producto (distingue qué se está por comprar). Se
+     desactiva el clamp acá: esa card puede pasar a 3 líneas y quedar un
+     poco más alta que sus vecinas, pero nunca sola en su fila con solo 3
+     productos (2 columnas), así que no hay nada al lado con qué
+     desalinearse — se prefiere eso antes que truncar el nombre. */
+  .producto-nombre-texto {
+    display: block;
+    overflow: visible;
+  }
   .producto-detalle { grid-template-columns: 1fr; }
   .carrito-layout { grid-template-columns: 1fr; }
   .carrito-resumen-card { position: static; }

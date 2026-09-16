@@ -112,7 +112,7 @@
 
   <div class="checkout-seccion" data-controller="colapsable">
     <h2 class="checkout-seccion-titulo">
-      <button type="button" class="checkout-seccion-toggle" data-action="colapsable#toggle" data-colapsable-target="boton" aria-expanded="true">
+      <button type="button" class="checkout-seccion-toggle" data-action="colapsable#toggle" data-colapsable-target="boton" aria-expanded="false">
         Resumen de tu pedido
         <svg class="checkout-seccion-toggle-icono" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
           <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -120,7 +120,7 @@
       </button>
     </h2>
 
-    <div data-colapsable-target="contenido">
+    <div data-colapsable-target="contenido" hidden>
       <table>
         <thead>
           <tr>

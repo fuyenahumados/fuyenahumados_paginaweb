@@ -13,36 +13,43 @@
   <div class="seccion-inner">
     <h2 class="seccion-titulo">Nuestros productos</h2>
     <p class="seccion-subtitulo">
-      Nuestros productos son elaborados artesanalmente por nosotros mismos, con una receta
-      propia que fuimos afinando con harta prueba y error entre amigos. Cuidamos cada detalle
-      del proceso, desde la selección del salmón hasta el ahumado final, para que cada pieza
-      salga exactamente como nos gusta comerla a nosotros.
+      Elaboramos cada producto de forma 100% artesanal, con una receta propia que fuimos
+      perfeccionando con harto tiempo, paciencia y cariño. Cuidamos cada detalle del proceso,
+      desde la selección del salmón hasta el ahumado final con nuestra mezcla de ulmo y roble,
+      para lograr ese sabor que nos recuerda al sur de Chile.
     </p>
 
-    <% if @productos.any? %>
-      <% grande, *resto = @productos %>
-      <div class="productos-collage">
-        <div class="collage-grande" style="<%= "background-image:url(#{grande.foto_url})" if grande.foto_url.present? %>"></div>
+    <%
+      # Fotos fijas del collage de la Home: son ilustrativas del tipo de
+      # producto (salmón ahumado artesanal), no están ligadas a qué productos
+      # estén publicados/activos en el catálogo en un momento dado — a
+      # propósito, para que esta sección nunca dependa del estado del catálogo.
+      collage_grande = "/docs/banners/salmon-recien-salido-home.jpg"
+      collage_chicas = %w[/docs/banners/salmon-redimensionado-1.jpeg /docs/banners/salmon-redimensionado-2.jpeg]
+    %>
+    <div class="productos-collage">
+      <div class="collage-grande">
+        <%= image_tag collage_grande, alt: "Salmón ahumado Fuyén recién salido del ahumador" %>
+      </div>
 
-        <div class="collage-chicas">
-          <% resto.first(3).each do |product| %>
-            <div class="collage-chica" style="<%= "background-image:url(#{product.foto_url})" if product.foto_url.present? %>"></div>
-          <% end %>
-        </div>
+      <div class="collage-chicas">
+        <% collage_chicas.each do |foto| %>
+          <div class="collage-chica">
+            <%= image_tag foto, alt: "Salmón ahumado Fuyén" %>
+          </div>
+        <% end %>
       </div>
-      <div class="seccion-cta">
-        <%= link_to "Ver todos los productos", productos_path, class: "btn btn-navy-grande" %>
-      </div>
-    <% else %>
-      <p class="empty-state">Productos próximamente.</p>
-    <% end %>
+    </div>
+    <div class="seccion-cta">
+      <%= link_to "Ver todos los productos", productos_path, class: "btn btn-navy-grande" %>
+    </div>
   </div>
 </section>
 
 <section class="seccion seccion-clara quienes-somos">
   <div class="quienes-somos-grid">
     <div class="quienes-somos-foto">
-      <%= image_tag "/docs/banners/salmon-recien-salido-quienes-somos.jpg", alt: "El equipo de Fuyén" %>
+      <%= image_tag "/docs/banners/quienes-somos-pablo-gellona.jpeg", alt: "El equipo de Fuyén" %>
     </div>
     <div class="quienes-somos-texto">
       <h2 class="quienes-somos-titulo">Quiénes somos</h2>
@@ -53,10 +60,10 @@
         más gente lo probara.
       </p>
       <p class="seccion-texto">
-        Hoy seguimos haciéndolo igual, con calma, maderas nativas y una receta propia
-        que fuimos afinando a puro ensayo y error. Cada pieza sale con la misma dedicación
-        de siempre: buena onda, cuidado en cada detalle, y las ganas de compartir algo
-        tan bueno como lo que nos gusta comer a nosotros.
+        Hoy seguimos haciéndolo con la misma calma de siempre, afinando la receta con el
+        tiempo y sin perder la esencia de cómo partimos. Cada pieza sale con la misma
+        dedicación, cuidando cada detalle y las ganas de compartir algo tan bueno como
+        lo que nos gusta comer a nosotros.
       </p>
       <%= link_to "Conoce nuestra historia", nosotros_path, class: "btn btn-navy-grande" %>
     </div>

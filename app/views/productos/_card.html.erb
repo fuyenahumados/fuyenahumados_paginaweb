@@ -9,6 +9,9 @@
     <% end %>
     <%= render "productos/accion_carrito", product: product %>
   </div>
-  <%= link_to product.nombre, producto_path(product), class: "producto-nombre", data: { turbo_frame: "_top" } %>
+  <%= link_to producto_path(product), class: "producto-nombre", data: { turbo_frame: "_top" } do %>
+    <span class="producto-nombre-texto"><%= product.nombre %></span>
+    <span class="producto-nombre-peso"><%= "(#{product.peso_descripcion})" if product.peso_descripcion.present? %></span>
+  <% end %>
   <p class="producto-precio"><%= formato_pesos(product.precio) %></p>
 </div>
