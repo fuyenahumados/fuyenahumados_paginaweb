@@ -13,22 +13,34 @@
   </head>
 
   <body class="admin-body">
-    <nav class="admin-nav">
+    <nav class="admin-nav" data-controller="nav-menu">
       <div class="nav-left">
-        <span class="admin-nav-logo">
+        <a href="<%= admin_root_path %>" class="logo">
           <%= image_tag "/docs/logo/logo-blanco.png", alt: "", class: "logo-imagen" %>
-          Fuyén Ahumados <span class="admin-tag">Administrador</span>
-        </span>
+          Fuyén Ahumados <span class="admin-tag">Admin</span>
+        </a>
       </div>
-      <div class="nav-center">
-        <%= link_to "Pedidos", admin_pedidos_path, class: ("active" if controller_path == "admin/pedidos") %>
-        <%= link_to "Productos", admin_products_path, class: ("active" if controller_path == "admin/products") %>
-        <%= link_to "Usuarios", admin_users_path, class: ("active" if controller_path == "admin/users") %>
+      <div class="nav-panel" data-nav-menu-target="panel">
+        <div class="nav-center">
+          <%= link_to "Pedidos", admin_pedidos_path, class: ("active" if controller_path == "admin/pedidos") %>
+          <%= link_to "Productos", admin_products_path, class: ("active" if controller_path == "admin/products") %>
+          <%= link_to "Usuarios", admin_users_path, class: ("active" if controller_path == "admin/users") %>
+        </div>
+        <div class="nav-right">
+          <a href="<%= root_path %>" target="_blank">Página web</a>
+          <%= button_to "Salir", destroy_user_session_path, method: :delete, class: "nav-salir" %>
+        </div>
       </div>
-      <div class="nav-right">
-        <%= link_to "Página Web", root_path, target: "_blank", class: "admin-nav-site" %>
-        <%= button_to "Salir", destroy_user_session_path, method: :delete, class: "nav-salir" %>
-      </div>
+      <button type="button"
+              class="nav-hamburguesa"
+              data-nav-menu-target="boton"
+              data-action="click->nav-menu#toggle"
+              aria-label="Abrir menú"
+              aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
     </nav>
 
     <% if notice.present? %>

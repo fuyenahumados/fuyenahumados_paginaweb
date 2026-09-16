@@ -8,9 +8,12 @@
 #   el server real (`bin/rails server`), no en rake tasks / consola / el
 #   `assets:precompile` del build de Render -- evita pegarle a la base antes
 #   de que existan migraciones corridas.
-# - Nunca pisa la contraseña de una cuenta que ya existía (ver
-#   `User.crear_o_promover_admin!`), así que dejar las variables seteadas para
-#   siempre es seguro: crea el admin una sola vez.
+# - Nunca pisa la contraseña de una cuenta que ya existía (`forzar_password`
+#   queda en `false` acá a propósito, ver `User.crear_o_promover_admin!`),
+#   así que dejar las variables seteadas para siempre es seguro: crea el
+#   admin una sola vez. Además solo puede existir un admin en todo el sistema
+#   (`User#solo_un_admin_en_el_sistema`) — si este bootstrap corriera con un
+#   email distinto al del admin ya creado, falla y queda solo logueado.
 # - Si falla por lo que sea (la base todavía no está lista en ese boot puntual,
 #   etc.) se loguea y se sigue -- nunca debe tumbar el arranque de la app por
 #   un paso que es solo de conveniencia.

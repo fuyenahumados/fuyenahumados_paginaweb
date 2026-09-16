@@ -36,7 +36,7 @@ class CompraTest < ActionDispatch::IntegrationTest
   end
 
   test "agregar al carrito y verlo reflejado en /carrito" do
-    post agregar_carrito_path, params: { product_id: @producto.id, cantidad: 2, contexto: "detalle" }
+    post agregar_carrito_path, params: { product_id: @producto.id, cantidad: 2, mostrar_modal: "true" }
     assert_redirected_to carrito_path
 
     get carrito_path
@@ -71,20 +71,32 @@ class CompraTest < ActionDispatch::IntegrationTest
 
   test "agregar al carrito vía turbo-stream desde la ficha de producto (modal)" do
     post agregar_carrito_path,
-      params: { product_id: @producto.id, cantidad: 1, contexto: "detalle" },
+      params: { product_id: @producto.id, cantidad: 1, mostrar_modal: "true" },
       headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
     assert_response :success
     assert_match "modal-carrito", response.body
+    assert_match "producto-accion-#{@producto.id}", response.body
   end
 
-  test "agregar al carrito vía turbo-stream desde el catálogo (sin modal)" do
+  test "agregar al carrito vía turbo-stream desde el catálogo también muestra el modal" do
     post agregar_carrito_path,
-      params: { product_id: @producto.id, cantidad: 1, contexto: "catalogo" },
+      params: { product_id: @producto.id, cantidad: 1, mostrar_modal: "true" },
+      headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_match "modal-carrito", response.body
+    assert_match "producto-accion-#{@producto.id}", response.body
+  end
+
+  test "agregar al carrito vía turbo-stream sin mostrar_modal no incluye el modal" do
+    post agregar_carrito_path,
+      params: { product_id: @producto.id, cantidad: 1 },
       headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
     assert_response :success
     assert_match "producto-accion-#{@producto.id}", response.body
+    assert_no_match "Producto añadido al carrito", response.body
   end
 
   test "actualizar cantidad a cero vía turbo-stream la quita del carrito" do

@@ -39,7 +39,7 @@ body {
 .site-main { flex: 1 0 auto; }
 
 /* ─── NAVBAR ─────────────────────────────────────────── */
-nav {
+nav, .admin-nav {
   background: var(--navy);
   color: #fff;
   padding: 0 2rem;
@@ -56,12 +56,13 @@ nav {
 }
 /* En la home el nav arranca transparente sobre el hero y se hace semi-opaco
    apenas se hace scroll (ver nav_scroll_controller.js). En el resto de las
-   páginas el nav es siempre sólido — no hay imagen de fondo detrás. */
+   páginas (incluido el admin) el nav es siempre sólido — no hay imagen de
+   fondo detrás. */
 body:not(.nav-transparente) { padding-top: 76px; }
 body.nav-transparente nav { background: transparent; }
 body.nav-transparente nav.scrolled { background: rgba(8, 31, 46, 0.8); }
 
-nav a { color: #fff; text-decoration: none; }
+nav a, .admin-nav a { color: #fff; text-decoration: none; }
 .nav-left { justify-self: start; }
 nav .logo {
   display: flex;
@@ -75,6 +76,11 @@ nav .logo {
   flex-shrink: 0;
 }
 .logo-imagen { height: 40px; width: auto; }
+/* En desktop, .nav-panel es puramente un wrapper de agrupación para mobile
+   (ver media query) — display:contents lo saca de la caja por completo acá,
+   así .nav-center/.nav-right siguen siendo los items directos del grid de 3
+   columnas de "nav", como si el wrapper no existiera. */
+.nav-panel { display: contents; }
 .nav-center {
   justify-self: center;
   display: flex;
@@ -153,37 +159,24 @@ nav .logo {
 .nav-hamburguesa svg { width: 28px; height: 28px; }
 
 /* ─── ADMIN NAV ───────────────────────────────────────── */
-.admin-body { background: var(--foam); padding-top: 0; } /* .admin-nav no es fixed, no necesita compensación */
-.admin-nav {
-  background: var(--navy);
-  color: #fff;
-  padding: 0 2rem;
-  height: 52px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-}
-.admin-nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-family: "Fraunces", Georgia, serif;
-  font-size: 1.5rem;
-  letter-spacing: 1.5px;
-  font-weight: bold;
-  color: #fff;
-  white-space: nowrap;
-}
-.admin-nav-logo .logo-imagen { height: 30px; }
+/* El nav del admin ya comparte toda la caja (fixed, 76px, navy, grid) y los
+   elementos (.logo, .nav-center, .nav-right, .nav-salir, hamburguesa mobile)
+   con el nav del sitio público — ver el selector combinado "nav, .admin-nav"
+   y "nav a, .admin-nav a" más arriba. Acá solo queda lo que es específico
+   del admin: el badge "Admin" junto al logo. */
+.admin-body { background: var(--foam); padding-top: 76px; }
 .admin-tag {
-  font-size: 1.5rem;
-  letter-spacing: 1.5px;
-  font-weight: bold;
-  color: #fff;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--celeste);
+  border: 1px solid var(--celeste);
+  border-radius: 4px;
+  padding: 0.15rem 0.45rem;
   margin-left: 0.5rem;
+  vertical-align: middle;
 }
-.admin-nav-site { color: #fff !important; font-size: 1.15rem; }
-.admin-nav-site:hover { color: var(--celeste) !important; }
 
 /* ─── FLASH ───────────────────────────────────────────── */
 .flash {
@@ -905,18 +898,7 @@ p { text-align: justify; }
 .btn-sm { padding: 0.35rem 0.9rem; font-size: 0.82rem; }
 .btn-primary   { background: var(--navy); color: #fff; }
 .btn-secondary { background: #fff; color: var(--navy); border: 1px solid var(--navy); }
-.btn-ocean     { background: var(--ocean); color: #fff; }
 .btn-danger    { background: #c0392b; color: #fff; }
-.btn-hero {
-  background: var(--navy);
-  color: #fff;
-  font-weight: bold;
-  letter-spacing: 1px;
-  text-transform: capitalize;
-  font-size: 1.05rem;
-  padding: 1.1rem 5rem;
-}
-.btn-hero:hover { background: var(--ocean); }
 .btn-navy-grande {
   background: var(--navy);
   color: #fff;
@@ -1745,40 +1727,44 @@ footer {
 
 /* ─── RESPONSIVO ──────────────────────────────────────── */
 @media (max-width: 768px) {
-  .admin-nav {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    height: auto;
-    gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
-  }
-
-  /* Nav del sitio: colapsa a logo + botón de hamburguesa (mismos 76px de
-     alto que en desktop, así el padding-top del body y el hero no quedan
-     descuadrados). Nuestros productos/Quiénes somos/carrito/perfil/
-     Instagram se esconden en un panel que se despliega debajo del nav
+  /* Nav del sitio (y del admin, comparte el tag <nav>): colapsa a logo +
+     botón de hamburguesa (mismos 76px de alto que en desktop, así el
+     padding-top del body y el hero no quedan descuadrados). Los links del
+     centro/derecha se esconden en un panel que se despliega debajo del nav
      (nav_menu_controller.js agrega/saca la clase "menu-abierto"). */
-  nav { grid-template-columns: 1fr auto; padding: 0 1.25rem; }
+  /* "nav, .admin-nav" acá (no solo "nav") a propósito: la regla desktop de
+     ".admin-nav" es un selector de clase (más específico que el tag "nav"
+     solo), así que sin repetir ".admin-nav" acá esta regla mobile perdía
+     contra esa y el admin se quedaba con la grilla de 3 columnas de desktop. */
+  nav, .admin-nav { grid-template-columns: 1fr auto; padding: 0 1.25rem; }
   .nav-hamburguesa { display: flex; justify-self: end; }
   body.nav-transparente nav.menu-abierto { background: var(--navy); }
 
-  .nav-center,
-  .nav-right {
+  /* .nav-panel pasa a ser el panel desplegable de verdad en mobile (en
+     desktop es display:contents, invisible como caja) — un solo elemento
+     posicionado en vez de .nav-center y .nav-right cada uno con su propio
+     position:absolute: antes, al ser independientes, los dos arrancaban en
+     el mismo top:100% y quedaban superpuestos (el de la derecha tapando al
+     del centro) en vez de apilados uno debajo del otro. */
+  .nav-panel {
     display: none;
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
     flex-direction: column;
-    align-items: stretch;
-    gap: 0;
     background: var(--navy);
     padding: 0.5rem 1.5rem 1rem;
     font-size: 1.05rem;
   }
-  nav.menu-abierto .nav-center,
-  nav.menu-abierto .nav-right {
+  nav.menu-abierto .nav-panel { display: flex; }
+
+  .nav-center,
+  .nav-right {
     display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
   }
   .nav-center a,
   .nav-right > a,

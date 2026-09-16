@@ -20,38 +20,40 @@
           Fuyén Ahumados
         </a>
       </div>
-      <div class="nav-center" data-nav-menu-target="panel">
-        <%= link_to "Nuestros productos", productos_path, class: ("active" if current_page?(productos_path)) %>
-        <%= link_to "Quiénes somos", nosotros_path, class: ("active" if current_page?(nosotros_path)) %>
-      </div>
-      <div class="nav-right" data-nav-menu-target="panel">
-        <% unless user_signed_in? && current_user.admin? %>
-          <%= render "shared/nav_carrito" %>
-        <% end %>
-        <% if user_signed_in? %>
-          <% if current_user.admin? %>
-            <a href="<%= admin_root_path %>">Admin</a>
-          <% else %>
-            <%= link_to perfil_path, class: "nav-perfil", title: "Mi perfil" do %>
-              <svg class="icon-perfil" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/>
-                <path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-              </svg>
-              <span class="nav-nombre"><%= current_user.nombre %></span>
-            <% end %>
+      <div class="nav-panel" data-nav-menu-target="panel">
+        <div class="nav-center">
+          <%= link_to "Nuestros productos", productos_path, class: ("active" if current_page?(productos_path)) %>
+          <%= link_to "Quiénes somos", nosotros_path, class: ("active" if current_page?(nosotros_path)) %>
+        </div>
+        <div class="nav-right">
+          <% unless user_signed_in? && current_user.admin? %>
+            <%= render "shared/nav_carrito" %>
           <% end %>
-          <%= button_to "Salir", destroy_user_session_path, method: :delete, class: "nav-salir" %>
-        <% else %>
-          <a href="<%= new_user_session_path %>">Iniciar sesión</a>
-        <% end %>
-        <a href="https://www.instagram.com/fuyenahumados_/" target="_blank" rel="noopener" class="nav-instagram" title="Fuyén en Instagram">
-          <svg class="icon-instagram" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.6"/>
-            <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"/>
-            <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/>
-          </svg>
-          <span class="sr-only">Fuyén en Instagram</span>
-        </a>
+          <% if user_signed_in? %>
+            <% if current_user.admin? %>
+              <a href="<%= admin_root_path %>">Admin</a>
+            <% else %>
+              <%= link_to perfil_path, class: "nav-perfil", title: "Mi perfil" do %>
+                <svg class="icon-perfil" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/>
+                  <path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+                <span class="nav-nombre"><%= current_user.nombre %></span>
+              <% end %>
+            <% end %>
+            <%= button_to "Salir", destroy_user_session_path, method: :delete, class: "nav-salir" %>
+          <% else %>
+            <a href="<%= new_user_session_path %>">Iniciar sesión</a>
+          <% end %>
+          <a href="https://www.instagram.com/fuyenahumados_/" target="_blank" rel="noopener" class="nav-instagram" title="Fuyén en Instagram">
+            <svg class="icon-instagram" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/>
+            </svg>
+            <span class="sr-only">Fuyén en Instagram</span>
+          </a>
+        </div>
       </div>
       <button type="button"
               class="nav-hamburguesa"

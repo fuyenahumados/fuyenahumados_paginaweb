@@ -18,17 +18,15 @@ class CarritoController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream do
-        if params[:contexto] == "detalle"
-          render turbo_stream: [
-            turbo_stream.update("modal-carrito", partial: "carrito/modal", locals: { product: product, cantidad_agregada: cantidad }),
-            turbo_stream.replace("nav-carrito", partial: "shared/nav_carrito")
-          ]
-        else
-          render turbo_stream: [
-            turbo_stream.replace("producto-accion-#{product.id}", partial: "productos/accion_carrito", locals: { product: product }),
-            turbo_stream.replace("nav-carrito", partial: "shared/nav_carrito")
-          ]
+        streams = [ turbo_stream.replace("nav-carrito", partial: "shared/nav_carrito") ]
+        # El id "producto-accion-#{id}" solo existe en la grilla/ficha con stepper (no en la
+        # página de detalle, que tiene su propio form) — Turbo Stream ignora en silencio un
+        # replace cuyo target no está en la página, así que es seguro incluirlo siempre.
+        streams << turbo_stream.replace("producto-accion-#{product.id}", partial: "productos/accion_carrito", locals: { product: product })
+        if params[:mostrar_modal] == "true"
+          streams << turbo_stream.update("modal-carrito", partial: "carrito/modal", locals: { product: product, cantidad_agregada: cantidad })
         end
+        render turbo_stream: streams
       end
       format.html { redirect_to carrito_path, notice: "#{product.nombre} agregado al carrito." }
     end
