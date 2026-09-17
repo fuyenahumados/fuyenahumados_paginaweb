@@ -116,8 +116,13 @@ nav .logo {
 .nav-carrito { display: flex; align-items: center; gap: 0.35rem; }
 .nav-carrito:hover { color: var(--celeste); }
 .icon-carrito { width: 19px; height: 19px; flex-shrink: 0; }
-/* Solo ícono en navbar de escritorio — el texto ("Carrito", "Instagram")
-   se reserva para el cajón mobile. No se usa ".texto-mobile" (que se
+/* "Carrito" con texto también en navbar de escritorio (a pedido de
+   Joaquín) — visible siempre, no depende de breakpoint. El ícono suelto
+   de mobile junto a la hamburguesa (.nav-carrito-top) es un link aparte,
+   sin texto, así que no hay conflicto acá. */
+.nav-carrito-texto { display: inline; }
+/* Solo ícono en navbar de escritorio — el texto de "Instagram" se
+   reserva para el cajón mobile. No se usa ".texto-mobile" (que se
    muestra desde 800px) porque el cajón recién pasa a layout vertical a
    los 768px: en los 32px de por medio el navbar seguía horizontal pero
    ".texto-mobile" ya mostraba el texto de "Instagram", y no entraba
@@ -162,6 +167,11 @@ nav .logo {
 .nav-salir:hover { color: var(--celeste); text-decoration: underline; }
 .nav-hamburguesa {
   display: none;
+  position: relative;
+  /* Por encima del cajón (ver .nav-panel): con el menú abierto, la X para
+     cerrar tiene que seguir clickeable y visible arriba del fondo blanco
+     del cajón, no taparse por él. */
+  z-index: 1;
   background: none;
   border: none;
   color: #fff;
@@ -171,6 +181,32 @@ nav .logo {
   justify-content: center;
 }
 .nav-hamburguesa svg { width: 28px; height: 28px; }
+/* Ícono de carrito siempre visible junto al logo, entre el wordmark y el
+   botón de hamburguesa — para no depender de abrir el cajón solo para ver
+   si hay algo en el carrito. Ver media query más abajo: solo se muestra
+   en el nav colapsado (≤1250px); en desktop el carrito ya está en
+   .nav-right, mostrar los dos sería redundante. */
+.nav-carrito-top {
+  display: none;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: #fff;
+}
+.nav-carrito-top:hover { color: var(--celeste); }
+.nav-carrito-top .icon-carrito { width: 21px; height: 21px; }
+.carrito-badge-top {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  font-size: 0.65rem;
+  line-height: 16px;
+}
 
 /* ─── ADMIN NAV ───────────────────────────────────────── */
 /* El nav del admin ya comparte toda la caja (fixed, 76px, navy, grid) y los
@@ -1783,14 +1819,17 @@ footer {
 .carrito-vacio-texto { font-size: 1.3rem; font-weight: 600; color: var(--ink); margin: 0; }
 
 /* ─── RESPONSIVO ──────────────────────────────────────── */
-@media (max-width: 1100px) {
+@media (max-width: 1250px) {
   /* Este breakpoint es propio del nav (no comparte los 768px del resto de
      los ajustes mobile de más abajo). El nav de escritorio (3 columnas,
      sin hamburguesa, textos largos en Fraunces) medido a mano: "Iniciar
-     Sesión" recién deja de cortarse a dos líneas desde ~1095px — por
-     debajo de eso (hasta los 768px del resto del sitio) el nav se veía
-     roto con texto partido en dos líneas. Se sube el nav al cajón acá,
-     antes que el resto del sitio, para cubrir toda esa franja. */
+     Sesión" recién deja de cortarse a dos líneas desde ~1176px con el
+     texto "Carrito" de vuelta junto al ícono (antes, sin ese texto, el
+     corte pasaba a ~1095px — de ahí que este breakpoint subió de 1100 a
+     1250, con margen). Por debajo de eso (hasta los 768px del resto del
+     sitio) el nav se veía roto con texto partido en dos líneas. Se sube
+     el nav al cajón acá, antes que el resto del sitio, para cubrir toda
+     esa franja. */
   /* Nav del sitio (y del admin, comparte el tag <nav>): colapsa a logo +
      botón de hamburguesa (mismos 76px de alto que en desktop, así el
      padding-top del body y el hero no quedan descuadrados). Los links del
@@ -1800,16 +1839,24 @@ footer {
      ".admin-nav" es un selector de clase (más específico que el tag "nav"
      solo), así que sin repetir ".admin-nav" acá esta regla mobile perdía
      contra esa y el admin se quedaba con la grilla de 3 columnas de desktop. */
-  nav, .admin-nav { grid-template-columns: 1fr auto; padding: 0 1.25rem; }
+  nav, .admin-nav { grid-template-columns: 1fr auto auto; padding: 0 1.25rem; }
   .nav-hamburguesa { display: flex; justify-self: end; }
+  .nav-carrito-top { display: flex; }
   body.nav-transparente nav.menu-abierto { background: var(--navy); }
   /* Con el menú abierto, el logo/wordmark desaparece (a pedido de Joaquín —
      "no quiero seguir viendo el nav de arriba") y el ícono de hamburguesa
-     se reemplaza por una X en el mismo lugar, para volver a cerrar. */
+     se reemplaza por una X en el mismo lugar, para volver a cerrar. El
+     ícono de carrito de al lado también se esconde: ya está accesible
+     dentro del cajón abierto (.nav-right) y quedaría tapado por su fondo
+     blanco de todos modos. */
   .icono-menu-cerrar { display: none; }
   nav.menu-abierto .icono-menu-abrir { display: none; }
   nav.menu-abierto .icono-menu-cerrar { display: block; }
   nav.menu-abierto .nav-left { visibility: hidden; }
+  nav.menu-abierto .nav-carrito-top { visibility: hidden; }
+  /* La X pasa a oscura porque queda sobre el fondo blanco del cajón (ver
+     .nav-panel), no sobre el navy del nav. */
+  nav.menu-abierto .nav-hamburguesa { color: var(--ink); }
   /* El wordmark "Fuyén Ahumados" tiene white-space: nowrap (a propósito en
      desktop, hay espacio de sobra) — a pedido de Joaquín se achica bastante
      más en mobile para que ocupe poco ancho junto al botón de hamburguesa. */
@@ -1826,7 +1873,12 @@ footer {
   .nav-panel {
     display: flex;
     position: fixed;
-    top: 76px;
+    /* top:0 (no 76px): el cajón tiene que cubrir TODA la columna de arriba
+       a abajo, incluida la franja donde están el logo y la X de cerrar —
+       si arrancaba debajo del nav (76px) esa franja se quedaba mostrando
+       el navy del nav de abajo. padding-top compensa reservando ese
+       espacio para que el primer link no quede tapado por la X. */
+    top: 0;
     right: 0;
     bottom: 0;
     width: 72%;
@@ -1834,11 +1886,13 @@ footer {
     /* Cajón claro (a pedido de Joaquín) en vez del navy del nav de arriba —
        usa los mismos colores que el resto del sitio para texto/fondo
        claro (--ink/#fff), no colores nuevos. El nav de arriba (con la X
-       para cerrar) sigue navy, no cambia. */
+       para cerrar) sigue navy por debajo, pero el cajón lo tapa por
+       completo con blanco en su columna (ver z-index de .nav-hamburguesa
+       más arriba para que la X siga arriba de este fondo). */
     background: #fff;
     color: var(--ink);
     box-shadow: -4px 0 16px rgba(0, 0, 0, 0.12);
-    padding: 1.5rem 1.25rem 1rem;
+    padding: calc(76px + 1.5rem) 1.25rem 1rem;
     /* Más chico que el 1.05rem original — "Nuestros Productos"/"Quiénes
        Somos"/"Iniciar Sesión" no entraban en una línea ni ensanchando la
        columna a 68%, hubo que bajar la letra también. */
