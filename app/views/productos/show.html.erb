@@ -16,7 +16,7 @@
     <p class="producto-detalle-precio"><%= formato_pesos(@product.precio) %></p>
     <p class="producto-detalle-desc"><%= @product.descripcion %></p>
 
-    <%= form_with url: agregar_carrito_path, method: :post do |f| %>
+    <%= form_with url: agregar_carrito_path, method: :post, class: "producto-detalle-form" do |f| %>
       <%= f.hidden_field :product_id, value: @product.id %>
       <%= f.hidden_field :mostrar_modal, value: "true" %>
 

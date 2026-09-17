@@ -578,30 +578,20 @@ p { text-align: justify; }
 .catalogo-page { padding: 2.5rem 2rem; }
 .catalogo-inner { max-width: var(--ancho-contenido); margin: 0 auto; }
 
+/* Sticky (no solo en el catálogo mobile — a pedido de Joaquín queda siempre
+   visible arriba también en desktop): top:76px para pegarse justo debajo
+   del nav fijo, z-index por debajo del nav (100) pero por arriba de las
+   cards para que el scroll pase por debajo sin taparla. */
 .catalogo-filtros-barra {
+  position: sticky;
+  top: 76px;
+  z-index: 40;
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1.25rem 1.5rem;
   margin-bottom: 2rem;
 }
-.catalogo-filtros-toggle {
-  display: none; /* solo visible en mobile, ver media query */
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  font: inherit;
-  font-weight: 600;
-  color: var(--navy);
-  text-align: left;
-  cursor: pointer;
-}
-.catalogo-filtros-toggle-icono { flex-shrink: 0; color: var(--navy); transition: transform 0.2s ease; }
-.catalogo-filtros-toggle[aria-expanded="true"] .catalogo-filtros-toggle-icono { transform: rotate(180deg); }
 
 .catalogo-filtros-campos {
   display: flex;
@@ -647,6 +637,58 @@ p { text-align: justify; }
   cursor: pointer;
 }
 .filtro-buscar-btn:hover { color: var(--ocean); }
+
+/* "Ordenar por" + "Precio" fusionados en un solo botón "Filtrar por" (a
+   pedido de Joaquín) — deja de haber un 3er campo fijo en la fila, así el
+   buscador (flex: 1 1 280px, ver arriba) tiene más espacio de sobra para
+   crecer. El panel con los dos <select> originales vive en un dropdown
+   flotante (position: absolute) en vez de empujar el layout de la fila al
+   abrirse. */
+.filtro-campo--filtrar-por { flex: 0 0 auto; position: relative; }
+.filtro-filtrar-por-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.88rem;
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.filtro-filtrar-por-toggle:hover { border-color: var(--ocean); }
+.filtro-filtrar-por-icono { flex-shrink: 0; transition: transform 0.2s ease; }
+.filtro-filtrar-por-toggle[aria-expanded="true"] .filtro-filtrar-por-icono { transform: rotate(180deg); }
+/* [hidden] explícito porque la regla de abajo (misma especificidad que el
+   "[hidden] { display: none }" del user-agent) es de origen "autor" y le
+   gana por eso a la del navegador aunque empaten en especificidad — sin
+   este reset el panel quedaba visible siempre, ignorando el atributo
+   "hidden" que pone/saca colapsable_controller.js. */
+.filtro-filtrar-por-panel[hidden] { display: none; }
+.filtro-filtrar-por-panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 240px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(8, 31, 46, 0.15);
+  padding: 1.25rem;
+}
+/* ".filtro-campo" adentro del panel es un hijo de un flex COLUMNA (el
+   panel), no de la fila horizontal de arriba — sin este reset, heredaba
+   "flex: 0 0 220px" pensado para la fila y esos 220px se interpretaban
+   como ALTO (no ancho) en un contenedor columna, inflando cada <select>. */
+.filtro-filtrar-por-panel .filtro-campo { flex: none; width: 100%; }
 
 /* ─── COLLAGE DE PRODUCTOS (home) ─────────────────────── */
 /* La altura de todo el bloque la fija el contenedor con un alto fijo (no
@@ -1839,7 +1881,7 @@ footer {
      ".admin-nav" es un selector de clase (más específico que el tag "nav"
      solo), así que sin repetir ".admin-nav" acá esta regla mobile perdía
      contra esa y el admin se quedaba con la grilla de 3 columnas de desktop. */
-  nav, .admin-nav { grid-template-columns: 1fr auto auto; padding: 0 1.25rem; }
+  nav, .admin-nav { grid-template-columns: 1fr auto auto; padding: 0 1.25rem; column-gap: 0.5rem; }
   .nav-hamburguesa { display: flex; justify-self: end; }
   .nav-carrito-top { display: flex; }
   body.nav-transparente nav.menu-abierto { background: var(--navy); }
@@ -1859,9 +1901,14 @@ footer {
   nav.menu-abierto .nav-hamburguesa { color: var(--ink); }
   /* El wordmark "Fuyén Ahumados" tiene white-space: nowrap (a propósito en
      desktop, hay espacio de sobra) — a pedido de Joaquín se achica bastante
-     más en mobile para que ocupe poco ancho junto al botón de hamburguesa. */
-  .logo { font-size: 0.95rem; gap: 0.3rem; }
-  .logo-imagen { height: 22px; }
+     más en mobile para que ocupe poco ancho junto al botón de hamburguesa.
+     Selector "nav .logo" (no solo ".logo") a propósito: la regla desktop
+     de línea ~73 es "nav .logo" con más especificidad que ".logo" sola —
+     sin repetir "nav" acá, esta regla mobile perdía la pulseada y el logo
+     se quedaba en tamaño desktop (1.5rem) pese al media query, empujando
+     el ícono de carrito y la hamburguesa casi fuera de la pantalla. */
+  nav .logo { font-size: 0.9rem; gap: 0.3rem; }
+  .logo-imagen { height: 20px; }
   .admin-tag { font-size: 0.6rem; padding: 0.1rem 0.3rem; }
 
   /* .nav-panel es el cajón (drawer) que se desliza desde la derecha, no un
@@ -1960,28 +2007,115 @@ footer {
   .modal-carrito-body { flex-direction: column; }
   .modal-carrito-resumen { border-left: none; border-top: 1px solid var(--border); padding-left: 0; padding-top: 1rem; }
   .modal-carrito-acciones { flex-direction: column; }
-  .catalogo-filtros-toggle { display: flex; }
+  /* Fila mobile: ahora solo quedan 2 elementos (Buscar + botón "Filtrar
+     por" — Ordenar/Precio se fusionaron ahí, ver arriba), así que el
+     buscador puede crecer bastante más que cuando competía con 3 campos.
+     El label del buscador se sigue ocultando visualmente (mismo truco que
+     .sr-only, el placeholder ya dice de qué es) — pero solo el de la fila
+     de arriba: ">" (hijo directo) para NO afectar los labels de "Ordenar
+     por"/"Precio" adentro del panel desplegable, que ahí sí conviene
+     mostrar (ya no compiten por espacio en una fila apretada). */
+  .catalogo-filtros-barra { padding: 0.6rem 0.75rem; }
   .catalogo-filtros-campos {
-    flex-direction: column;
+    flex-wrap: nowrap;
     align-items: stretch;
-    gap: 1rem;
-    margin-top: 1rem;
+    gap: 0.5rem;
   }
-  .filtro-campo { flex: 1 1 auto; }
-  .productos-grid { grid-template-columns: repeat(2, 1fr); }
-  /* Cards a la mitad de ancho en mobile (2 columnas): un nombre largo como
-     "Salmón Ahumado Desmenuzado" no entra en 2 líneas ahí — el line-clamp
-     de desktop lo cortaría con "…" y se perdería "Desmenuzado", que es
-     información real del producto (distingue qué se está por comprar). Se
-     desactiva el clamp acá: esa card puede pasar a 3 líneas y quedar un
-     poco más alta que sus vecinas, pero nunca sola en su fila con solo 3
-     productos (2 columnas), así que no hay nada al lado con qué
-     desalinearse — se prefiere eso antes que truncar el nombre. */
+  .filtro-campo--buscar { flex: 1 1 auto; min-width: 0; }
+  .filtro-campo--filtrar-por { flex: 0 0 auto; }
+  .filtro-campo--buscar label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .filtro-campo select,
+  .filtro-campo input[type="text"] {
+    height: 2.25rem;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.76rem;
+  }
+  .filtro-campo input.filtro-buscar { padding-right: 2rem; }
+  .filtro-buscar-btn { width: 2.25rem; height: 2.25rem; }
+  .filtro-filtrar-por-toggle { height: 2.25rem; padding: 0 0.75rem; font-size: 0.78rem; }
+  .filtro-filtrar-por-panel { width: 200px; }
+
+  /* De vuelta a 2 columnas (a pedido de Joaquín). La card ya NO se fuerza a
+     cuadrada completa — solo la FOTO mantiene su aspect-ratio 1/1 propio
+     (heredado de la regla base, object-fit: cover, sin deformarse) y el
+     nombre/precio quedan debajo en su alto natural, no comprimidos dentro
+     de un cuadrado. */
+  .productos-grid { grid-template-columns: repeat(2, 1fr); gap: 0.875rem; }
+  /* Título más chico y con tope de 2 líneas (no "sin clamp" como se probó
+     antes) — a este ancho, "sin clamp" dejaba nombres de 2 palabras como
+     "Salmón Ahumado" partidos en 2 líneas por sí solos, más una 3ª línea
+     del peso, y las cards de una fila quedaban con nombres de distinto
+     largo, alturas dispares. Con font-size más chico "Salmón Ahumado"
+     entra en 1 línea; nombres más largos (p. ej. "...Desmenuzado") como
+     máximo llegan a 2 sin desbordar. min-height reserva el espacio de esas
+     2 líneas + el peso de abajo siempre, así todas las cards de una fila
+     miden lo mismo tenga 1 o 2 líneas el nombre real. */
+  .producto-nombre {
+    min-height: 3.9rem;
+    padding: 0.3rem 0.6rem 0.2rem;
+  }
   .producto-nombre-texto {
-    display: block;
-    overflow: visible;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.92rem;
+    line-height: 1.25;
   }
+  /* Peso como subtítulo separado (a pedido de Joaquín): más chico, gris,
+     y con white-space: nowrap para que "(300g - 350g)" nunca se parta
+     entre dos líneas por poco ancho — la garantía dura pedida en vez de
+     solo confiar en que alcance el espacio. */
+  .producto-nombre-peso {
+    display: block;
+    min-height: 0;
+    margin-top: 0.15rem;
+    font-size: 0.76rem;
+    font-weight: normal;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .producto-accion { display: none; }
   .producto-detalle { grid-template-columns: 1fr; }
+  /* Barra fija abajo con el stepper de cantidad + "Agregar al carrito" —
+     a pedido de Joaquín, se mantiene siempre visible mientras se scrollea
+     la descripción/reseñas de más abajo, en vez de vivir en el flujo
+     normal de la página. Foto/nombre/precio/descripción siguen scrolleando
+     normal arriba (son hermanos del form, no están adentro). padding-bottom
+     en .producto-resenas de más abajo reserva el espacio para que esta
+     barra no tape el final de las reseñas. */
+  /* ".producto-detalle-info .producto-detalle-form" (no solo ".producto-detalle-form")
+     a propósito: más específico que la regla desktop ".producto-detalle-info form"
+     (línea ~880) para poder pisarle flex-direction sin recurrir a !important. */
+  .producto-detalle-info .producto-detalle-form {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    background: #fff;
+    border-top: 1px solid var(--border);
+    padding: 0.75rem 1rem;
+    box-shadow: 0 -2px 10px rgba(8, 31, 46, 0.1);
+  }
+  .producto-detalle-form .cantidad-selector { margin-bottom: 0; flex-shrink: 0; }
+  .producto-detalle-form .producto-detalle-agregar { margin-top: 0; width: auto; flex: 1; }
+  .producto-resenas { padding-bottom: 6rem; }
   .carrito-layout { grid-template-columns: 1fr; }
   .carrito-resumen-card { position: static; }
   .carrito-item { flex-wrap: wrap; }
