@@ -411,10 +411,18 @@ p { text-align: justify; }
 
   .quienes-somos { padding: 3rem 1.5rem; }
   .quienes-somos-grid { grid-template-columns: 1fr; }
-  /* En mobile la foto va DESPUÉS del título/texto (al revés que en desktop,
-     donde va al lado) — order no cambia el HTML, solo el orden visual. */
-  .quienes-somos-foto { max-width: 280px; margin: 1.5rem auto 0; order: 2; }
-  .quienes-somos-texto { order: 1; }
+  /* Orden pedido en mobile: título, texto, foto, botón. El botón vive
+     dentro de .quienes-somos-texto en el HTML (mismo markup que desktop,
+     donde el botón queda pegado abajo de esa columna con margin-top:auto) —
+     para meter la foto EN MEDIO del texto y el botón sin tocar el HTML,
+     .quienes-somos-texto pasa a display:contents acá: deja de ser una caja
+     propia y sus hijos (título, texto, botón) compiten directamente por
+     "order" en .quienes-somos-grid junto con la foto. */
+  .quienes-somos-texto { display: contents; }
+  .quienes-somos-titulo,
+  .quienes-somos-texto > .texto-mobile { order: 1; }
+  .quienes-somos-foto { max-width: 280px; margin: 1.5rem auto; order: 2; }
+  .quienes-somos-texto > .btn-navy-grande { order: 3; margin-top: 0; }
 }
 
 /* ─── NOSOTROS ────────────────────────────────────────── */
@@ -991,8 +999,14 @@ td a:hover { color: var(--ocean); }
   justify-content: center;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
   z-index: 200;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  /* Arranca oculto y aparece recién al hacer scroll (whatsapp_flotante_
+     controller.js agrega/saca la clase "visible") — para que no tape el
+     hero apenas se carga la página. */
+  opacity: 0;
+  pointer-events: none;
 }
+.whatsapp-flotante.visible { opacity: 1; pointer-events: auto; }
 .whatsapp-flotante:hover { transform: scale(1.08); }
 .whatsapp-flotante svg { width: 42px; height: 42px; }
 
@@ -1758,6 +1772,13 @@ footer {
   nav, .admin-nav { grid-template-columns: 1fr auto; padding: 0 1.25rem; }
   .nav-hamburguesa { display: flex; justify-self: end; }
   body.nav-transparente nav.menu-abierto { background: var(--navy); }
+  /* Con el menú abierto, el logo/wordmark desaparece (a pedido de Joaquín —
+     "no quiero seguir viendo el nav de arriba") y el ícono de hamburguesa
+     se reemplaza por una X en el mismo lugar, para volver a cerrar. */
+  .icono-menu-cerrar { display: none; }
+  nav.menu-abierto .icono-menu-abrir { display: none; }
+  nav.menu-abierto .icono-menu-cerrar { display: block; }
+  nav.menu-abierto .nav-left { visibility: hidden; }
   /* El wordmark "Fuyén Ahumados" tiene white-space: nowrap (a propósito en
      desktop, hay espacio de sobra) — a pedido de Joaquín se achica bastante
      más en mobile para que ocupe poco ancho junto al botón de hamburguesa. */
@@ -1777,11 +1798,14 @@ footer {
     top: 76px;
     right: 0;
     bottom: 0;
-    width: 50%;
+    width: 72%;
     flex-direction: column;
     background: var(--navy);
-    padding: 1.5rem 1.5rem 1rem;
-    font-size: 1.05rem;
+    padding: 1.5rem 1.25rem 1rem;
+    /* Más chico que el 1.05rem original — "Nuestros Productos"/"Quiénes
+       Somos"/"Iniciar Sesión" no entraban en una línea ni ensanchando la
+       columna a 68%, hubo que bajar la letra también. */
+    font-size: 0.92rem;
     overflow-y: auto;
     transform: translateX(100%);
     transition: transform 0.25s ease;
@@ -1809,7 +1833,11 @@ footer {
     padding: 0.85rem 0;
   }
   .nav-carrito, .nav-perfil { justify-content: flex-start; }
-  .nav-instagram { margin-left: 0; }
+  /* line-height:0 en desktop es para el link icon-only (sin eso el ícono
+     queda con aire de sobra abajo) — acá se agrega texto "Instagram" al
+     lado, así que hay que devolver el line-height normal o el texto queda
+     aplastado/superpuesto con el ícono. */
+  .nav-instagram { margin-left: 0; line-height: normal; gap: 0.5rem; }
   .nav-center a:last-child,
   .nav-right > a:last-child { border-bottom: none; }
 

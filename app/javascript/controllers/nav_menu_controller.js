@@ -9,5 +9,6 @@ export default class extends Controller {
     const abrir = !this.element.classList.contains("menu-abierto")
     this.element.classList.toggle("menu-abierto", abrir)
     this.botonTarget.setAttribute("aria-expanded", abrir)
+    this.botonTarget.setAttribute("aria-label", abrir ? "Cerrar menú" : "Abrir menú")
   }
 }
