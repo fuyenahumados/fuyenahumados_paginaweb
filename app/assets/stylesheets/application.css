@@ -429,8 +429,15 @@ p { text-align: justify; }
   }
   .quienes-somos-texto { display: contents; }
   .quienes-somos-titulo { grid-area: titulo; margin-bottom: 1.5rem; }
-  .quienes-somos-texto > .texto-mobile { grid-area: texto; }
-  .quienes-somos-foto { max-width: 280px; margin: 1.5rem auto; grid-area: foto; }
+  /* margin-bottom explícito (pisa el 1.75rem heredado de .seccion-texto,
+     pensado para el bloque de 2 párrafos de desktop) para que el espacio
+     hasta la foto sea igual al del resto de la sección, no el doble. */
+  .quienes-somos-texto > .texto-mobile { grid-area: texto; margin-bottom: 1.5rem; }
+  /* Ancho completo, igual que las fotos del collage de "Nuestros
+     productos" (ver .productos-collage) — el max-width de desktop
+     (494px, pensado para la columna angosta al lado del texto) ya no
+     aplica cuando la foto pasa a ocupar su propia fila. */
+  .quienes-somos-foto { max-width: 100%; margin: 0 0 1.5rem; grid-area: foto; }
   .quienes-somos-texto > .btn-navy-grande { grid-area: boton; margin-top: 0; }
 }
 
