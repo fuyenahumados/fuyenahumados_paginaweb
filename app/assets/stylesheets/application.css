@@ -410,19 +410,28 @@ p { text-align: justify; }
   .texto-mobile { display: block; }
 
   .quienes-somos { padding: 3rem 1.5rem; }
-  .quienes-somos-grid { grid-template-columns: 1fr; }
   /* Orden pedido en mobile: título, texto, foto, botón. El botón vive
      dentro de .quienes-somos-texto en el HTML (mismo markup que desktop,
      donde el botón queda pegado abajo de esa columna con margin-top:auto) —
      para meter la foto EN MEDIO del texto y el botón sin tocar el HTML,
      .quienes-somos-texto pasa a display:contents acá: deja de ser una caja
-     propia y sus hijos (título, texto, botón) compiten directamente por
-     "order" en .quienes-somos-grid junto con la foto. */
+     propia y sus hijos (título, texto, botón) compiten directamente con la
+     foto por un lugar en .quienes-somos-grid. Se ubican por "grid-area"
+     (no por "order"): Safari tiene un bug conocido que deja un hueco
+     enorme cuando se reordena con "order" hijos de un elemento con
+     display:contents dentro de un grid. "gap" queda en 0 porque cada
+     elemento ya trae su propio margin (pensado para el layout de desktop)
+     — sumarle el gap del grid duplicaba el espaciado. */
+  .quienes-somos-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas: "titulo" "texto" "foto" "boton";
+    gap: 0;
+  }
   .quienes-somos-texto { display: contents; }
-  .quienes-somos-titulo,
-  .quienes-somos-texto > .texto-mobile { order: 1; }
-  .quienes-somos-foto { max-width: 280px; margin: 1.5rem auto; order: 2; }
-  .quienes-somos-texto > .btn-navy-grande { order: 3; margin-top: 0; }
+  .quienes-somos-titulo { grid-area: titulo; margin-bottom: 1.5rem; }
+  .quienes-somos-texto > .texto-mobile { grid-area: texto; }
+  .quienes-somos-foto { max-width: 280px; margin: 1.5rem auto; grid-area: foto; }
+  .quienes-somos-texto > .btn-navy-grande { grid-area: boton; margin-top: 0; }
 }
 
 /* ─── NOSOTROS ────────────────────────────────────────── */
@@ -1838,7 +1847,6 @@ footer {
      lado, así que hay que devolver el line-height normal o el texto queda
      aplastado/superpuesto con el ícono. */
   .nav-instagram { margin-left: 0; line-height: normal; gap: 0.5rem; }
-  .nav-center a:last-child,
   .nav-right > a:last-child { border-bottom: none; }
 
   .hero { padding: 4.5rem 1.5rem; }
