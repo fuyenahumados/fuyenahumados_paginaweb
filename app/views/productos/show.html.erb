@@ -12,7 +12,12 @@
   </div>
 
   <div class="producto-detalle-info">
-    <h1 class="producto-detalle-nombre"><%= @product.nombre %></h1>
+    <h1 class="producto-detalle-nombre">
+      <%= @product.nombre %>
+      <% if @product.peso_descripcion.present? %>
+        <span class="producto-detalle-peso">(<%= @product.peso_descripcion %>)</span>
+      <% end %>
+    </h1>
     <p class="producto-detalle-precio"><%= formato_pesos(@product.precio) %></p>
     <p class="producto-detalle-desc"><%= @product.descripcion %></p>
 

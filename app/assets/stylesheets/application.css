@@ -538,11 +538,14 @@ p { text-align: justify; }
   .nosotros-seccion-grid--invertida {
     grid-template-columns: 1fr;
   }
-  .nosotros-seccion-grid--invertida .nosotros-seccion-foto,
-  .nosotros-seccion-grid--invertida .nosotros-seccion-texto {
-    order: 0;
-  }
-  .nosotros-seccion-foto { max-width: 320px; margin: 0 auto; }
+  /* Título + texto antes que la foto (a pedido de Joaquín) en las 2
+     secciones — antes la foto iba primero (orden natural del HTML en
+     "Sobre nosotros", y el reset a "order: 0" en "Nuestro proceso" caía
+     en lo mismo por compartir el mismo orden de DOM). Se pisa el "order"
+     de escritorio de ambas variantes (con o sin "--invertida") con el
+     mismo valor acá, así las 2 secciones quedan iguales en mobile. */
+  .nosotros-seccion-texto { order: 1; }
+  .nosotros-seccion-foto { order: 2; max-width: 320px; margin: 0 auto; }
 }
 
 /* ─── PREGUNTAS FRECUENTES ────────────────────────────── */
@@ -919,7 +922,18 @@ p { text-align: justify; }
 }
 .producto-detalle-info { display: flex; flex-direction: column; }
 .producto-detalle-nombre { margin-bottom: 0.5rem; }
-.producto-detalle-precio { font-size: 1.5rem; color: var(--navy); font-weight: bold; margin-bottom: 1rem; }
+/* Mismo dato que ".producto-nombre-peso" en las cards del catálogo
+   (product.peso_descripcion), no un campo nuevo — acá como subtítulo
+   propio en su línea (display: block corta la línea del <h1>) en vez de
+   pegado al nombre, más chico y gris para diferenciarlo del título. */
+.producto-detalle-peso {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 1.1rem;
+  font-weight: normal;
+  color: #666;
+}
+.producto-detalle-precio { font-size: 1.5rem; color: var(--navy); font-weight: normal; margin-bottom: 1rem; }
 .producto-detalle-desc { font-size: 1.2rem; color: #555; line-height: 1.8; margin-bottom: 1.5rem; }
 .producto-detalle-info form { display: flex; flex-direction: column; flex: 1; }
 .cantidad-selector {
@@ -1671,6 +1685,10 @@ footer {
 .footer-copy p { text-align: center; }
 
 /* ─── MODAL CARRITO ───────────────────────────────────── */
+/* z-index 300, no 200 (como el resto de los overlays/flotantes del sitio):
+   por encima del nav (100), la barra fija de cantidad+agregar de la ficha
+   de producto (90) y el botón flotante de WhatsApp (200) sin depender de
+   que gane el empate por orden de aparición en el DOM. */
 .modal-carrito-overlay {
   position: fixed;
   inset: 0;
@@ -1679,7 +1697,7 @@ footer {
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  z-index: 200;
+  z-index: 300;
 }
 .modal-carrito {
   background: #fff;
@@ -2004,6 +2022,22 @@ footer {
   .auth-card { margin: 2rem 0; }
   .whatsapp-cta-pasos { margin-left: 0.5rem; }
   .whatsapp-cta-pasos li { white-space: normal; }
+  /* Anclado arriba (con margen fijo) en vez de centrado puro en mobile: un
+     centrado perfecto (align-items: center) depende de que el navegador
+     mida bien la altura real del viewport, y en mobile esa altura cambia
+     sola cuando la barra de direcciones se muestra/oculta (el toolbar
+     dinámico de Safari/Chrome) — el mismo cálculo de centrado podía dar
+     un modal corrido hacia arriba con el título tapado por el nav. Con
+     padding-top fijo (altura del nav + aire) el título siempre queda
+     debajo del nav pase lo que pase con el toolbar. max-height se ajusta
+     acorde (resta ese padding-top en vez del 90vh simétrico de escritorio)
+     así el modal completo — con su propio scroll interno, sin tocar eso—
+     sigue entrando en la pantalla. */
+  .modal-carrito-overlay {
+    align-items: flex-start;
+    padding: calc(76px + 1rem) 1rem 1.5rem;
+  }
+  .modal-carrito { max-height: calc(100vh - 76px - 2.5rem); }
   .modal-carrito-body { flex-direction: column; }
   .modal-carrito-resumen { border-left: none; border-top: 1px solid var(--border); padding-left: 0; padding-top: 1rem; }
   .modal-carrito-acciones { flex-direction: column; }
@@ -2131,13 +2165,80 @@ footer {
     padding: 0.75rem 1rem;
     box-shadow: 0 -2px 10px rgba(8, 31, 46, 0.1);
   }
-  .producto-detalle-form .cantidad-selector { margin-bottom: 0; flex-shrink: 0; }
-  .producto-detalle-form .producto-detalle-agregar { margin-top: 0; width: auto; flex: 1; }
+  /* Misma altura (48px) para los botones −/+, el input de cantidad y el
+     botón "Agregar Al Carrito" — antes cada uno tenía su alto "natural"
+     (32px los círculos, ~34px el input, ~59px el botón por su padding
+     grande pensado para el layout de columna de escritorio) y quedaban
+     descuadrados entre sí en la barra horizontal. */
+  /* gap/width del selector achicados acá (antes 1rem/60px) para dejarle
+     más ancho disponible al botón — a las medidas originales "Agregar Al
+     Carrito" no entraba en una línea a los 48px de alto y el texto se
+     cortaba contra el borde inferior de la barra. */
+  .producto-detalle-form .cantidad-selector { margin-bottom: 0; flex-shrink: 0; gap: 0.6rem; }
+  .producto-detalle-form .stepper-btn { width: 48px; height: 48px; }
+  .producto-detalle-form .cantidad-input { height: 48px; width: 44px; padding: 0.4rem 0.2rem; }
+  .producto-detalle-form .producto-detalle-agregar {
+    margin-top: 0;
+    width: auto;
+    flex: 1;
+    height: 48px;
+    padding: 0 0.75rem;
+    font-size: 0.88rem;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .producto-resenas { padding-bottom: 6rem; }
-  .carrito-layout { grid-template-columns: 1fr; }
-  .carrito-resumen-card { position: static; }
-  .carrito-item { flex-wrap: wrap; }
-  .carrito-item-subtotal { text-align: left; }
+  /* Carrito en 2 columnas angostas también en mobile (a pedido de Joaquín
+     — antes quedaba todo apilado en una sola columna). El resumen recupera
+     el "position: sticky" que ya usa en escritorio (se desactivaba acá
+     con "static") — con las 2 columnas lado a lado, el mismo patrón de
+     "sidebar pegado mientras la lista de al lado scrollea" funciona igual
+     de bien angosto, sin necesitar un scroll interno aparte para
+     ".carrito-items": crece a lo largo de la página como siempre, y el
+     resumen la sigue. */
+  .carrito-layout { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .carrito-items { padding: 0 0.6rem; }
+  /* Cada card de producto pasa de fila a columna (foto arriba, nombre/
+     peso/precio, selector de cantidad, subtotal y por último el ícono de
+     eliminar) — de otra forma no entraba el ancho de ~180px por columna.
+     El orden en el HTML ya era ese (foto, info, stepper, subtotal,
+     quitar), así que alcanza con cambiar flex-direction, no hace falta
+     tocar el markup. */
+  .carrito-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.6rem;
+    padding: 1rem 0;
+  }
+  .carrito-item-foto { width: 64px; height: 64px; }
+  .carrito-item-info { flex: none; width: 100%; align-self: center; }
+  /* gap del stepper más chico (1rem → 0.4rem) para que los botones −/+ de
+     40x40 (subidos desde 32px, tap target real pedido) y el número entren
+     en el ancho angosto de la columna sin desbordar. */
+  .carrito-item-stepper { gap: 0.4rem; }
+  .carrito-item-stepper .stepper-btn { width: 40px; height: 40px; }
+  .carrito-item-subtotal { width: auto; text-align: center; }
+  .carrito-item-quitar { align-self: center; }
+  /* Resumen: font-size más chico y fila label/monto permitiendo wrap —
+     a este ancho ("Costo de productos" + "58.940 $" en una sola línea a
+     tamaño de escritorio) el monto se cortaba o se montaba con el label. */
+  .carrito-resumen-card { padding: 1rem 0.75rem; }
+  .carrito-resumen-card h2 { font-size: 0.95rem; }
+  .carrito-resumen-fila {
+    flex-wrap: wrap;
+    gap: 0.15rem 0.5rem;
+    font-size: 0.78rem;
+    padding: 0.35rem 0;
+  }
+  .carrito-resumen-total { font-size: 0.92rem; }
+  .carrito-resumen-envio-nota { font-size: 0.68rem; }
+  /* Texto/padding más chicos para que "Completar datos de envío" entre en
+     2 líneas como máximo, sin desbordar la columna angosta. */
+  .carrito-resumen-boton { padding: 0.6rem 0.5rem; font-size: 0.82rem; }
+  .carrito-resumen-seguir { font-size: 0.78rem; }
   .form-grid-2 { grid-template-columns: 1fr; }
 }
 
