@@ -1783,7 +1783,14 @@ footer {
 .carrito-vacio-texto { font-size: 1.3rem; font-weight: 600; color: var(--ink); margin: 0; }
 
 /* ─── RESPONSIVO ──────────────────────────────────────── */
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
+  /* Este breakpoint es propio del nav (no comparte los 768px del resto de
+     los ajustes mobile de más abajo). El nav de escritorio (3 columnas,
+     sin hamburguesa, textos largos en Fraunces) medido a mano: "Iniciar
+     Sesión" recién deja de cortarse a dos líneas desde ~1095px — por
+     debajo de eso (hasta los 768px del resto del sitio) el nav se veía
+     roto con texto partido en dos líneas. Se sube el nav al cajón acá,
+     antes que el resto del sitio, para cubrir toda esa franja. */
   /* Nav del sitio (y del admin, comparte el tag <nav>): colapsa a logo +
      botón de hamburguesa (mismos 76px de alto que en desktop, así el
      padding-top del body y el hero no quedan descuadrados). Los links del
@@ -1879,7 +1886,9 @@ footer {
      aplastado/superpuesto con el ícono. */
   .nav-instagram { margin-left: 0; line-height: normal; gap: 0.5rem; }
   .nav-right > a:last-child { border-bottom: none; }
+}
 
+@media (max-width: 768px) {
   .hero { padding: 4.5rem 1.5rem; }
   .hero-titulo { font-size: 2.6rem; letter-spacing: 6px; }
   .hero-subtitulo { font-size: 1rem; }
