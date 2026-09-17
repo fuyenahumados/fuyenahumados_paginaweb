@@ -116,6 +116,14 @@ nav .logo {
 .nav-carrito { display: flex; align-items: center; gap: 0.35rem; }
 .nav-carrito:hover { color: var(--celeste); }
 .icon-carrito { width: 19px; height: 19px; flex-shrink: 0; }
+/* Solo ícono en navbar de escritorio — el texto ("Carrito", "Instagram")
+   se reserva para el cajón mobile. No se usa ".texto-mobile" (que se
+   muestra desde 800px) porque el cajón recién pasa a layout vertical a
+   los 768px: en los 32px de por medio el navbar seguía horizontal pero
+   ".texto-mobile" ya mostraba el texto de "Instagram", y no entraba
+   (desbordaba el navbar). Con su propia clase, el texto queda oculto
+   hasta el breakpoint real del cajón (ver media query más abajo). */
+.nav-drawer-texto { display: none; }
 .nav-instagram { display: flex; align-items: center; line-height: 0; margin-left: 0.5rem; }
 .icon-instagram { width: 19px; height: 19px; flex-shrink: 0; color: #fff; }
 .nav-instagram:hover .icon-instagram { color: var(--celeste); }
@@ -1816,7 +1824,13 @@ footer {
     bottom: 0;
     width: 72%;
     flex-direction: column;
-    background: var(--navy);
+    /* Cajón claro (a pedido de Joaquín) en vez del navy del nav de arriba —
+       usa los mismos colores que el resto del sitio para texto/fondo
+       claro (--ink/#fff), no colores nuevos. El nav de arriba (con la X
+       para cerrar) sigue navy, no cambia. */
+    background: #fff;
+    color: var(--ink);
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.12);
     padding: 1.5rem 1.25rem 1rem;
     /* Más chico que el 1.05rem original — "Nuestros Productos"/"Quiénes
        Somos"/"Iniciar Sesión" no entraban en una línea ni ensanchando la
@@ -1827,6 +1841,15 @@ footer {
     transition: transform 0.25s ease;
   }
   nav.menu-abierto .nav-panel { transform: translateX(0); }
+  /* Íconos, links y textos del cajón traían color:#fff harcodeado (pensado
+     para fondo navy, ver "nav a, .admin-nav a" más arriba) — se pisan acá
+     para el fondo claro nuevo. */
+  .nav-panel a,
+  .nav-panel .icon-perfil,
+  .nav-panel .icon-instagram,
+  .nav-panel .nav-perfil,
+  .nav-panel .nav-nombre,
+  .nav-panel .nav-salir { color: var(--ink); }
 
   .nav-center,
   .nav-right {
@@ -1835,12 +1858,13 @@ footer {
     align-items: stretch;
     gap: 0;
   }
+  .nav-drawer-texto { display: inline; }
   .nav-center a,
   .nav-right > a,
   .nav-right > form {
     width: 100%;
     padding: 0.85rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid var(--border);
   }
   .nav-right > form { padding: 0; }
   .nav-right .nav-salir {
