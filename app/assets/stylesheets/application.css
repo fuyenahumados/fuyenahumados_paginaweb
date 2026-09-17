@@ -2088,7 +2088,25 @@ footer {
     text-overflow: ellipsis;
   }
   .producto-accion { display: none; }
-  .producto-detalle { grid-template-columns: 1fr; }
+  /* Orden de la ficha en mobile: título+precio, foto, descripción, reseñas
+     (a pedido de Joaquín — antes iba foto primero). ".producto-detalle-info"
+     pasa a "display: contents": deja de generar su propia caja y sus hijos
+     (nombre, precio, descripción, form) pasan a ser hijos DIRECTOS del grid
+     ".producto-detalle", al mismo nivel que ".producto-detalle-foto" — así
+     se pueden reordenar con "order" sin tocar el HTML ni el grid de
+     escritorio (que no entra a este media query). El form ya se saca del
+     todo del flujo más abajo (position: fixed), así que su "order" no
+     importa en la práctica, pero se deja por prolijidad. Gap más chico que
+     el de escritorio (2.5rem, pensado para 2 columnas separadas): acá es
+     una sola columna con 4 bloques seguidos, cada uno ya trae su propio
+     margin-bottom para el espaciado fino. */
+  .producto-detalle { grid-template-columns: 1fr; gap: 0.85rem; }
+  .producto-detalle-info { display: contents; }
+  .producto-detalle-nombre { order: 1; }
+  .producto-detalle-precio { order: 2; }
+  .producto-detalle-foto { order: 3; }
+  .producto-detalle-desc { order: 4; }
+  .producto-detalle-form { order: 5; }
   /* Barra fija abajo con el stepper de cantidad + "Agregar al carrito" —
      a pedido de Joaquín, se mantiene siempre visible mientras se scrollea
      la descripción/reseñas de más abajo, en vez de vivir en el flujo
