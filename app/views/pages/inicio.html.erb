@@ -11,11 +11,14 @@
 <section class="seccion seccion-clara">
   <div class="seccion-inner">
     <h2 class="seccion-titulo">Nuestros productos</h2>
-    <p class="seccion-subtitulo">
+    <p class="seccion-subtitulo texto-desktop">
       Elaboramos cada producto de forma 100% artesanal, con una receta propia que fuimos
       perfeccionando con harto tiempo, paciencia y cariño. Cuidamos cada detalle del proceso,
       desde la selección del salmón hasta el ahumado final con nuestra mezcla de ulmo y roble,
       para lograr ese sabor que nos recuerda al sur de Chile.
+    </p>
+    <p class="seccion-subtitulo texto-mobile">
+      Elaborado 100% artesanal, ahumado con ulmo y roble, con el sabor que nos recuerda al sur de Chile.
     </p>
 
     <%
@@ -52,17 +55,24 @@
     </div>
     <div class="quienes-somos-texto">
       <h2 class="quienes-somos-titulo">Quiénes somos</h2>
-      <p class="seccion-texto">
-        Somos un emprendimiento de tres amigos que nació del amor por la buena comida,
-        la pesca y las juntas de siempre. Empezó como algo casero, ahumando salmón para
-        compartir entre nosotros, hasta que nos dimos cuenta de que valía la pena que
-        más gente lo probara.
-      </p>
-      <p class="seccion-texto">
-        Hoy seguimos haciéndolo con la misma calma de siempre, afinando la receta con el
-        tiempo y sin perder la esencia de cómo partimos. Cada pieza sale con la misma
-        dedicación, cuidando cada detalle y las ganas de compartir algo tan bueno como
-        lo que nos gusta comer a nosotros.
+      <div class="texto-desktop">
+        <p class="seccion-texto">
+          Somos un emprendimiento de tres amigos que nació del amor por la buena comida,
+          la pesca y las juntas de siempre. Empezó como algo casero, ahumando salmón para
+          compartir entre nosotros, hasta que nos dimos cuenta de que valía la pena que
+          más gente lo probara.
+        </p>
+        <p class="seccion-texto">
+          Hoy seguimos haciéndolo con la misma calma de siempre, afinando la receta con el
+          tiempo y sin perder la esencia de cómo partimos. Cada pieza sale con la misma
+          dedicación, cuidando cada detalle y las ganas de compartir algo tan bueno como
+          lo que nos gusta comer a nosotros.
+        </p>
+      </div>
+      <p class="seccion-texto texto-mobile">
+        Somos tres amigos que empezamos ahumando salmón para compartir entre nosotros,
+        hasta que decidimos que valía la pena que más gente lo probara. Hoy seguimos
+        con la misma dedicación de siempre.
       </p>
       <%= link_to "Conoce nuestra historia", nosotros_path, class: "btn btn-navy-grande" %>
     </div>
