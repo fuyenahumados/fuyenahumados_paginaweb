@@ -36,3 +36,6 @@
 # Ignore SimpleCov's coverage report (se regenera en cada corrida de tests).
 /coverage
 
+# Ignore Windows "zone transfer" metadata (se crea al copiar archivos descargados vía WSL).
+*:Zone.Identifier
+
